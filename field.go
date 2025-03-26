@@ -1,4 +1,4 @@
-package firecrackermanager
+package vers
 
 import (
 	"github.com/stainless-sdks/firecracker-manager-go/internal/param"

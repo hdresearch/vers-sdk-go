@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package firecrackermanager_test
+package vers_test
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func TestAPIVmGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Vm.Get(context.TODO(), "vm_id")
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -45,19 +45,19 @@ func TestAPIVmUpdate(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Vm.Update(
 		context.TODO(),
 		"vm_id",
-		firecrackermanager.APIVmUpdateParams{
-			Body: firecrackermanager.APIVmUpdateParamsBodyPause,
+		vers.APIVmUpdateParams{
+			Body: vers.APIVmUpdateParamsBodyPause,
 		},
 	)
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -74,13 +74,13 @@ func TestAPIVmList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Vm.List(context.TODO())
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -97,19 +97,19 @@ func TestAPIVmDeleteWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.API.Vm.Delete(
 		context.TODO(),
 		"vm_id",
-		firecrackermanager.APIVmDeleteParams{
-			Recursive: firecrackermanager.F(true),
+		vers.APIVmDeleteParams{
+			Recursive: vers.F(true),
 		},
 	)
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -126,19 +126,19 @@ func TestAPIVmNewBranch(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Vm.NewBranch(
 		context.TODO(),
 		"vm_id",
-		firecrackermanager.APIVmNewBranchParams{
+		vers.APIVmNewBranchParams{
 			Body: map[string]interface{}{},
 		},
 	)
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
