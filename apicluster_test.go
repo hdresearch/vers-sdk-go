@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package firecrackermanager_test
+package vers_test
 
 import (
 	"context"
@@ -22,15 +22,15 @@ func TestAPIClusterNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Cluster.New(context.TODO(), firecrackermanager.APIClusterNewParams{
+	_, err := client.API.Cluster.New(context.TODO(), vers.APIClusterNewParams{
 		Body: map[string]interface{}{},
 	})
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -47,13 +47,13 @@ func TestAPIClusterGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Cluster.Get(context.TODO(), "cluster_id")
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -70,13 +70,13 @@ func TestAPIClusterList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Cluster.List(context.TODO())
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -93,19 +93,19 @@ func TestAPIClusterDeleteWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := firecrackermanager.NewClient(
+	client := vers.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.API.Cluster.Delete(
 		context.TODO(),
 		"cluster_id",
-		firecrackermanager.APIClusterDeleteParams{
-			Force: firecrackermanager.F(true),
+		vers.APIClusterDeleteParams{
+			Force: vers.F(true),
 		},
 	)
 	if err != nil {
-		var apierr *firecrackermanager.Error
+		var apierr *vers.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
