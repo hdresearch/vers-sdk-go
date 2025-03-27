@@ -1,0 +1,15 @@
+# Changelog
+
+## 0.1.0-alpha.1 (2025-03-27)
+
+Full Changelog: [v0.0.1-alpha.0...v0.1.0-alpha.1](https://github.com/hdresearch/vers-sdk-go/compare/v0.0.1-alpha.0...v0.1.0-alpha.1)
+
+### Features
+
+* **api:** update via SDK Studio ([321b2a5](https://github.com/hdresearch/vers-sdk-go/commit/321b2a56ca2bbb9c1ea650ddaf02c4754f5a27e2))
+
+
+### Chores
+
+* configure new SDK language ([6119995](https://github.com/hdresearch/vers-sdk-go/commit/6119995cea93a3377e3a435dd142a2dad8c9d3a1))
+* go live ([#1](https://github.com/hdresearch/vers-sdk-go/issues/1)) ([83a2f05](https://github.com/hdresearch/vers-sdk-go/commit/83a2f057f7708fe18e94a55051f82f756526f083))
