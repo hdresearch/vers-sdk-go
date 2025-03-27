@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/firecracker-manager-go
+module github.com/hdresearch/vers-sdk-go
 
 go 1.21
 

@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/firecracker-manager-go"
-	"github.com/stainless-sdks/firecracker-manager-go/internal"
-	"github.com/stainless-sdks/firecracker-manager-go/option"
+	"github.com/hdresearch/vers-sdk-go"
+	"github.com/hdresearch/vers-sdk-go/internal"
+	"github.com/hdresearch/vers-sdk-go/option"
 )
 
 type closureTransport struct {
