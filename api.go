@@ -3,7 +3,7 @@
 package vers
 
 import (
-	"github.com/stainless-sdks/firecracker-manager-go/option"
+	"github.com/hdresearch/vers-sdk-go/option"
 )
 
 // APIService contains methods and other services that help with interacting with

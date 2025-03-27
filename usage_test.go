@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/firecracker-manager-go"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/testutil"
-	"github.com/stainless-sdks/firecracker-manager-go/option"
+	"github.com/hdresearch/vers-sdk-go"
+	"github.com/hdresearch/vers-sdk-go/internal/testutil"
+	"github.com/hdresearch/vers-sdk-go/option"
 )
 
 func TestUsage(t *testing.T) {

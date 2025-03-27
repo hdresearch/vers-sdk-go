@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"net/url"
 
-	"github.com/stainless-sdks/firecracker-manager-go/internal/apijson"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/apiquery"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/param"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/requestconfig"
-	"github.com/stainless-sdks/firecracker-manager-go/option"
+	"github.com/hdresearch/vers-sdk-go/internal/apijson"
+	"github.com/hdresearch/vers-sdk-go/internal/apiquery"
+	"github.com/hdresearch/vers-sdk-go/internal/param"
+	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
+	"github.com/hdresearch/vers-sdk-go/option"
 )
 
 // APIVmService contains methods and other services that help with interacting with
