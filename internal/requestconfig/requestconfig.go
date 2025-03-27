@@ -18,11 +18,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/firecracker-manager-go/internal"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/apierror"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/apiform"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/apiquery"
-	"github.com/stainless-sdks/firecracker-manager-go/internal/param"
+	"github.com/hdresearch/vers-sdk-go/internal"
+	"github.com/hdresearch/vers-sdk-go/internal/apierror"
+	"github.com/hdresearch/vers-sdk-go/internal/apiform"
+	"github.com/hdresearch/vers-sdk-go/internal/apiquery"
+	"github.com/hdresearch/vers-sdk-go/internal/param"
 )
 
 func getDefaultHeaders() map[string]string {

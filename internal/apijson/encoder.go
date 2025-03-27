@@ -13,7 +13,7 @@ import (
 
 	"github.com/tidwall/sjson"
 
-	"github.com/stainless-sdks/firecracker-manager-go/internal/param"
+	"github.com/hdresearch/vers-sdk-go/internal/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

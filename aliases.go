@@ -3,7 +3,7 @@
 package vers
 
 import (
-	"github.com/stainless-sdks/firecracker-manager-go/internal/apierror"
+	"github.com/hdresearch/vers-sdk-go/internal/apierror"
 )
 
 type Error = apierror.Error
