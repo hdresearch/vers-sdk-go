@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/stainless-sdks/firecracker-manager-go=/path/to/firecracker-manager-go
+$ go mod edit -replace github.com/hdresearch/vers-sdk-go=/path/to/vers-sdk-go
 ```
 
 ## Running tests

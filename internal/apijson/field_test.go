@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/firecracker-manager-go/internal/param"
+	"github.com/hdresearch/vers-sdk-go/internal/param"
 )
 
 type Struct struct {

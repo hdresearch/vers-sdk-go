@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/firecracker-manager-go/internal/requestconfig"
-	"github.com/stainless-sdks/firecracker-manager-go/option"
+	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
+	"github.com/hdresearch/vers-sdk-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with
