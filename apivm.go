@@ -94,6 +94,17 @@ func (r *APIVmService) NewBranch(ctx context.Context, vmID string, body APIVmNew
 	return
 }
 
+func (r *APIVmService) Execute(ctx context.Context, vmID string, body APIVmExecuteParams, opts ...option.RequestOption) (res *APIVmExecuteResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return
+	}
+	path := fmt.Sprintf("api/vm/%s/execute", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 type Vm struct {
 	// The ID of the VM.
 	ID string `json:"id,required"`
@@ -176,6 +187,54 @@ func (r VmState) IsKnown() bool {
 	return false
 }
 
+type APIVmExecuteResponse struct {
+	ID            string                            `json:"id,required"`
+	CommandResult APIVmExecuteResponseCommandResult `json:"command_result,required"`
+	JSON          apiVmExecuteResponseJSON          `json:"-"`
+}
+
+// apiVmExecuteResponseJSON contains the JSON metadata for the struct
+// [APIVmExecuteResponse]
+type apiVmExecuteResponseJSON struct {
+	ID            apijson.Field
+	CommandResult apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *APIVmExecuteResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmExecuteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIVmExecuteResponseCommandResult struct {
+	ExitCode int64                                 `json:"exit_code,required"`
+	Stderr   string                                `json:"stderr,required"`
+	Stdout   string                                `json:"stdout,required"`
+	JSON     apiVmExecuteResponseCommandResultJSON `json:"-"`
+}
+
+// apiVmExecuteResponseCommandResultJSON contains the JSON metadata for the struct
+// [APIVmExecuteResponseCommandResult]
+type apiVmExecuteResponseCommandResultJSON struct {
+	ExitCode    apijson.Field
+	Stderr      apijson.Field
+	Stdout      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIVmExecuteResponseCommandResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmExecuteResponseCommandResultJSON) RawJSON() string {
+	return r.raw
+}
+
 type APIVmUpdateParams struct {
 	Body APIVmUpdateParamsBody `json:"body,required"`
 }
@@ -218,4 +277,12 @@ type APIVmNewBranchParams struct {
 
 func (r APIVmNewBranchParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
+}
+
+type APIVmExecuteParams struct {
+	Command param.Field[string] `json:"command,required"`
+}
+
+func (r APIVmExecuteParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
