@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.2 (2025-04-03)
+
+Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
+
+### Features
+
+* **api:** update via SDK Studio ([#6](https://github.com/hdresearch/vers-sdk-go/issues/6)) ([24c657a](https://github.com/hdresearch/vers-sdk-go/commit/24c657a16c47295391a0b032d440be678f528029))
+
+
+### Bug Fixes
+
+* **client:** return error on bad custom url instead of panic ([#4](https://github.com/hdresearch/vers-sdk-go/issues/4)) ([57370b2](https://github.com/hdresearch/vers-sdk-go/commit/57370b218c67eb61782b8f178da271314b5c60c6))
+
 ## 0.1.0-alpha.1 (2025-03-27)
 
 Full Changelog: [v0.0.1-alpha.0...v0.1.0-alpha.1](https://github.com/hdresearch/vers-sdk-go/compare/v0.0.1-alpha.0...v0.1.0-alpha.1)
