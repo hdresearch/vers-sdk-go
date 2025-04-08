@@ -84,7 +84,7 @@ func TestAPIClusterList(t *testing.T) {
 	}
 }
 
-func TestAPIClusterDeleteWithOptionalParams(t *testing.T) {
+func TestAPIClusterDelete(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -97,13 +97,7 @@ func TestAPIClusterDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.API.Cluster.Delete(
-		context.TODO(),
-		"cluster_id",
-		vers.APIClusterDeleteParams{
-			Force: vers.F(true),
-		},
-	)
+	_, err := client.API.Cluster.Delete(context.TODO(), "cluster_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
