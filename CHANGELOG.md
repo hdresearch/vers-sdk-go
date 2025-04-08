@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.4 (2025-04-08)
+
+Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
+
+### Features
+
+* **api:** api update ([#13](https://github.com/hdresearch/vers-sdk-go/issues/13)) ([dc8e620](https://github.com/hdresearch/vers-sdk-go/commit/dc8e620bfbbbc5d7d4e7d4d4e9507dde17caee4d))
+* **client:** support custom http clients ([#11](https://github.com/hdresearch/vers-sdk-go/issues/11)) ([8589fe8](https://github.com/hdresearch/vers-sdk-go/commit/8589fe8524b345e9689ff838d7fed749186a655c))
+
 ## 0.1.0-alpha.3 (2025-04-03)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
