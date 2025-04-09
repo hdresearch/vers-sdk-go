@@ -235,48 +235,23 @@ func (r apiVmExecuteResponseCommandResultJSON) RawJSON() string {
 }
 
 type APIVmUpdateParams struct {
-	Body APIVmUpdateParamsBodyUnion `json:"body,required"`
+	Body APIVmUpdateParamsBody `json:"body,required"`
 }
 
 func (r APIVmUpdateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Body)
 }
 
-type APIVmUpdateParamsBody struct {
-	Action param.Field[APIVmUpdateParamsBodyAction] `json:"action,required"`
-}
-
-func (r APIVmUpdateParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r APIVmUpdateParamsBody) implementsAPIVmUpdateParamsBodyUnion() {}
-
-// Satisfied by [APIVmUpdateParamsBodyAction], [APIVmUpdateParamsBodyAction],
-// [APIVmUpdateParamsBody].
-type APIVmUpdateParamsBodyUnion interface {
-	implementsAPIVmUpdateParamsBodyUnion()
-}
-
-type APIVmUpdateParamsBodyAction struct {
-	Action param.Field[APIVmUpdateParamsBodyActionAction] `json:"action,required"`
-}
-
-func (r APIVmUpdateParamsBodyAction) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r APIVmUpdateParamsBodyAction) implementsAPIVmUpdateParamsBodyUnion() {}
-
-type APIVmUpdateParamsBodyActionAction string
+type APIVmUpdateParamsBody string
 
 const (
-	APIVmUpdateParamsBodyActionActionPause APIVmUpdateParamsBodyActionAction = "pause"
+	APIVmUpdateParamsBodyPause  APIVmUpdateParamsBody = "pause"
+	APIVmUpdateParamsBodyResume APIVmUpdateParamsBody = "resume"
 )
 
-func (r APIVmUpdateParamsBodyActionAction) IsKnown() bool {
+func (r APIVmUpdateParamsBody) IsKnown() bool {
 	switch r {
-	case APIVmUpdateParamsBodyActionActionPause:
+	case APIVmUpdateParamsBodyPause, APIVmUpdateParamsBodyResume:
 		return true
 	}
 	return false
