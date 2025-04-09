@@ -53,9 +53,7 @@ func TestAPIVmUpdate(t *testing.T) {
 		context.TODO(),
 		"vm_id",
 		vers.APIVmUpdateParams{
-			Body: vers.APIVmUpdateParamsBodyAction{
-				Action: vers.F(vers.APIVmUpdateParamsBodyActionActionPause),
-			},
+			Body: vers.APIVmUpdateParamsBodyPause,
 		},
 	)
 	if err != nil {
