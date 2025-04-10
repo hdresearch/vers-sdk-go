@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0-alpha.5 (2025-04-10)
+
+Full Changelog: [v0.1.0-alpha.4...v0.1.0-alpha.5](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.4...v0.1.0-alpha.5)
+
+### Features
+
+* **api:** api update ([b35c68f](https://github.com/hdresearch/vers-sdk-go/commit/b35c68f1463116a3fbe632a3d0ea1c2baab908c5))
+* **api:** api update ([#14](https://github.com/hdresearch/vers-sdk-go/issues/14)) ([ddb62b5](https://github.com/hdresearch/vers-sdk-go/commit/ddb62b50bd4dc626508c1d6058885721933c5a16))
+* **api:** manual updates ([4eed2d8](https://github.com/hdresearch/vers-sdk-go/commit/4eed2d8abfb53006ce74068911ecc7f076ca057f))
+
+
+### Chores
+
+* **internal:** expand CI branch coverage ([bcd65db](https://github.com/hdresearch/vers-sdk-go/commit/bcd65db3c46005f8f91d7606d714f2f343d62722))
+* **internal:** reduce CI branch coverage ([525110e](https://github.com/hdresearch/vers-sdk-go/commit/525110e0395581e26319c30be5e8162fa12e6168))
+
 ## 0.1.0-alpha.4 (2025-04-08)
 
 Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
