@@ -144,6 +144,7 @@ func (r vmJSON) RawJSON() string {
 type VmNetworkInfo struct {
 	GuestIP     string            `json:"guest_ip,required"`
 	GuestMac    string            `json:"guest_mac,required"`
+	SSHPort     int64             `json:"ssh_port,required"`
 	Tap0IP      string            `json:"tap0_ip,required"`
 	Tap0Name    string            `json:"tap0_name,required"`
 	VmNamespace string            `json:"vm_namespace,required"`
@@ -154,6 +155,7 @@ type VmNetworkInfo struct {
 type vmNetworkInfoJSON struct {
 	GuestIP     apijson.Field
 	GuestMac    apijson.Field
+	SSHPort     apijson.Field
 	Tap0IP      apijson.Field
 	Tap0Name    apijson.Field
 	VmNamespace apijson.Field
