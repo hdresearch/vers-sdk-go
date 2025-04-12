@@ -80,6 +80,17 @@ func (r *APIVmService) Delete(ctx context.Context, vmID string, body APIVmDelete
 	return
 }
 
+func (r *APIVmService) Commit(ctx context.Context, vmID string, body APIVmCommitParams, opts ...option.RequestOption) (res *APIVmCommitResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return
+	}
+	path := fmt.Sprintf("api/vm/%s/commit", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
+}
+
 // Creates a branch of the specified VM.
 func (r *APIVmService) NewBranch(ctx context.Context, vmID string, body APIVmNewBranchParams, opts ...option.RequestOption) (res *Vm, err error) {
 	opts = append(r.Options[:], opts...)
@@ -188,6 +199,54 @@ func (r VmState) IsKnown() bool {
 	return false
 }
 
+type APIVmCommitResponse struct {
+	ID            string                           `json:"id,required"`
+	CommandResult APIVmCommitResponseCommandResult `json:"command_result,required"`
+	JSON          apiVmCommitResponseJSON          `json:"-"`
+}
+
+// apiVmCommitResponseJSON contains the JSON metadata for the struct
+// [APIVmCommitResponse]
+type apiVmCommitResponseJSON struct {
+	ID            apijson.Field
+	CommandResult apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *APIVmCommitResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmCommitResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIVmCommitResponseCommandResult struct {
+	ExitCode int64                                `json:"exit_code,required"`
+	Stderr   string                               `json:"stderr,required"`
+	Stdout   string                               `json:"stdout,required"`
+	JSON     apiVmCommitResponseCommandResultJSON `json:"-"`
+}
+
+// apiVmCommitResponseCommandResultJSON contains the JSON metadata for the struct
+// [APIVmCommitResponseCommandResult]
+type apiVmCommitResponseCommandResultJSON struct {
+	ExitCode    apijson.Field
+	Stderr      apijson.Field
+	Stdout      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIVmCommitResponseCommandResult) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmCommitResponseCommandResultJSON) RawJSON() string {
+	return r.raw
+}
+
 type APIVmExecuteResponse struct {
 	ID            string                            `json:"id,required"`
 	CommandResult APIVmExecuteResponseCommandResult `json:"command_result,required"`
@@ -270,6 +329,14 @@ func (r APIVmDeleteParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
+}
+
+type APIVmCommitParams struct {
+	Body interface{} `json:"body,required"`
+}
+
+func (r APIVmCommitParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.Body)
 }
 
 type APIVmNewBranchParams struct {
