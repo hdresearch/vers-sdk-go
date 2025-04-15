@@ -2,8 +2,8 @@
 
 <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go"><img src="https://pkg.go.dev/badge/github.com/hdresearch/vers-sdk-go.svg" alt="Go Reference"></a>
 
-The Vers Go library provides convenient access to [the Vers REST
-API](https://hdr.is) from applications written in Go. The full API of this library can be found in [api.md](api.md).
+The Vers Go library provides convenient access to the [Vers REST API](https://hdr.is)
+from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
 
