@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
+	"github.com/hdresearch/vers-sdk-go/internal/param"
 	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
 	"github.com/hdresearch/vers-sdk-go/option"
 )
@@ -103,9 +104,12 @@ func (r clusterJSON) RawJSON() string {
 }
 
 type APIClusterNewParams struct {
-	Body interface{} `json:"body,required"`
+	KernelName param.Field[string] `json:"kernel_name"`
+	MemSizeMib param.Field[int64]  `json:"mem_size_mib"`
+	RootfsName param.Field[string] `json:"rootfs_name"`
+	VcpuCount  param.Field[int64]  `json:"vcpu_count"`
 }
 
 func (r APIClusterNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
+	return apijson.MarshalRoot(r)
 }

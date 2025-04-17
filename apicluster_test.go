@@ -13,7 +13,7 @@ import (
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
-func TestAPIClusterNew(t *testing.T) {
+func TestAPIClusterNewWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -27,7 +27,10 @@ func TestAPIClusterNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Cluster.New(context.TODO(), vers.APIClusterNewParams{
-		Body: map[string]interface{}{},
+		KernelName: vers.F("kernel_name"),
+		MemSizeMib: vers.F(int64(0)),
+		RootfsName: vers.F("rootfs_name"),
+		VcpuCount:  vers.F(int64(0)),
 	})
 	if err != nil {
 		var apierr *vers.Error
