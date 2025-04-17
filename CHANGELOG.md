@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.0-alpha.9 (2025-04-17)
+
+Full Changelog: [v0.1.0-alpha.8...v0.1.0-alpha.9](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.8...v0.1.0-alpha.9)
+
+### Features
+
+* **api:** api update ([b2c0c87](https://github.com/hdresearch/vers-sdk-go/commit/b2c0c87f4a167e7874cbd26d7a83b52ad14e2529))
+* **client:** add support for reading base URL from environment variable ([ea382df](https://github.com/hdresearch/vers-sdk-go/commit/ea382df94be7834c0af4f05a15cf827313b427e6))
+
+
+### Chores
+
+* **docs:** document pre-request options ([53ce2aa](https://github.com/hdresearch/vers-sdk-go/commit/53ce2aa2a53c1b80e960604b3231799ad129056f))
+
+
+### Documentation
+
+* update documentation links to be more uniform ([04e7c92](https://github.com/hdresearch/vers-sdk-go/commit/04e7c92ba294a955670c48cdacd38e8f3753f1cd))
+
 ## 0.1.0-alpha.8 (2025-04-12)
 
 Full Changelog: [v0.1.0-alpha.7...v0.1.0-alpha.8](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.7...v0.1.0-alpha.8)
