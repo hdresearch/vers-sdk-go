@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.11 (2025-04-18)
+
+Full Changelog: [v0.1.0-alpha.10...v0.1.0-alpha.11](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.10...v0.1.0-alpha.11)
+
+### Features
+
+* **api:** api update ([ed20783](https://github.com/hdresearch/vers-sdk-go/commit/ed20783fa9c259d57acd57cf9c5e6a80add5f1c8))
+* **api:** manual updates to add ssh_key to vm ([733b076](https://github.com/hdresearch/vers-sdk-go/commit/733b076df716efda77548d50bb286a6b0d717d02))
+
 ## 0.1.0-alpha.10 (2025-04-17)
 
 Full Changelog: [v0.1.0-alpha.9...v0.1.0-alpha.10](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.9...v0.1.0-alpha.10)
