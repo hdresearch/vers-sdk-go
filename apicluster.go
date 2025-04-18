@@ -73,19 +73,6 @@ func (r *APIClusterService) Delete(ctx context.Context, clusterID string, opts .
 	return
 }
 
-// Get the SSH private key for VM access
-func (r *APIClusterService) GetSSHKey(ctx context.Context, clusterID string, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
-	if clusterID == "" {
-		err = errors.New("missing required cluster_id parameter")
-		return
-	}
-	path := fmt.Sprintf("api/cluster/%s/ssh_key", clusterID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
 type Cluster struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
