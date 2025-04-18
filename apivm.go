@@ -115,6 +115,19 @@ func (r *APIVmService) Execute(ctx context.Context, vmID string, body APIVmExecu
 	return
 }
 
+// Get the SSH private key for VM access
+func (r *APIVmService) GetSSHKey(ctx context.Context, vmID string, opts ...option.RequestOption) (res *string, err error) {
+	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return
+	}
+	path := fmt.Sprintf("api/vm/%s/ssh_key", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 type Vm struct {
 	// The ID of the VM.
 	ID string `json:"id,required"`
