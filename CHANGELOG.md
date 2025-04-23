@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.13 (2025-04-23)
+
+Full Changelog: [v0.1.0-alpha.12...v0.1.0-alpha.13](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.12...v0.1.0-alpha.13)
+
+### Chores
+
+* **ci:** add timeout thresholds for CI jobs ([f56ea2b](https://github.com/hdresearch/vers-sdk-go/commit/f56ea2b3ad4f45861ff30719990716d8a0285ea0))
+
 ## 0.1.0-alpha.12 (2025-04-18)
 
 Full Changelog: [v0.1.0-alpha.11...v0.1.0-alpha.12](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.11...v0.1.0-alpha.12)
