@@ -257,6 +257,13 @@ func WithEnvironmentProduction() RequestOption {
 	return WithBaseURL("http://13.219.19.157/")
 }
 
+// WithEnvironmentDevelopment returns a RequestOption that sets the current
+// environment to be the "development" environment. An environment specifies which base URL
+// to use by default.
+func WithEnvironmentDevelopment() RequestOption {
+	return WithBaseURL("${VERS_DEV_URL:-http://52.72.200.221}/")
+}
+
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
 func WithAPIKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {

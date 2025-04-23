@@ -50,7 +50,8 @@ import (
 
 func main() {
 	client := vers.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("VERS_API_KEY")
+		option.WithAPIKey("My API Key"),     // defaults to os.LookupEnv("VERS_API_KEY")
+		option.WithEnvironmentDevelopment(), // defaults to option.WithEnvironmentProduction()
 	)
 	clusters, err := client.API.Cluster.List(context.TODO())
 	if err != nil {
