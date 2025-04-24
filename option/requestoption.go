@@ -254,7 +254,7 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "default" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentDefault() RequestOption {
-	return WithBaseURL("http://VERS_HOST/")
+	return WithBaseURL("http://VERS_URL/")
 }
 
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
@@ -265,10 +265,10 @@ func WithAPIKey(value string) RequestOption {
 	})
 }
 
-// WithVersHost returns a RequestOption that sets the client setting "vers_host".
-func WithVersHost(value string) RequestOption {
+// WithVersURL returns a RequestOption that sets the client setting "vers_url".
+func WithVersURL(value string) RequestOption {
 	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.VersHost = value
+		r.VersURL = value
 		return nil
 	})
 }

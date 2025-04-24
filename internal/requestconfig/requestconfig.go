@@ -172,11 +172,11 @@ func NewRequestConfig(ctx context.Context, method string, u string, body interfa
 	}
 
 	baseURL := cfg.BaseURL.String()
-	if strings.Count(baseURL, "VERS_HOST") >= 1 {
-		if cfg.VersHost == "" {
-			return nil, fmt.Errorf("must provide VersHost to substitute %s", baseURL)
+	if strings.Count(baseURL, "VERS_URL") >= 1 {
+		if cfg.VersURL == "" {
+			return nil, fmt.Errorf("must provide VersURL to substitute %s", baseURL)
 		}
-		baseURL = strings.ReplaceAll(baseURL, "VERS_HOST", cfg.VersHost)
+		baseURL = strings.ReplaceAll(baseURL, "VERS_URL", cfg.VersURL)
 	}
 	cfg.BaseURL, err = url.Parse(baseURL)
 	if err != nil {
@@ -224,7 +224,7 @@ type RequestConfig struct {
 	HTTPClient     *http.Client
 	Middlewares    []middleware
 	APIKey         string
-	VersHost       string
+	VersURL        string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -587,7 +587,7 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		HTTPClient:     cfg.HTTPClient,
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
-		VersHost:       cfg.VersHost,
+		VersURL:        cfg.VersURL,
 	}
 
 	return new
