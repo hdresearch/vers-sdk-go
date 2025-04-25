@@ -111,7 +111,7 @@ func (r *APIVmService) GetSSHKey(ctx context.Context, vmID string, opts ...optio
 		err = errors.New("missing required vm_id parameter")
 		return
 	}
-	path := fmt.Sprintf("api/vm/%s/ssh-key", vmID)
+	path := fmt.Sprintf("api/vm/%s/ssh_key", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
