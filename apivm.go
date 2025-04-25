@@ -68,26 +68,26 @@ func (r *APIVmService) Delete(ctx context.Context, vmID string, body APIVmDelete
 }
 
 // Branch a VM.
-func (r *APIVmService) Branch(ctx context.Context, vmID string, body APIVmBranchParams, opts ...option.RequestOption) (res *Vm, err error) {
+func (r *APIVmService) Branch(ctx context.Context, vmID string, opts ...option.RequestOption) (res *Vm, err error) {
 	opts = append(r.Options[:], opts...)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return
 	}
 	path := fmt.Sprintf("api/vm/%s/branch", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
 // Commit a VM.
-func (r *APIVmService) Commit(ctx context.Context, vmID string, body APIVmCommitParams, opts ...option.RequestOption) (res *Vm, err error) {
+func (r *APIVmService) Commit(ctx context.Context, vmID string, opts ...option.RequestOption) (res *Vm, err error) {
 	opts = append(r.Options[:], opts...)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return
 	}
 	path := fmt.Sprintf("api/vm/%s/commit", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -113,6 +113,18 @@ func (r *APIVmService) GetSSHKey(ctx context.Context, vmID string, opts ...optio
 	}
 	path := fmt.Sprintf("api/vm/%s/ssh-key", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Update VM state.
+func (r *APIVmService) UpdateState(ctx context.Context, vmID string, body APIVmUpdateStateParams, opts ...option.RequestOption) (res *Vm, err error) {
+	opts = append(r.Options[:], opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return
+	}
+	path := fmt.Sprintf("api/vm/%s", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
 }
 
@@ -169,6 +181,29 @@ func (r *ExecuteResponseCommandResult) UnmarshalJSON(data []byte) (err error) {
 
 func (r executeResponseCommandResultJSON) RawJSON() string {
 	return r.raw
+}
+
+type PatchRequestParam struct {
+	Action param.Field[PatchRequestAction] `json:"action,required"`
+}
+
+func (r PatchRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type PatchRequestAction string
+
+const (
+	PatchRequestActionPause  PatchRequestAction = "pause"
+	PatchRequestActionResume PatchRequestAction = "resume"
+)
+
+func (r PatchRequestAction) IsKnown() bool {
+	switch r {
+	case PatchRequestActionPause, PatchRequestActionResume:
+		return true
+	}
+	return false
 }
 
 type Vm struct {
@@ -271,26 +306,18 @@ func (r APIVmDeleteParams) URLQuery() (v url.Values) {
 	})
 }
 
-type APIVmBranchParams struct {
-	BranchParam BranchParam `json:"branch_param,required"`
-}
-
-func (r APIVmBranchParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.BranchParam)
-}
-
-type APIVmCommitParams struct {
-	CommitParam CommitParam `json:"commit_param,required"`
-}
-
-func (r APIVmCommitParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.CommitParam)
-}
-
 type APIVmExecuteParams struct {
 	ExecuteCommand ExecuteCommandParam `json:"execute_command,required"`
 }
 
 func (r APIVmExecuteParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.ExecuteCommand)
+}
+
+type APIVmUpdateStateParams struct {
+	PatchRequest PatchRequestParam `json:"patch_request,required"`
+}
+
+func (r APIVmUpdateStateParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.PatchRequest)
 }
