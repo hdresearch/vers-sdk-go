@@ -36,35 +36,6 @@ func TestAPIVmGet(t *testing.T) {
 	}
 }
 
-func TestAPIVmUpdate(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.Update(
-		context.TODO(),
-		"vm_id",
-		vers.APIVmUpdateParams{
-			Body: vers.APIVmUpdateParamsBodyPause,
-		},
-	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
 func TestAPIVmList(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
@@ -88,7 +59,7 @@ func TestAPIVmList(t *testing.T) {
 	}
 }
 
-func TestAPIVmDeleteWithOptionalParams(t *testing.T) {
+func TestAPIVmDelete(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -101,7 +72,7 @@ func TestAPIVmDeleteWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.API.Vm.Delete(
+	_, err := client.API.Vm.Delete(
 		context.TODO(),
 		"vm_id",
 		vers.APIVmDeleteParams{
@@ -195,29 +166,6 @@ func TestAPIVmExecute(t *testing.T) {
 			Command: vers.F("command"),
 		},
 	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmGetSSHKey(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
