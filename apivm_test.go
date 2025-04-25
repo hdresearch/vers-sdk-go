@@ -105,7 +105,7 @@ func TestAPIVmBranch(t *testing.T) {
 		context.TODO(),
 		"vm_id",
 		vers.APIVmBranchParams{
-			Branch: map[string]interface{}{},
+			BranchParam: map[string]interface{}{},
 		},
 	)
 	if err != nil {
@@ -134,7 +134,7 @@ func TestAPIVmCommit(t *testing.T) {
 		context.TODO(),
 		"vm_id",
 		vers.APIVmCommitParams{
-			Commit: map[string]interface{}{},
+			CommitParam: map[string]interface{}{},
 		},
 	)
 	if err != nil {
