@@ -88,6 +88,35 @@ func TestAPIVmDelete(t *testing.T) {
 	}
 }
 
+func TestAPIVmBranch(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.API.Vm.Branch(
+		context.TODO(),
+		"vm_id",
+		vers.APIVmBranchParams{
+			Branch: map[string]interface{}{},
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestAPIVmCommit(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
@@ -105,36 +134,7 @@ func TestAPIVmCommit(t *testing.T) {
 		context.TODO(),
 		"vm_id",
 		vers.APIVmCommitParams{
-			Body: map[string]interface{}{},
-		},
-	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmNewBranch(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.NewBranch(
-		context.TODO(),
-		"vm_id",
-		vers.APIVmNewBranchParams{
-			Body: map[string]interface{}{},
+			Commit: map[string]interface{}{},
 		},
 	)
 	if err != nil {
@@ -163,9 +163,34 @@ func TestAPIVmExecute(t *testing.T) {
 		context.TODO(),
 		"vm_id",
 		vers.APIVmExecuteParams{
-			Command: vers.F("command"),
+			ExecuteCommand: vers.ExecuteCommandParam{
+				Command: vers.F("command"),
+			},
 		},
 	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAPIVmGetSSHKey(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
