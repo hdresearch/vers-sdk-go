@@ -101,13 +101,7 @@ func TestAPIVmBranch(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Branch(
-		context.TODO(),
-		"vm_id",
-		vers.APIVmBranchParams{
-			BranchParam: map[string]interface{}{},
-		},
-	)
+	_, err := client.API.Vm.Branch(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -130,13 +124,7 @@ func TestAPIVmCommit(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Commit(
-		context.TODO(),
-		"vm_id",
-		vers.APIVmCommitParams{
-			CommitParam: map[string]interface{}{},
-		},
-	)
+	_, err := client.API.Vm.Commit(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -191,6 +179,37 @@ func TestAPIVmGetSSHKey(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id")
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAPIVmUpdateState(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.API.Vm.UpdateState(
+		context.TODO(),
+		"vm_id",
+		vers.APIVmUpdateStateParams{
+			PatchRequest: vers.PatchRequestParam{
+				Action: vers.F(vers.PatchRequestActionPause),
+			},
+		},
+	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
