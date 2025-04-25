@@ -272,19 +272,19 @@ func (r APIVmDeleteParams) URLQuery() (v url.Values) {
 }
 
 type APIVmBranchParams struct {
-	Branch BranchParam `json:"branch,required"`
+	BranchParam BranchParam `json:"branch_param,required"`
 }
 
 func (r APIVmBranchParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Branch)
+	return apijson.MarshalRoot(r.BranchParam)
 }
 
 type APIVmCommitParams struct {
-	Commit CommitParam `json:"commit,required"`
+	CommitParam CommitParam `json:"commit_param,required"`
 }
 
 func (r APIVmCommitParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Commit)
+	return apijson.MarshalRoot(r.CommitParam)
 }
 
 type APIVmExecuteParams struct {
