@@ -52,19 +52,6 @@ func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...o
 	return
 }
 
-// Upload a rootfs tar archive to the server. The archive should contain the
-// Dockerfile and any relevant dependencies.
-func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, opts ...option.RequestOption) (res *UploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if rootfsID == "" {
-		err = errors.New("missing required rootfs_id parameter")
-		return
-	}
-	path := fmt.Sprintf("api/rootfs/%s", rootfsID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
-	return
-}
-
 type DeleteResponse struct {
 	RootfsName string             `json:"rootfs_name,required"`
 	JSON       deleteResponseJSON `json:"-"`
@@ -102,25 +89,5 @@ func (r *ListResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r listResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type UploadResponse struct {
-	RootfsName string             `json:"rootfs_name,required"`
-	JSON       uploadResponseJSON `json:"-"`
-}
-
-// uploadResponseJSON contains the JSON metadata for the struct [UploadResponse]
-type uploadResponseJSON struct {
-	RootfsName  apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *UploadResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r uploadResponseJSON) RawJSON() string {
 	return r.raw
 }
