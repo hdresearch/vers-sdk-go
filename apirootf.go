@@ -7,8 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
+	"github.com/hdresearch/vers-sdk-go/internal/apiquery"
+	"github.com/hdresearch/vers-sdk-go/internal/param"
 	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
 	"github.com/hdresearch/vers-sdk-go/option"
 )
@@ -54,14 +57,14 @@ func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...o
 
 // Upload a rootfs tar archive to the server. The archive should contain the
 // Dockerfile and all necessary dependencies.
-func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, opts ...option.RequestOption) (res *UploadResponse, err error) {
+func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, body APIRootfUploadParams, opts ...option.RequestOption) (res *UploadResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if rootfsID == "" {
 		err = errors.New("missing required rootfs_id parameter")
 		return
 	}
 	path := fmt.Sprintf("api/rootfs/%s", rootfsID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
 	return
 }
 
@@ -123,4 +126,17 @@ func (r *UploadResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r uploadResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type APIRootfUploadParams struct {
+	// The path of the Dockerfile contained within the tar archive
+	Dockerfile param.Field[string] `query:"dockerfile"`
+}
+
+// URLQuery serializes [APIRootfUploadParams]'s query parameters as `url.Values`.
+func (r APIRootfUploadParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
