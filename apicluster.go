@@ -116,21 +116,13 @@ func (r clusterJSON) RawJSON() string {
 	return r.raw
 }
 
-type CreateParam struct {
+type APIClusterNewParams struct {
 	KernelName param.Field[string] `json:"kernel_name"`
 	MemSizeMib param.Field[int64]  `json:"mem_size_mib"`
 	RootfsName param.Field[string] `json:"rootfs_name"`
 	VcpuCount  param.Field[int64]  `json:"vcpu_count"`
 }
 
-func (r CreateParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type APIClusterNewParams struct {
-	Create CreateParam `json:"create,required"`
-}
-
 func (r APIClusterNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Create)
+	return apijson.MarshalRoot(r)
 }

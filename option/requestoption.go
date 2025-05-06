@@ -259,11 +259,11 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 	})
 }
 
-// WithEnvironmentProduction returns a RequestOption that sets the current
-// environment to be the "production" environment. An environment specifies which base URL
+// WithEnvironmentDefault returns a RequestOption that sets the current
+// environment to be the "default" environment. An environment specifies which base URL
 // to use by default.
-func WithEnvironmentProduction() RequestOption {
-	return WithBaseURL("http://13.219.19.157/")
+func WithEnvironmentDefault() RequestOption {
+	return WithBaseURL("http://VERS_URL/")
 }
 
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
@@ -271,5 +271,13 @@ func WithAPIKey(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.APIKey = value
 		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.APIKey)))
+	})
+}
+
+// WithVersURL returns a RequestOption that sets the client setting "vers_url".
+func WithVersURL(value string) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.VersURL = value
+		return nil
 	})
 }
