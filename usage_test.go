@@ -29,5 +29,5 @@ func TestUsage(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	t.Logf("%+v\n", clusters)
+	t.Logf("%+v\n", clusters.OperationID)
 }

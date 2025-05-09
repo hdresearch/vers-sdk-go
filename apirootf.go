@@ -36,7 +36,7 @@ func NewAPIRootfService(opts ...option.RequestOption) (r *APIRootfService) {
 }
 
 // List all available rootfs names on the server.
-func (r *APIRootfService) List(ctx context.Context, opts ...option.RequestOption) (res *ListResponse, err error) {
+func (r *APIRootfService) List(ctx context.Context, opts ...option.RequestOption) (res *APIRootfListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "api/rootfs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
@@ -44,7 +44,7 @@ func (r *APIRootfService) List(ctx context.Context, opts ...option.RequestOption
 }
 
 // Delete an existing rootfs from the server.
-func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...option.RequestOption) (res *DeleteResponse, err error) {
+func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...option.RequestOption) (res *APIRootfDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if rootfsID == "" {
 		err = errors.New("missing required rootfs_id parameter")
@@ -57,7 +57,7 @@ func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...o
 
 // Upload a rootfs tar archive to the server. The archive should contain the
 // Dockerfile and all necessary dependencies.
-func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, body APIRootfUploadParams, opts ...option.RequestOption) (res *UploadResponse, err error) {
+func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, body APIRootfUploadParams, opts ...option.RequestOption) (res *APIRootfUploadResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if rootfsID == "" {
 		err = errors.New("missing required rootfs_id parameter")
@@ -68,73 +68,174 @@ func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, body APIR
 	return
 }
 
-type DeleteResponse struct {
-	RootfsName string             `json:"rootfs_name,required"`
-	JSON       deleteResponseJSON `json:"-"`
+type APIRootfListResponse struct {
+	Data        APIRootfListResponseData `json:"data,required"`
+	DurationNs  int64                    `json:"duration_ns,required"`
+	OperationID string                   `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                    `json:"time_start,required"`
+	JSON      apiRootfListResponseJSON `json:"-"`
 }
 
-// deleteResponseJSON contains the JSON metadata for the struct [DeleteResponse]
-type deleteResponseJSON struct {
-	RootfsName  apijson.Field
+// apiRootfListResponseJSON contains the JSON metadata for the struct
+// [APIRootfListResponse]
+type apiRootfListResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *DeleteResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *APIRootfListResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r deleteResponseJSON) RawJSON() string {
+func (r apiRootfListResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-type ListResponse struct {
-	RootfsNames []string         `json:"rootfs_names,required"`
-	JSON        listResponseJSON `json:"-"`
+type APIRootfListResponseData struct {
+	RootfsNames []string                     `json:"rootfs_names,required"`
+	JSON        apiRootfListResponseDataJSON `json:"-"`
 }
 
-// listResponseJSON contains the JSON metadata for the struct [ListResponse]
-type listResponseJSON struct {
+// apiRootfListResponseDataJSON contains the JSON metadata for the struct
+// [APIRootfListResponseData]
+type apiRootfListResponseDataJSON struct {
 	RootfsNames apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *ListResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *APIRootfListResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r listResponseJSON) RawJSON() string {
+func (r apiRootfListResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
-type UploadResponse struct {
-	RootfsName string             `json:"rootfs_name,required"`
-	JSON       uploadResponseJSON `json:"-"`
+type APIRootfDeleteResponse struct {
+	Data        APIRootfDeleteResponseData `json:"data,required"`
+	DurationNs  int64                      `json:"duration_ns,required"`
+	OperationID string                     `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                      `json:"time_start,required"`
+	JSON      apiRootfDeleteResponseJSON `json:"-"`
 }
 
-// uploadResponseJSON contains the JSON metadata for the struct [UploadResponse]
-type uploadResponseJSON struct {
+// apiRootfDeleteResponseJSON contains the JSON metadata for the struct
+// [APIRootfDeleteResponse]
+type apiRootfDeleteResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIRootfDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiRootfDeleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIRootfDeleteResponseData struct {
+	RootfsName string                         `json:"rootfs_name,required"`
+	JSON       apiRootfDeleteResponseDataJSON `json:"-"`
+}
+
+// apiRootfDeleteResponseDataJSON contains the JSON metadata for the struct
+// [APIRootfDeleteResponseData]
+type apiRootfDeleteResponseDataJSON struct {
 	RootfsName  apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *UploadResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *APIRootfDeleteResponseData) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r uploadResponseJSON) RawJSON() string {
+func (r apiRootfDeleteResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIRootfUploadResponse struct {
+	Data        APIRootfUploadResponseData `json:"data,required"`
+	DurationNs  int64                      `json:"duration_ns,required"`
+	OperationID string                     `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                      `json:"time_start,required"`
+	JSON      apiRootfUploadResponseJSON `json:"-"`
+}
+
+// apiRootfUploadResponseJSON contains the JSON metadata for the struct
+// [APIRootfUploadResponse]
+type apiRootfUploadResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIRootfUploadResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiRootfUploadResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIRootfUploadResponseData struct {
+	RootfsName string                         `json:"rootfs_name,required"`
+	JSON       apiRootfUploadResponseDataJSON `json:"-"`
+}
+
+// apiRootfUploadResponseDataJSON contains the JSON metadata for the struct
+// [APIRootfUploadResponseData]
+type apiRootfUploadResponseDataJSON struct {
+	RootfsName  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIRootfUploadResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiRootfUploadResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
 type APIRootfUploadParams struct {
 	// The path of the Dockerfile contained within the tar archive
-	Dockerfile param.Field[interface{}] `query:"dockerfile,required"`
+	Dockerfile param.Field[APIRootfUploadParamsDockerfile] `query:"dockerfile,required"`
 }
 
 // URLQuery serializes [APIRootfUploadParams]'s query parameters as `url.Values`.
 func (r APIRootfUploadParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+// The path of the Dockerfile contained within the tar archive
+type APIRootfUploadParamsDockerfile struct {
+	Dockerfile param.Field[string] `query:"dockerfile"`
+}
+
+// URLQuery serializes [APIRootfUploadParamsDockerfile]'s query parameters as
+// `url.Values`.
+func (r APIRootfUploadParamsDockerfile) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

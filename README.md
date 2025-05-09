@@ -56,7 +56,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", clusters)
+	fmt.Printf("%+v\n", clusters.OperationID)
 }
 
 ```
