@@ -217,25 +217,11 @@ func (r apiRootfUploadResponseDataJSON) RawJSON() string {
 
 type APIRootfUploadParams struct {
 	// The path of the Dockerfile contained within the tar archive
-	Dockerfile param.Field[APIRootfUploadParamsDockerfile] `query:"dockerfile,required"`
+	Dockerfile param.Field[string] `query:"dockerfile"`
 }
 
 // URLQuery serializes [APIRootfUploadParams]'s query parameters as `url.Values`.
 func (r APIRootfUploadParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// The path of the Dockerfile contained within the tar archive
-type APIRootfUploadParamsDockerfile struct {
-	Dockerfile param.Field[string] `query:"dockerfile"`
-}
-
-// URLQuery serializes [APIRootfUploadParamsDockerfile]'s query parameters as
-// `url.Values`.
-func (r APIRootfUploadParamsDockerfile) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
