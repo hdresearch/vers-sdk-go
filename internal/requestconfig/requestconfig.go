@@ -171,18 +171,6 @@ func NewRequestConfig(ctx context.Context, method string, u string, body interfa
 		return nil, err
 	}
 
-	baseURL := cfg.BaseURL.String()
-	if strings.Count(baseURL, "VERS_URL") >= 1 {
-		if cfg.VersURL == "" {
-			return nil, fmt.Errorf("must provide VersURL to substitute %s", baseURL)
-		}
-		baseURL = strings.ReplaceAll(baseURL, "VERS_URL", cfg.VersURL)
-	}
-	cfg.BaseURL, err = url.Parse(baseURL)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse BaseURL after substitutions: %w", err)
-	}
-
 	// This must run after `cfg.Apply(...)` above in case the request timeout gets modified. We also only
 	// apply our own logic for it if it's still "0" from above. If it's not, then it was deleted or modified
 	// by the user and we should respect that.
@@ -224,7 +212,6 @@ type RequestConfig struct {
 	HTTPClient     *http.Client
 	Middlewares    []middleware
 	APIKey         string
-	VersURL        string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -588,7 +575,6 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		HTTPClient:     cfg.HTTPClient,
 		Middlewares:    cfg.Middlewares,
 		APIKey:         cfg.APIKey,
-		VersURL:        cfg.VersURL,
 	}
 
 	return new
