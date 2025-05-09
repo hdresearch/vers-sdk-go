@@ -22,10 +22,11 @@ type Client struct {
 // DefaultClientOptions read from the environment (VERS_API_KEY, VERS_BASE_URL).
 // This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
-	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	defaults := []option.RequestOption{option.WithEnvironmentDefault()}
 	if o, ok := os.LookupEnv("VERS_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
+	defaults = append(defaults, option.WithVersURL("13.219.19.157"))
 	if o, ok := os.LookupEnv("VERS_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
