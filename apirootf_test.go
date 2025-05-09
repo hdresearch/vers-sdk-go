@@ -76,9 +76,7 @@ func TestAPIRootfUploadWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"rootfs_id",
 		vers.APIRootfUploadParams{
-			Dockerfile: vers.F(vers.APIRootfUploadParamsDockerfile{
-				Dockerfile: vers.F("dockerfile"),
-			}),
+			Dockerfile: vers.F("dockerfile"),
 		},
 	)
 	if err != nil {
