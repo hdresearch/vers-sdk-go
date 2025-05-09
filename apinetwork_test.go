@@ -4,6 +4,7 @@ package vers_test
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
@@ -12,7 +13,8 @@ import (
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
-func TestUsage(t *testing.T) {
+func TestAPINetworkGetInfo(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -24,10 +26,12 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	clusters, err := client.API.Cluster.List(context.TODO())
+	_, err := client.API.Network.GetInfo(context.TODO())
 	if err != nil {
-		t.Error(err)
-		return
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", clusters.OperationID)
 }
