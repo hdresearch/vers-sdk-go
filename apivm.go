@@ -91,18 +91,6 @@ func (r *APIVmService) Commit(ctx context.Context, vmID string, opts ...option.R
 	return
 }
 
-// Execute a command in a VM.
-func (r *APIVmService) Execute(ctx context.Context, vmID string, body APIVmExecuteParams, opts ...option.RequestOption) (res *APIVmExecuteResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	if vmID == "" {
-		err = errors.New("missing required vm_id parameter")
-		return
-	}
-	path := fmt.Sprintf("api/vm/%s/execute", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
 // Get the SSH private key for VM access
 func (r *APIVmService) GetSSHKey(ctx context.Context, vmID string, opts ...option.RequestOption) (res *APIVmGetSSHKeyResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -125,14 +113,6 @@ func (r *APIVmService) UpdateState(ctx context.Context, vmID string, body APIVmU
 	path := fmt.Sprintf("api/vm/%s", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
 	return
-}
-
-type ExecuteCommandParam struct {
-	Command param.Field[string] `json:"command,required"`
-}
-
-func (r ExecuteCommandParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
 }
 
 type PatchRequestParam struct {
@@ -830,82 +810,6 @@ func (r APIVmCommitResponseDataState) IsKnown() bool {
 	return false
 }
 
-type APIVmExecuteResponse struct {
-	Data        APIVmExecuteResponseData `json:"data,required"`
-	DurationNs  int64                    `json:"duration_ns,required"`
-	OperationID string                   `json:"operation_id,required"`
-	// Unix epoch time (secs)
-	TimeStart int64                    `json:"time_start,required"`
-	JSON      apiVmExecuteResponseJSON `json:"-"`
-}
-
-// apiVmExecuteResponseJSON contains the JSON metadata for the struct
-// [APIVmExecuteResponse]
-type apiVmExecuteResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIVmExecuteResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiVmExecuteResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIVmExecuteResponseData struct {
-	ID            string                                `json:"id,required"`
-	CommandResult APIVmExecuteResponseDataCommandResult `json:"command_result,required"`
-	JSON          apiVmExecuteResponseDataJSON          `json:"-"`
-}
-
-// apiVmExecuteResponseDataJSON contains the JSON metadata for the struct
-// [APIVmExecuteResponseData]
-type apiVmExecuteResponseDataJSON struct {
-	ID            apijson.Field
-	CommandResult apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *APIVmExecuteResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiVmExecuteResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIVmExecuteResponseDataCommandResult struct {
-	ExitCode int64                                     `json:"exit_code,required"`
-	Stderr   string                                    `json:"stderr,required"`
-	Stdout   string                                    `json:"stdout,required"`
-	JSON     apiVmExecuteResponseDataCommandResultJSON `json:"-"`
-}
-
-// apiVmExecuteResponseDataCommandResultJSON contains the JSON metadata for the
-// struct [APIVmExecuteResponseDataCommandResult]
-type apiVmExecuteResponseDataCommandResultJSON struct {
-	ExitCode    apijson.Field
-	Stderr      apijson.Field
-	Stdout      apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIVmExecuteResponseDataCommandResult) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiVmExecuteResponseDataCommandResultJSON) RawJSON() string {
-	return r.raw
-}
-
 type APIVmGetSSHKeyResponse struct {
 	Data        string `json:"data,required"`
 	DurationNs  int64  `json:"duration_ns,required"`
@@ -1062,14 +966,6 @@ func (r APIVmDeleteParams) URLQuery() (v url.Values) {
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
-}
-
-type APIVmExecuteParams struct {
-	ExecuteCommand ExecuteCommandParam `json:"execute_command,required"`
-}
-
-func (r APIVmExecuteParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.ExecuteCommand)
 }
 
 type APIVmUpdateStateParams struct {
