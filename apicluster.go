@@ -86,15 +86,10 @@ func (r *APIClusterService) GetSSHKey(ctx context.Context, clusterID string, opt
 }
 
 type CreateParam struct {
-	// The amount of total space to allocate to the cluster
-	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
-	// The size of the VM filesystem (if smaller than the base image + overhead, will
-	// cause an error)
-	FsSizeVmMib param.Field[int64]  `json:"fs_size_vm_mib"`
-	KernelName  param.Field[string] `json:"kernel_name"`
-	MemSizeMib  param.Field[int64]  `json:"mem_size_mib"`
-	RootfsName  param.Field[string] `json:"rootfs_name"`
-	VcpuCount   param.Field[int64]  `json:"vcpu_count"`
+	KernelName param.Field[string] `json:"kernel_name"`
+	MemSizeMib param.Field[int64]  `json:"mem_size_mib"`
+	RootfsName param.Field[string] `json:"rootfs_name"`
+	VcpuCount  param.Field[int64]  `json:"vcpu_count"`
 }
 
 func (r CreateParam) MarshalJSON() (data []byte, err error) {
