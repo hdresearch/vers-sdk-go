@@ -2,10 +2,6 @@
 
 ## Cluster
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#CreateParam">CreateParam</a>
-
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterNewResponse">APIClusterNewResponse</a>

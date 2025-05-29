@@ -722,33 +722,14 @@ func (r apiVmCommitResponseJSON) RawJSON() string {
 }
 
 type APIVmCommitResponseData struct {
-	// The ID of the VM.
-	ID string `json:"id,required"`
-	// The IDs of direct children branched from this VM.
-	Children []string `json:"children,required"`
-	// The VM's cluster ID
-	ClusterID string `json:"cluster_id,required"`
-	// The VM's local IP address on the VM subnet
-	IPAddress string `json:"ip_address,required"`
-	// The VM's network configuration
-	NetworkInfo APIVmCommitResponseDataNetworkInfo `json:"network_info,required"`
-	// Whether the VM is running, paused, or not started.
-	State APIVmCommitResponseDataState `json:"state,required"`
-	// The parent VM's ID, if present. If None, then this VM is a root VM.
-	ParentID string                      `json:"parent_id,nullable"`
-	JSON     apiVmCommitResponseDataJSON `json:"-"`
+	ID   string                      `json:"id,required"`
+	JSON apiVmCommitResponseDataJSON `json:"-"`
 }
 
 // apiVmCommitResponseDataJSON contains the JSON metadata for the struct
 // [APIVmCommitResponseData]
 type apiVmCommitResponseDataJSON struct {
 	ID          apijson.Field
-	Children    apijson.Field
-	ClusterID   apijson.Field
-	IPAddress   apijson.Field
-	NetworkInfo apijson.Field
-	State       apijson.Field
-	ParentID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -759,55 +740,6 @@ func (r *APIVmCommitResponseData) UnmarshalJSON(data []byte) (err error) {
 
 func (r apiVmCommitResponseDataJSON) RawJSON() string {
 	return r.raw
-}
-
-// The VM's network configuration
-type APIVmCommitResponseDataNetworkInfo struct {
-	GuestIP     string                                 `json:"guest_ip,required"`
-	GuestMac    string                                 `json:"guest_mac,required"`
-	SSHPort     int64                                  `json:"ssh_port,required"`
-	Tap0IP      string                                 `json:"tap0_ip,required"`
-	Tap0Name    string                                 `json:"tap0_name,required"`
-	VmNamespace string                                 `json:"vm_namespace,required"`
-	JSON        apiVmCommitResponseDataNetworkInfoJSON `json:"-"`
-}
-
-// apiVmCommitResponseDataNetworkInfoJSON contains the JSON metadata for the struct
-// [APIVmCommitResponseDataNetworkInfo]
-type apiVmCommitResponseDataNetworkInfoJSON struct {
-	GuestIP     apijson.Field
-	GuestMac    apijson.Field
-	SSHPort     apijson.Field
-	Tap0IP      apijson.Field
-	Tap0Name    apijson.Field
-	VmNamespace apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIVmCommitResponseDataNetworkInfo) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiVmCommitResponseDataNetworkInfoJSON) RawJSON() string {
-	return r.raw
-}
-
-// Whether the VM is running, paused, or not started.
-type APIVmCommitResponseDataState string
-
-const (
-	APIVmCommitResponseDataStateNotStarted APIVmCommitResponseDataState = "Not started"
-	APIVmCommitResponseDataStateRunning    APIVmCommitResponseDataState = "Running"
-	APIVmCommitResponseDataStatePaused     APIVmCommitResponseDataState = "Paused"
-)
-
-func (r APIVmCommitResponseDataState) IsKnown() bool {
-	switch r {
-	case APIVmCommitResponseDataStateNotStarted, APIVmCommitResponseDataStateRunning, APIVmCommitResponseDataStatePaused:
-		return true
-	}
-	return false
 }
 
 type APIVmGetSSHKeyResponse struct {
