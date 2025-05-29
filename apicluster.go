@@ -96,37 +96,38 @@ func (r CreateParam) MarshalJSON() (data []byte, err error) {
 
 func (r CreateParam) implementsCreateUnionParam() {}
 
-// Satisfied by [CreateObjectParam], [CreateObjectParam], [CreateParam].
+// Satisfied by [CreateNewClusterParamsParam],
+// [CreateClusterFromCommitParamsParam], [CreateParam].
 type CreateUnionParam interface {
 	implementsCreateUnionParam()
 }
 
-type CreateObjectParam struct {
-	ClusterType param.Field[CreateObjectClusterType] `json:"cluster_type,required"`
-	Params      param.Field[CreateObjectParamsParam] `json:"params,required"`
+type CreateNewClusterParamsParam struct {
+	ClusterType param.Field[CreateNewClusterParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[CreateNewClusterParamsParamsParam] `json:"params,required"`
 }
 
-func (r CreateObjectParam) MarshalJSON() (data []byte, err error) {
+func (r CreateNewClusterParamsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r CreateObjectParam) implementsCreateUnionParam() {}
+func (r CreateNewClusterParamsParam) implementsCreateUnionParam() {}
 
-type CreateObjectClusterType string
+type CreateNewClusterParamsClusterType string
 
 const (
-	CreateObjectClusterTypeNew CreateObjectClusterType = "new"
+	CreateNewClusterParamsClusterTypeNew CreateNewClusterParamsClusterType = "new"
 )
 
-func (r CreateObjectClusterType) IsKnown() bool {
+func (r CreateNewClusterParamsClusterType) IsKnown() bool {
 	switch r {
-	case CreateObjectClusterTypeNew:
+	case CreateNewClusterParamsClusterTypeNew:
 		return true
 	}
 	return false
 }
 
-type CreateObjectParamsParam struct {
+type CreateNewClusterParamsParamsParam struct {
 	// The amount of total space to allocate to the cluster
 	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
 	// The size of the VM filesystem (if smaller than the base image + overhead, will
@@ -138,7 +139,41 @@ type CreateObjectParamsParam struct {
 	VcpuCount   param.Field[int64]  `json:"vcpu_count"`
 }
 
-func (r CreateObjectParamsParam) MarshalJSON() (data []byte, err error) {
+func (r CreateNewClusterParamsParamsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type CreateClusterFromCommitParamsParam struct {
+	ClusterType param.Field[CreateClusterFromCommitParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[CreateClusterFromCommitParamsParamsParam] `json:"params,required"`
+}
+
+func (r CreateClusterFromCommitParamsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CreateClusterFromCommitParamsParam) implementsCreateUnionParam() {}
+
+type CreateClusterFromCommitParamsClusterType string
+
+const (
+	CreateClusterFromCommitParamsClusterTypeFromCommit CreateClusterFromCommitParamsClusterType = "from_commit"
+)
+
+func (r CreateClusterFromCommitParamsClusterType) IsKnown() bool {
+	switch r {
+	case CreateClusterFromCommitParamsClusterTypeFromCommit:
+		return true
+	}
+	return false
+}
+
+type CreateClusterFromCommitParamsParamsParam struct {
+	CommitKey        param.Field[string] `json:"commit_key,required"`
+	FsSizeClusterMib param.Field[int64]  `json:"fs_size_cluster_mib"`
+}
+
+func (r CreateClusterFromCommitParamsParamsParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
