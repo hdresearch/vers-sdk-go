@@ -359,17 +359,7 @@ func (r APIClusterNewParams) MarshalJSON() (data []byte, err error) {
 
 type APIClusterNewParamsBody struct {
 	ClusterType param.Field[APIClusterNewParamsBodyClusterType] `json:"cluster_type,required"`
-	CommitKey   param.Field[string]                             `json:"commit_key"`
-	// The amount of total space to allocate to the cluster
-	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
-	// The size of the VM filesystem (if smaller than the base image + overhead, will
-	// cause an error)
-	FsSizeVmMib    param.Field[int64]  `json:"fs_size_vm_mib"`
-	KernelName     param.Field[string] `json:"kernel_name"`
-	MemSizeMib     param.Field[int64]  `json:"mem_size_mib"`
-	RootfsName     param.Field[string] `json:"rootfs_name"`
-	SizeClusterMib param.Field[int64]  `json:"size_cluster_mib"`
-	VcpuCount      param.Field[int64]  `json:"vcpu_count"`
+	Params      param.Field[interface{}]                        `json:"params,required"`
 }
 
 func (r APIClusterNewParamsBody) MarshalJSON() (data []byte, err error) {
@@ -386,15 +376,7 @@ type APIClusterNewParamsBodyUnion interface {
 
 type APIClusterNewParamsBodyObject struct {
 	ClusterType param.Field[APIClusterNewParamsBodyObjectClusterType] `json:"cluster_type,required"`
-	// The amount of total space to allocate to the cluster
-	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
-	// The size of the VM filesystem (if smaller than the base image + overhead, will
-	// cause an error)
-	FsSizeVmMib param.Field[int64]  `json:"fs_size_vm_mib"`
-	KernelName  param.Field[string] `json:"kernel_name"`
-	MemSizeMib  param.Field[int64]  `json:"mem_size_mib"`
-	RootfsName  param.Field[string] `json:"rootfs_name"`
-	VcpuCount   param.Field[int64]  `json:"vcpu_count"`
+	Params      param.Field[APIClusterNewParamsBodyObjectParams]      `json:"params,required"`
 }
 
 func (r APIClusterNewParamsBodyObject) MarshalJSON() (data []byte, err error) {
@@ -415,6 +397,22 @@ func (r APIClusterNewParamsBodyObjectClusterType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type APIClusterNewParamsBodyObjectParams struct {
+	// The amount of total space to allocate to the cluster
+	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
+	// The size of the VM filesystem (if smaller than the base image + overhead, will
+	// cause an error)
+	FsSizeVmMib param.Field[int64]  `json:"fs_size_vm_mib"`
+	KernelName  param.Field[string] `json:"kernel_name"`
+	MemSizeMib  param.Field[int64]  `json:"mem_size_mib"`
+	RootfsName  param.Field[string] `json:"rootfs_name"`
+	VcpuCount   param.Field[int64]  `json:"vcpu_count"`
+}
+
+func (r APIClusterNewParamsBodyObjectParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type APIClusterNewParamsBodyClusterType string
