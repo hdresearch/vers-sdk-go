@@ -16,6 +16,9 @@ type APIService struct {
 	Options []option.RequestOption
 	Cluster *APIClusterService
 	Vm      *APIVmService
+	Rootfs  *APIRootfService
+	Health  *APIHealthService
+	Network *APINetworkService
 }
 
 // NewAPIService generates a new service that applies the given options to each
@@ -26,5 +29,8 @@ func NewAPIService(opts ...option.RequestOption) (r *APIService) {
 	r.Options = opts
 	r.Cluster = NewAPIClusterService(opts...)
 	r.Vm = NewAPIVmService(opts...)
+	r.Rootfs = NewAPIRootfService(opts...)
+	r.Health = NewAPIHealthService(opts...)
+	r.Network = NewAPINetworkService(opts...)
 	return
 }

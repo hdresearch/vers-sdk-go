@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/hdresearch/vers-sdk-go@v0.1.0-alpha.13'
+go get -u 'github.com/hdresearch/vers-sdk-go@v0.1.0-alpha.14'
 ```
 
 <!-- x-release-please-end -->
@@ -56,7 +56,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", clusters)
+	fmt.Printf("%+v\n", clusters.OperationID)
 }
 
 ```
