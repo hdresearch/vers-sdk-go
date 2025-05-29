@@ -28,13 +28,15 @@ func TestAPIClusterNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.API.Cluster.New(context.TODO(), vers.APIClusterNewParams{
 		Body: vers.APIClusterNewParamsBodyObject{
-			ClusterType:      vers.F(vers.APIClusterNewParamsBodyObjectClusterTypeNew),
-			FsSizeClusterMib: vers.F(int64(0)),
-			FsSizeVmMib:      vers.F(int64(0)),
-			KernelName:       vers.F("kernel_name"),
-			MemSizeMib:       vers.F(int64(0)),
-			RootfsName:       vers.F("rootfs_name"),
-			VcpuCount:        vers.F(int64(0)),
+			ClusterType: vers.F(vers.APIClusterNewParamsBodyObjectClusterTypeNew),
+			Params: vers.F(vers.APIClusterNewParamsBodyObjectParams{
+				FsSizeClusterMib: vers.F(int64(0)),
+				FsSizeVmMib:      vers.F(int64(0)),
+				KernelName:       vers.F("kernel_name"),
+				MemSizeMib:       vers.F(int64(0)),
+				RootfsName:       vers.F("rootfs_name"),
+				VcpuCount:        vers.F(int64(0)),
+			}),
 		},
 	})
 	if err != nil {
