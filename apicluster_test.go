@@ -27,7 +27,8 @@ func TestAPIClusterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Cluster.New(context.TODO(), vers.APIClusterNewParams{
-		Create: vers.CreateParam{
+		Body: vers.APIClusterNewParamsBodyObject{
+			ClusterType:      vers.F(vers.APIClusterNewParamsBodyObjectClusterTypeNew),
 			FsSizeClusterMib: vers.F(int64(0)),
 			FsSizeVmMib:      vers.F(int64(0)),
 			KernelName:       vers.F("kernel_name"),
