@@ -223,22 +223,22 @@ func (r apiClusterNewResponseJSON) RawJSON() string {
 type APIClusterNewResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                        `json:"root_vm_id,nullable"`
-	JSON     apiClusterNewResponseDataJSON `json:"-"`
+	Vms  []Vm                          `json:"vms,required"`
+	JSON apiClusterNewResponseDataJSON `json:"-"`
 }
 
 // apiClusterNewResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterNewResponseData]
 type apiClusterNewResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -282,22 +282,22 @@ func (r apiClusterGetResponseJSON) RawJSON() string {
 type APIClusterGetResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                        `json:"root_vm_id,nullable"`
-	JSON     apiClusterGetResponseDataJSON `json:"-"`
+	Vms  []Vm                          `json:"vms,required"`
+	JSON apiClusterGetResponseDataJSON `json:"-"`
 }
 
 // apiClusterGetResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterGetResponseData]
 type apiClusterGetResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -341,22 +341,22 @@ func (r apiClusterListResponseJSON) RawJSON() string {
 type APIClusterListResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                         `json:"root_vm_id,nullable"`
-	JSON     apiClusterListResponseDataJSON `json:"-"`
+	Vms  []Vm                           `json:"vms,required"`
+	JSON apiClusterListResponseDataJSON `json:"-"`
 }
 
 // apiClusterListResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterListResponseData]
 type apiClusterListResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -400,22 +400,22 @@ func (r apiClusterDeleteResponseJSON) RawJSON() string {
 type APIClusterDeleteResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                           `json:"root_vm_id,nullable"`
-	JSON     apiClusterDeleteResponseDataJSON `json:"-"`
+	Vms  []Vm                             `json:"vms,required"`
+	JSON apiClusterDeleteResponseDataJSON `json:"-"`
 }
 
 // apiClusterDeleteResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterDeleteResponseData]
 type apiClusterDeleteResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
