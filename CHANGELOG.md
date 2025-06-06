@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.0-alpha.15 (2025-06-04)
+
+Full Changelog: [v0.1.0-alpha.14...v0.1.0-alpha.15](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.14...v0.1.0-alpha.15)
+
+### Features
+
+* **api:** api update ([2eacda9](https://github.com/hdresearch/vers-sdk-go/commit/2eacda946e22a908528b977fb88915f8cfa862d3))
+* **api:** api update ([41d1c4b](https://github.com/hdresearch/vers-sdk-go/commit/41d1c4b79e0ab4ce564cde5ca400e2629327271f))
+* **api:** api update ([f5cef79](https://github.com/hdresearch/vers-sdk-go/commit/f5cef79a724038cfda9776029289c83a937872e9))
+* **api:** api update ([3b46c75](https://github.com/hdresearch/vers-sdk-go/commit/3b46c75476324a61f71c1da863ee282cf6a398eb))
+
+
+### Chores
+
+* make go mod tidy continue on error ([01da814](https://github.com/hdresearch/vers-sdk-go/commit/01da8148f9ac3a8ad63e06263c87e3cc7cffaabf))
+
 ## 0.1.0-alpha.14 (2025-05-29)
 
 Full Changelog: [v0.1.0-alpha.13...v0.1.0-alpha.14](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.13...v0.1.0-alpha.14)

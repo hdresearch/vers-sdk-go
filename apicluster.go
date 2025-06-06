@@ -85,6 +85,113 @@ func (r *APIClusterService) GetSSHKey(ctx context.Context, clusterID string, opt
 	return
 }
 
+type CreateParam struct {
+	ClusterType param.Field[CreateClusterType] `json:"cluster_type,required"`
+	Params      param.Field[interface{}]       `json:"params,required"`
+}
+
+func (r CreateParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CreateParam) implementsCreateUnionParam() {}
+
+// Satisfied by [CreateNewClusterParamsParam],
+// [CreateClusterFromCommitParamsParam], [CreateParam].
+type CreateUnionParam interface {
+	implementsCreateUnionParam()
+}
+
+type CreateNewClusterParamsParam struct {
+	ClusterType param.Field[CreateNewClusterParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[CreateNewClusterParamsParamsParam] `json:"params,required"`
+}
+
+func (r CreateNewClusterParamsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CreateNewClusterParamsParam) implementsCreateUnionParam() {}
+
+type CreateNewClusterParamsClusterType string
+
+const (
+	CreateNewClusterParamsClusterTypeNew CreateNewClusterParamsClusterType = "new"
+)
+
+func (r CreateNewClusterParamsClusterType) IsKnown() bool {
+	switch r {
+	case CreateNewClusterParamsClusterTypeNew:
+		return true
+	}
+	return false
+}
+
+type CreateNewClusterParamsParamsParam struct {
+	// The amount of total space to allocate to the cluster
+	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
+	// The size of the VM filesystem (if smaller than the base image + overhead, will
+	// cause an error)
+	FsSizeVmMib param.Field[int64]  `json:"fs_size_vm_mib"`
+	KernelName  param.Field[string] `json:"kernel_name"`
+	MemSizeMib  param.Field[int64]  `json:"mem_size_mib"`
+	RootfsName  param.Field[string] `json:"rootfs_name"`
+	VcpuCount   param.Field[int64]  `json:"vcpu_count"`
+}
+
+func (r CreateNewClusterParamsParamsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type CreateClusterFromCommitParamsParam struct {
+	ClusterType param.Field[CreateClusterFromCommitParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[CreateClusterFromCommitParamsParamsParam] `json:"params,required"`
+}
+
+func (r CreateClusterFromCommitParamsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r CreateClusterFromCommitParamsParam) implementsCreateUnionParam() {}
+
+type CreateClusterFromCommitParamsClusterType string
+
+const (
+	CreateClusterFromCommitParamsClusterTypeFromCommit CreateClusterFromCommitParamsClusterType = "from_commit"
+)
+
+func (r CreateClusterFromCommitParamsClusterType) IsKnown() bool {
+	switch r {
+	case CreateClusterFromCommitParamsClusterTypeFromCommit:
+		return true
+	}
+	return false
+}
+
+type CreateClusterFromCommitParamsParamsParam struct {
+	CommitKey        param.Field[string] `json:"commit_key,required"`
+	FsSizeClusterMib param.Field[int64]  `json:"fs_size_cluster_mib"`
+}
+
+func (r CreateClusterFromCommitParamsParamsParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type CreateClusterType string
+
+const (
+	CreateClusterTypeNew        CreateClusterType = "new"
+	CreateClusterTypeFromCommit CreateClusterType = "from_commit"
+)
+
+func (r CreateClusterType) IsKnown() bool {
+	switch r {
+	case CreateClusterTypeNew, CreateClusterTypeFromCommit:
+		return true
+	}
+	return false
+}
+
 type APIClusterNewResponse struct {
 	Data        APIClusterNewResponseData `json:"data,required"`
 	DurationNs  int64                     `json:"duration_ns,required"`
@@ -116,22 +223,22 @@ func (r apiClusterNewResponseJSON) RawJSON() string {
 type APIClusterNewResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                        `json:"root_vm_id,nullable"`
-	JSON     apiClusterNewResponseDataJSON `json:"-"`
+	Vms  []Vm                          `json:"vms,required"`
+	JSON apiClusterNewResponseDataJSON `json:"-"`
 }
 
 // apiClusterNewResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterNewResponseData]
 type apiClusterNewResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -175,22 +282,22 @@ func (r apiClusterGetResponseJSON) RawJSON() string {
 type APIClusterGetResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                        `json:"root_vm_id,nullable"`
-	JSON     apiClusterGetResponseDataJSON `json:"-"`
+	Vms  []Vm                          `json:"vms,required"`
+	JSON apiClusterGetResponseDataJSON `json:"-"`
 }
 
 // apiClusterGetResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterGetResponseData]
 type apiClusterGetResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -234,22 +341,22 @@ func (r apiClusterListResponseJSON) RawJSON() string {
 type APIClusterListResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                         `json:"root_vm_id,nullable"`
-	JSON     apiClusterListResponseDataJSON `json:"-"`
+	Vms  []Vm                           `json:"vms,required"`
+	JSON apiClusterListResponseDataJSON `json:"-"`
 }
 
 // apiClusterListResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterListResponseData]
 type apiClusterListResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -293,22 +400,22 @@ func (r apiClusterDeleteResponseJSON) RawJSON() string {
 type APIClusterDeleteResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string                           `json:"root_vm_id,nullable"`
-	JSON     apiClusterDeleteResponseDataJSON `json:"-"`
+	Vms  []Vm                             `json:"vms,required"`
+	JSON apiClusterDeleteResponseDataJSON `json:"-"`
 }
 
 // apiClusterDeleteResponseDataJSON contains the JSON metadata for the struct
 // [APIClusterDeleteResponseData]
 type apiClusterDeleteResponseDataJSON struct {
 	ID          apijson.Field
+	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
-	RootVmID    apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -350,84 +457,9 @@ func (r apiClusterGetSSHKeyResponseJSON) RawJSON() string {
 }
 
 type APIClusterNewParams struct {
-	Body APIClusterNewParamsBodyUnion `json:"body,required"`
+	Create CreateUnionParam `json:"create,required"`
 }
 
 func (r APIClusterNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Body)
-}
-
-type APIClusterNewParamsBody struct {
-	ClusterType param.Field[APIClusterNewParamsBodyClusterType] `json:"cluster_type,required"`
-	CommitKey   param.Field[string]                             `json:"commit_key"`
-	// The amount of total space to allocate to the cluster
-	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
-	// The size of the VM filesystem (if smaller than the base image + overhead, will
-	// cause an error)
-	FsSizeVmMib    param.Field[int64]  `json:"fs_size_vm_mib"`
-	KernelName     param.Field[string] `json:"kernel_name"`
-	MemSizeMib     param.Field[int64]  `json:"mem_size_mib"`
-	RootfsName     param.Field[string] `json:"rootfs_name"`
-	SizeClusterMib param.Field[int64]  `json:"size_cluster_mib"`
-	VcpuCount      param.Field[int64]  `json:"vcpu_count"`
-}
-
-func (r APIClusterNewParamsBody) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r APIClusterNewParamsBody) implementsAPIClusterNewParamsBodyUnion() {}
-
-// Satisfied by [APIClusterNewParamsBodyObject], [APIClusterNewParamsBodyObject],
-// [APIClusterNewParamsBody].
-type APIClusterNewParamsBodyUnion interface {
-	implementsAPIClusterNewParamsBodyUnion()
-}
-
-type APIClusterNewParamsBodyObject struct {
-	ClusterType param.Field[APIClusterNewParamsBodyObjectClusterType] `json:"cluster_type,required"`
-	// The amount of total space to allocate to the cluster
-	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
-	// The size of the VM filesystem (if smaller than the base image + overhead, will
-	// cause an error)
-	FsSizeVmMib param.Field[int64]  `json:"fs_size_vm_mib"`
-	KernelName  param.Field[string] `json:"kernel_name"`
-	MemSizeMib  param.Field[int64]  `json:"mem_size_mib"`
-	RootfsName  param.Field[string] `json:"rootfs_name"`
-	VcpuCount   param.Field[int64]  `json:"vcpu_count"`
-}
-
-func (r APIClusterNewParamsBodyObject) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-func (r APIClusterNewParamsBodyObject) implementsAPIClusterNewParamsBodyUnion() {}
-
-type APIClusterNewParamsBodyObjectClusterType string
-
-const (
-	APIClusterNewParamsBodyObjectClusterTypeNew APIClusterNewParamsBodyObjectClusterType = "new"
-)
-
-func (r APIClusterNewParamsBodyObjectClusterType) IsKnown() bool {
-	switch r {
-	case APIClusterNewParamsBodyObjectClusterTypeNew:
-		return true
-	}
-	return false
-}
-
-type APIClusterNewParamsBodyClusterType string
-
-const (
-	APIClusterNewParamsBodyClusterTypeNew        APIClusterNewParamsBodyClusterType = "new"
-	APIClusterNewParamsBodyClusterTypeFromCommit APIClusterNewParamsBodyClusterType = "from_commit"
-)
-
-func (r APIClusterNewParamsBodyClusterType) IsKnown() bool {
-	switch r {
-	case APIClusterNewParamsBodyClusterTypeNew, APIClusterNewParamsBodyClusterTypeFromCommit:
-		return true
-	}
-	return false
+	return apijson.MarshalRoot(r.Create)
 }
