@@ -36,6 +36,38 @@ func TestAPIVmGet(t *testing.T) {
 	}
 }
 
+func TestAPIVmUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.API.Vm.Update(
+		context.TODO(),
+		"vm_id_or_alias",
+		vers.APIVmUpdateParams{
+			UpdateVm: vers.UpdateVmParam{
+				Alias: vers.F("alias"),
+				State: vers.F(vers.UpdateVmStateRunning),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestAPIVmList(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
@@ -156,38 +188,6 @@ func TestAPIVmGetSSHKey(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id_or_alias")
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmUpdateStateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.UpdateState(
-		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmUpdateStateParams{
-			UpdateVm: vers.UpdateVmParam{
-				Alias: vers.F("alias"),
-				State: vers.F(vers.UpdateVmStateRunning),
-			},
-		},
-	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
