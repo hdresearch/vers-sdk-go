@@ -4,6 +4,8 @@ package vers
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
@@ -39,10 +41,46 @@ func (r *APIClusterService) New(ctx context.Context, body APIClusterNewParams, o
 	return
 }
 
+// Retrieve information on a particular cluster.
+func (r *APIClusterService) Get(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterGetResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if clusterIDOrAlias == "" {
+		err = errors.New("missing required cluster_id_or_alias parameter")
+		return
+	}
+	path := fmt.Sprintf("api/cluster/%s", clusterIDOrAlias)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // List all clusters.
 func (r *APIClusterService) List(ctx context.Context, opts ...option.RequestOption) (res *APIClusterListResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "api/cluster"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Delete a cluster.
+func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterDeleteResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if clusterIDOrAlias == "" {
+		err = errors.New("missing required cluster_id_or_alias parameter")
+		return
+	}
+	path := fmt.Sprintf("api/cluster/%s", clusterIDOrAlias)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	return
+}
+
+// Get the SSH private key for VM access
+func (r *APIClusterService) GetSSHKey(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterGetSSHKeyResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if clusterIDOrAlias == "" {
+		err = errors.New("missing required cluster_id_or_alias parameter")
+		return
+	}
+	path := fmt.Sprintf("api/cluster/%s/ssh_key", clusterIDOrAlias)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
@@ -220,6 +258,68 @@ func (r apiClusterNewResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIClusterGetResponse struct {
+	Data        APIClusterGetResponseData `json:"data,required"`
+	DurationNs  int64                     `json:"duration_ns,required"`
+	OperationID string                    `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                     `json:"time_start,required"`
+	JSON      apiClusterGetResponseJSON `json:"-"`
+}
+
+// apiClusterGetResponseJSON contains the JSON metadata for the struct
+// [APIClusterGetResponse]
+type apiClusterGetResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterGetResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterGetResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterGetResponseData struct {
+	// The cluster's ID.
+	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
+	// How many VMs are currently running on this cluster.
+	VmCount int64 `json:"vm_count,required"`
+	// The VMs that are children of the cluster, including the root VM.
+	Vms []Vm `json:"vms,required"`
+	// Human-readable name assigned to the cluster.
+	Alias string                        `json:"alias,nullable"`
+	JSON  apiClusterGetResponseDataJSON `json:"-"`
+}
+
+// apiClusterGetResponseDataJSON contains the JSON metadata for the struct
+// [APIClusterGetResponseData]
+type apiClusterGetResponseDataJSON struct {
+	ID          apijson.Field
+	RootVmID    apijson.Field
+	VmCount     apijson.Field
+	Vms         apijson.Field
+	Alias       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterGetResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterGetResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
 type APIClusterListResponse struct {
 	Data        []APIClusterListResponseData `json:"data,required"`
 	DurationNs  int64                        `json:"duration_ns,required"`
@@ -279,6 +379,96 @@ func (r *APIClusterListResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiClusterListResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterDeleteResponse struct {
+	Data        APIClusterDeleteResponseData `json:"data,required"`
+	DurationNs  int64                        `json:"duration_ns,required"`
+	OperationID string                       `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                        `json:"time_start,required"`
+	JSON      apiClusterDeleteResponseJSON `json:"-"`
+}
+
+// apiClusterDeleteResponseJSON contains the JSON metadata for the struct
+// [APIClusterDeleteResponse]
+type apiClusterDeleteResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterDeleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterDeleteResponseData struct {
+	// The cluster's ID.
+	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
+	// How many VMs are currently running on this cluster.
+	VmCount int64 `json:"vm_count,required"`
+	// The VMs that are children of the cluster, including the root VM.
+	Vms []Vm `json:"vms,required"`
+	// Human-readable name assigned to the cluster.
+	Alias string                           `json:"alias,nullable"`
+	JSON  apiClusterDeleteResponseDataJSON `json:"-"`
+}
+
+// apiClusterDeleteResponseDataJSON contains the JSON metadata for the struct
+// [APIClusterDeleteResponseData]
+type apiClusterDeleteResponseDataJSON struct {
+	ID          apijson.Field
+	RootVmID    apijson.Field
+	VmCount     apijson.Field
+	Vms         apijson.Field
+	Alias       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterDeleteResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterDeleteResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterGetSSHKeyResponse struct {
+	Data        string `json:"data,required"`
+	DurationNs  int64  `json:"duration_ns,required"`
+	OperationID string `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                           `json:"time_start,required"`
+	JSON      apiClusterGetSSHKeyResponseJSON `json:"-"`
+}
+
+// apiClusterGetSSHKeyResponseJSON contains the JSON metadata for the struct
+// [APIClusterGetSSHKeyResponse]
+type apiClusterGetSSHKeyResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterGetSSHKeyResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterGetSSHKeyResponseJSON) RawJSON() string {
 	return r.raw
 }
 

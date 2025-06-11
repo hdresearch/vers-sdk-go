@@ -9,23 +9,46 @@ Params Types:
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterNewResponse">APIClusterNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterGetResponse">APIClusterGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterListResponse">APIClusterListResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterDeleteResponse">APIClusterDeleteResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterGetSSHKeyResponse">APIClusterGetSSHKeyResponse</a>
 
 Methods:
 
 - <code title="post /api/cluster">client.API.Cluster.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterNewParams">APIClusterNewParams</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterNewResponse">APIClusterNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /api/cluster/{cluster_id_or_alias}">client.API.Cluster.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clusterIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterGetResponse">APIClusterGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /api/cluster">client.API.Cluster.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterListResponse">APIClusterListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /api/cluster/{cluster_id_or_alias}">client.API.Cluster.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clusterIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterDeleteResponse">APIClusterDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /api/cluster/{cluster_id_or_alias}/ssh_key">client.API.Cluster.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterService.GetSSHKey">GetSSHKey</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, clusterIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIClusterGetSSHKeyResponse">APIClusterGetSSHKeyResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Vm
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#BranchRequestParam">BranchRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#PatchRequestParam">PatchRequestParam</a>
 
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#Vm">Vm</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmGetResponse">APIVmGetResponse</a>
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmListResponse">APIVmListResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmDeleteResponse">APIVmDeleteResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmBranchResponse">APIVmBranchResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmCommitResponse">APIVmCommitResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmGetSSHKeyResponse">APIVmGetSSHKeyResponse</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmUpdateStateResponse">APIVmUpdateStateResponse</a>
 
 Methods:
 
+- <code title="get /api/vm/{vm_id_or_alias}">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, vmIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmGetResponse">APIVmGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /api/vm">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmListResponse">APIVmListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /api/vm/{vm_id_or_alias}">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, vmIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmDeleteParams">APIVmDeleteParams</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmDeleteResponse">APIVmDeleteResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /api/vm/{vm_id_or_alias}/branch">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.Branch">Branch</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, vmIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmBranchParams">APIVmBranchParams</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmBranchResponse">APIVmBranchResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /api/vm/{vm_id_or_alias}/commit">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.Commit">Commit</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, vmIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmCommitResponse">APIVmCommitResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /api/vm/{vm_id_or_alias}/ssh_key">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.GetSSHKey">GetSSHKey</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, vmIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmGetSSHKeyResponse">APIVmGetSSHKeyResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="patch /api/vm/{vm_id_or_alias}">client.API.Vm.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmService.UpdateState">UpdateState</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, vmIDOrAlias <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmUpdateStateParams">APIVmUpdateStateParams</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APIVmUpdateStateResponse">APIVmUpdateStateResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Rootfs
 
@@ -49,12 +72,12 @@ Methods:
 
 ## Network
 
+## Telemetry
+
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#Info">Info</a>
 
 Methods:
 
-- <code title="get /api/network">client.API.Network.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APINetworkService.GetInfo">GetInfo</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#Info">Info</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-
-## Telemetry
+- <code title="get /api/telemetry">client.API.Telemetry.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APITelemetryService.GetInfo">GetInfo</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#Info">Info</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
