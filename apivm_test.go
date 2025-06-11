@@ -182,9 +182,9 @@ func TestAPIVmUpdateStateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"vm_id_or_alias",
 		vers.APIVmUpdateStateParams{
-			PatchRequest: vers.PatchRequestParam{
+			UpdateVm: vers.UpdateVmParam{
 				Alias: vers.F("alias"),
-				State: vers.F(vers.PatchRequestStateRunning),
+				State: vers.F(vers.UpdateVmStateRunning),
 			},
 		},
 	)
