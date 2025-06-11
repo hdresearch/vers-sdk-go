@@ -123,25 +123,25 @@ func (r BranchRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type PatchRequestParam struct {
-	Alias param.Field[string]            `json:"alias"`
-	State param.Field[PatchRequestState] `json:"state"`
+type UpdateVmParam struct {
+	Alias param.Field[string]        `json:"alias"`
+	State param.Field[UpdateVmState] `json:"state"`
 }
 
-func (r PatchRequestParam) MarshalJSON() (data []byte, err error) {
+func (r UpdateVmParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type PatchRequestState string
+type UpdateVmState string
 
 const (
-	PatchRequestStateRunning PatchRequestState = "Running"
-	PatchRequestStatePaused  PatchRequestState = "Paused"
+	UpdateVmStateRunning UpdateVmState = "Running"
+	UpdateVmStatePaused  UpdateVmState = "Paused"
 )
 
-func (r PatchRequestState) IsKnown() bool {
+func (r UpdateVmState) IsKnown() bool {
 	switch r {
-	case PatchRequestStateRunning, PatchRequestStatePaused:
+	case UpdateVmStateRunning, UpdateVmStatePaused:
 		return true
 	}
 	return false
@@ -936,9 +936,9 @@ func (r APIVmBranchParams) MarshalJSON() (data []byte, err error) {
 }
 
 type APIVmUpdateStateParams struct {
-	PatchRequest PatchRequestParam `json:"patch_request,required"`
+	UpdateVm UpdateVmParam `json:"update_vm,required"`
 }
 
 func (r APIVmUpdateStateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.PatchRequest)
+	return apijson.MarshalRoot(r.UpdateVm)
 }

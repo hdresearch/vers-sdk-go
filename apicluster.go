@@ -53,6 +53,18 @@ func (r *APIClusterService) Get(ctx context.Context, clusterIDOrAlias string, op
 	return
 }
 
+// Update a cluster's configuration
+func (r *APIClusterService) Update(ctx context.Context, clusterIDOrAlias string, body APIClusterUpdateParams, opts ...option.RequestOption) (res *APIClusterUpdateResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	if clusterIDOrAlias == "" {
+		err = errors.New("missing required cluster_id_or_alias parameter")
+		return
+	}
+	path := fmt.Sprintf("api/cluster/%s", clusterIDOrAlias)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return
+}
+
 // List all clusters.
 func (r *APIClusterService) List(ctx context.Context, opts ...option.RequestOption) (res *APIClusterListResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -196,6 +208,14 @@ func (r CreateClusterType) IsKnown() bool {
 	return false
 }
 
+type UpdateClusterParam struct {
+	Alias param.Field[string] `json:"alias"`
+}
+
+func (r UpdateClusterParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 type APIClusterNewResponse struct {
 	Data        APIClusterNewResponseData `json:"data,required"`
 	DurationNs  int64                     `json:"duration_ns,required"`
@@ -317,6 +337,68 @@ func (r *APIClusterGetResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiClusterGetResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterUpdateResponse struct {
+	Data        APIClusterUpdateResponseData `json:"data,required"`
+	DurationNs  int64                        `json:"duration_ns,required"`
+	OperationID string                       `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                        `json:"time_start,required"`
+	JSON      apiClusterUpdateResponseJSON `json:"-"`
+}
+
+// apiClusterUpdateResponseJSON contains the JSON metadata for the struct
+// [APIClusterUpdateResponse]
+type apiClusterUpdateResponseJSON struct {
+	Data        apijson.Field
+	DurationNs  apijson.Field
+	OperationID apijson.Field
+	TimeStart   apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterUpdateResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterUpdateResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterUpdateResponseData struct {
+	// The cluster's ID.
+	ID string `json:"id,required"`
+	// The ID of the cluster's root VM.
+	RootVmID string `json:"root_vm_id,required"`
+	// How many VMs are currently running on this cluster.
+	VmCount int64 `json:"vm_count,required"`
+	// The VMs that are children of the cluster, including the root VM.
+	Vms []Vm `json:"vms,required"`
+	// Human-readable name assigned to the cluster.
+	Alias string                           `json:"alias,nullable"`
+	JSON  apiClusterUpdateResponseDataJSON `json:"-"`
+}
+
+// apiClusterUpdateResponseDataJSON contains the JSON metadata for the struct
+// [APIClusterUpdateResponseData]
+type apiClusterUpdateResponseDataJSON struct {
+	ID          apijson.Field
+	RootVmID    apijson.Field
+	VmCount     apijson.Field
+	Vms         apijson.Field
+	Alias       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterUpdateResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterUpdateResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -478,4 +560,12 @@ type APIClusterNewParams struct {
 
 func (r APIClusterNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.Create)
+}
+
+type APIClusterUpdateParams struct {
+	UpdateCluster UpdateClusterParam `json:"update_cluster,required"`
+}
+
+func (r APIClusterUpdateParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.UpdateCluster)
 }
