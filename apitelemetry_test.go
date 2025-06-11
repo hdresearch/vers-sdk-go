@@ -13,7 +13,7 @@ import (
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
-func TestAPINetworkGetInfo(t *testing.T) {
+func TestAPITelemetryGetInfo(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestAPINetworkGetInfo(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Network.GetInfo(context.TODO())
+	_, err := client.API.Telemetry.GetInfo(context.TODO())
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
