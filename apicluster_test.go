@@ -140,7 +140,7 @@ func TestAPIClusterDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Cluster.Delete(context.TODO(), "cluster_id_or_alias")
+	err := client.API.Cluster.Delete(context.TODO(), "cluster_id_or_alias")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
