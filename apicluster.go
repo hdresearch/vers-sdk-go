@@ -74,14 +74,15 @@ func (r *APIClusterService) List(ctx context.Context, opts ...option.RequestOpti
 }
 
 // Delete a cluster.
-func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterDeleteResponse, err error) {
+func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (err error) {
 	opts = append(r.Options[:], opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if clusterIDOrAlias == "" {
 		err = errors.New("missing required cluster_id_or_alias parameter")
 		return
 	}
 	path := fmt.Sprintf("api/cluster/%s", clusterIDOrAlias)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -461,68 +462,6 @@ func (r *APIClusterListResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiClusterListResponseDataJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIClusterDeleteResponse struct {
-	Data        APIClusterDeleteResponseData `json:"data,required"`
-	DurationNs  int64                        `json:"duration_ns,required"`
-	OperationID string                       `json:"operation_id,required"`
-	// Unix epoch time (secs)
-	TimeStart int64                        `json:"time_start,required"`
-	JSON      apiClusterDeleteResponseJSON `json:"-"`
-}
-
-// apiClusterDeleteResponseJSON contains the JSON metadata for the struct
-// [APIClusterDeleteResponse]
-type apiClusterDeleteResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIClusterDeleteResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiClusterDeleteResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type APIClusterDeleteResponseData struct {
-	// The cluster's ID.
-	ID string `json:"id,required"`
-	// The ID of the cluster's root VM.
-	RootVmID string `json:"root_vm_id,required"`
-	// How many VMs are currently running on this cluster.
-	VmCount int64 `json:"vm_count,required"`
-	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
-	// Human-readable name assigned to the cluster.
-	Alias string                           `json:"alias,nullable"`
-	JSON  apiClusterDeleteResponseDataJSON `json:"-"`
-}
-
-// apiClusterDeleteResponseDataJSON contains the JSON metadata for the struct
-// [APIClusterDeleteResponseData]
-type apiClusterDeleteResponseDataJSON struct {
-	ID          apijson.Field
-	RootVmID    apijson.Field
-	VmCount     apijson.Field
-	Vms         apijson.Field
-	Alias       apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *APIClusterDeleteResponseData) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r apiClusterDeleteResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
