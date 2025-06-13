@@ -26,39 +26,7 @@ func TestAPIVmGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Get(context.TODO(), "vm_id_or_alias")
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmUpdateWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: tests are disabled for the time being")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.Update(
-		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmUpdateParams{
-			UpdateVm: vers.UpdateVmParam{
-				Alias: vers.F("alias"),
-				State: vers.F(vers.UpdateVmStateRunning),
-			},
-		},
-	)
+	_, err := client.API.Vm.Get(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -106,7 +74,7 @@ func TestAPIVmDelete(t *testing.T) {
 	)
 	_, err := client.API.Vm.Delete(
 		context.TODO(),
-		"vm_id_or_alias",
+		"vm_id",
 		vers.APIVmDeleteParams{
 			Recursive: vers.F(true),
 		},
@@ -120,7 +88,7 @@ func TestAPIVmDelete(t *testing.T) {
 	}
 }
 
-func TestAPIVmBranchWithOptionalParams(t *testing.T) {
+func TestAPIVmBranch(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -133,15 +101,7 @@ func TestAPIVmBranchWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Branch(
-		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmBranchParams{
-			BranchRequest: vers.BranchRequestParam{
-				Alias: vers.F("alias"),
-			},
-		},
-	)
+	_, err := client.API.Vm.Branch(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -164,7 +124,7 @@ func TestAPIVmCommit(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Commit(context.TODO(), "vm_id_or_alias")
+	_, err := client.API.Vm.Commit(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -187,7 +147,38 @@ func TestAPIVmGetSSHKey(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id_or_alias")
+	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id")
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestAPIVmUpdateState(t *testing.T) {
+	t.Skip("skipped: tests are disabled for the time being")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.API.Vm.UpdateState(
+		context.TODO(),
+		"vm_id",
+		vers.APIVmUpdateStateParams{
+			PatchRequest: vers.PatchRequestParam{
+				Action: vers.F(vers.PatchRequestActionPause),
+			},
+		},
+	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
