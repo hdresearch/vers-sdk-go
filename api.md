@@ -78,3 +78,5 @@ Response Types:
 Methods:
 
 - <code title="get /api/network">client.API.Network.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#APINetworkService.GetInfo">GetInfo</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#Info">Info</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Telemetry

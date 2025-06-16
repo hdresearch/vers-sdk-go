@@ -13,12 +13,13 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewAPIService] method instead.
 type APIService struct {
-	Options []option.RequestOption
-	Cluster *APIClusterService
-	Vm      *APIVmService
-	Rootfs  *APIRootfService
-	Health  *APIHealthService
-	Network *APINetworkService
+	Options   []option.RequestOption
+	Cluster   *APIClusterService
+	Vm        *APIVmService
+	Rootfs    *APIRootfService
+	Health    *APIHealthService
+	Network   *APINetworkService
+	Telemetry *APITelemetryService
 }
 
 // NewAPIService generates a new service that applies the given options to each
@@ -32,5 +33,6 @@ func NewAPIService(opts ...option.RequestOption) (r *APIService) {
 	r.Rootfs = NewAPIRootfService(opts...)
 	r.Health = NewAPIHealthService(opts...)
 	r.Network = NewAPINetworkService(opts...)
+	r.Telemetry = NewAPITelemetryService(opts...)
 	return
 }
