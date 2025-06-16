@@ -3,6 +3,11 @@
 package vers
 
 import (
+	"context"
+	"net/http"
+
+	"github.com/hdresearch/vers-sdk-go/internal/apijson"
+	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
@@ -23,4 +28,46 @@ func NewAPITelemetryService(opts ...option.RequestOption) (r *APITelemetryServic
 	r = &APITelemetryService{}
 	r.Options = opts
 	return
+}
+
+// Get telemetry information
+func (r *APITelemetryService) GetInfo(ctx context.Context, opts ...option.RequestOption) (res *Info, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "api/telemetry"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+type Info struct {
+	FsMibCurrent        int64    `json:"fs_mib_current,required"`
+	FsMibMax            int64    `json:"fs_mib_max,required"`
+	MemMibCurrent       int64    `json:"mem_mib_current,required"`
+	MemMibMax           int64    `json:"mem_mib_max,required"`
+	VcpuCurrent         int64    `json:"vcpu_current,required"`
+	VcpuMax             int64    `json:"vcpu_max,required"`
+	VmNetworkCountInUse int64    `json:"vm_network_count_in_use,required"`
+	VmNetworkCountTotal int64    `json:"vm_network_count_total,required"`
+	JSON                infoJSON `json:"-"`
+}
+
+// infoJSON contains the JSON metadata for the struct [Info]
+type infoJSON struct {
+	FsMibCurrent        apijson.Field
+	FsMibMax            apijson.Field
+	MemMibCurrent       apijson.Field
+	MemMibMax           apijson.Field
+	VcpuCurrent         apijson.Field
+	VcpuMax             apijson.Field
+	VmNetworkCountInUse apijson.Field
+	VmNetworkCountTotal apijson.Field
+	raw                 string
+	ExtraFields         map[string]apijson.Field
+}
+
+func (r *Info) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r infoJSON) RawJSON() string {
+	return r.raw
 }
