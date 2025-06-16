@@ -18,7 +18,6 @@ type APIService struct {
 	Vm        *APIVmService
 	Rootfs    *APIRootfService
 	Health    *APIHealthService
-	Network   *APINetworkService
 	Telemetry *APITelemetryService
 }
 
@@ -32,7 +31,6 @@ func NewAPIService(opts ...option.RequestOption) (r *APIService) {
 	r.Vm = NewAPIVmService(opts...)
 	r.Rootfs = NewAPIRootfService(opts...)
 	r.Health = NewAPIHealthService(opts...)
-	r.Network = NewAPINetworkService(opts...)
 	r.Telemetry = NewAPITelemetryService(opts...)
 	return
 }
