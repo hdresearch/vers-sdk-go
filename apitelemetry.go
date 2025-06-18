@@ -31,27 +31,27 @@ func NewAPITelemetryService(opts ...option.RequestOption) (r *APITelemetryServic
 }
 
 // Get telemetry information
-func (r *APITelemetryService) GetInfo(ctx context.Context, opts ...option.RequestOption) (res *Info, err error) {
+func (r *APITelemetryService) GetInfo(ctx context.Context, opts ...option.RequestOption) (res *TelemetryDto, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "api/telemetry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-type Info struct {
-	FsMibCurrent        int64    `json:"fs_mib_current,required"`
-	FsMibMax            int64    `json:"fs_mib_max,required"`
-	MemMibCurrent       int64    `json:"mem_mib_current,required"`
-	MemMibMax           int64    `json:"mem_mib_max,required"`
-	VcpuCurrent         int64    `json:"vcpu_current,required"`
-	VcpuMax             int64    `json:"vcpu_max,required"`
-	VmNetworkCountInUse int64    `json:"vm_network_count_in_use,required"`
-	VmNetworkCountTotal int64    `json:"vm_network_count_total,required"`
-	JSON                infoJSON `json:"-"`
+type TelemetryDto struct {
+	FsMibCurrent        int64            `json:"fs_mib_current,required"`
+	FsMibMax            int64            `json:"fs_mib_max,required"`
+	MemMibCurrent       int64            `json:"mem_mib_current,required"`
+	MemMibMax           int64            `json:"mem_mib_max,required"`
+	VcpuCurrent         int64            `json:"vcpu_current,required"`
+	VcpuMax             int64            `json:"vcpu_max,required"`
+	VmNetworkCountInUse int64            `json:"vm_network_count_in_use,required"`
+	VmNetworkCountTotal int64            `json:"vm_network_count_total,required"`
+	JSON                telemetryDtoJSON `json:"-"`
 }
 
-// infoJSON contains the JSON metadata for the struct [Info]
-type infoJSON struct {
+// telemetryDtoJSON contains the JSON metadata for the struct [TelemetryDto]
+type telemetryDtoJSON struct {
 	FsMibCurrent        apijson.Field
 	FsMibMax            apijson.Field
 	MemMibCurrent       apijson.Field
@@ -64,10 +64,10 @@ type infoJSON struct {
 	ExtraFields         map[string]apijson.Field
 }
 
-func (r *Info) UnmarshalJSON(data []byte) (err error) {
+func (r *TelemetryDto) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r infoJSON) RawJSON() string {
+func (r telemetryDtoJSON) RawJSON() string {
 	return r.raw
 }

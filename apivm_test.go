@@ -53,9 +53,9 @@ func TestAPIVmUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"vm_id_or_alias",
 		vers.APIVmUpdateParams{
-			UpdateVm: vers.UpdateVmParam{
+			VmPatchParams: vers.VmPatchParams{
 				Alias: vers.F("alias"),
-				State: vers.F(vers.UpdateVmStateRunning),
+				State: vers.F(vers.VmPatchParamsStateRunning),
 			},
 		},
 	)
@@ -137,7 +137,7 @@ func TestAPIVmBranchWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"vm_id_or_alias",
 		vers.APIVmBranchParams{
-			BranchRequest: vers.BranchRequestParam{
+			VmBranchParams: vers.VmBranchParams{
 				Alias: vers.F("alias"),
 			},
 		},
