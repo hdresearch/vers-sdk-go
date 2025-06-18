@@ -69,9 +69,10 @@ func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, body APIR
 }
 
 type APIRootfListResponse struct {
-	Data        APIRootfListResponseData `json:"data,required"`
-	DurationNs  int64                    `json:"duration_ns,required"`
-	OperationID string                   `json:"operation_id,required"`
+	Data          APIRootfListResponseData          `json:"data,required"`
+	DurationNs    int64                             `json:"duration_ns,required"`
+	OperationCode APIRootfListResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                            `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                    `json:"time_start,required"`
 	JSON      apiRootfListResponseJSON `json:"-"`
@@ -80,12 +81,13 @@ type APIRootfListResponse struct {
 // apiRootfListResponseJSON contains the JSON metadata for the struct
 // [APIRootfListResponse]
 type apiRootfListResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIRootfListResponse) UnmarshalJSON(data []byte) (err error) {
@@ -117,10 +119,40 @@ func (r apiRootfListResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIRootfListResponseOperationCode string
+
+const (
+	APIRootfListResponseOperationCodeListClusters     APIRootfListResponseOperationCode = "list_clusters"
+	APIRootfListResponseOperationCodeGetCluster       APIRootfListResponseOperationCode = "get_cluster"
+	APIRootfListResponseOperationCodeCreateCluster    APIRootfListResponseOperationCode = "create_cluster"
+	APIRootfListResponseOperationCodeDeleteCluster    APIRootfListResponseOperationCode = "delete_cluster"
+	APIRootfListResponseOperationCodeUpdateCluster    APIRootfListResponseOperationCode = "update_cluster"
+	APIRootfListResponseOperationCodeGetClusterSSHKey APIRootfListResponseOperationCode = "get_cluster_ssh_key"
+	APIRootfListResponseOperationCodeListVms          APIRootfListResponseOperationCode = "list_vms"
+	APIRootfListResponseOperationCodeGetVm            APIRootfListResponseOperationCode = "get_vm"
+	APIRootfListResponseOperationCodeUpdateVm         APIRootfListResponseOperationCode = "update_vm"
+	APIRootfListResponseOperationCodeBranchVm         APIRootfListResponseOperationCode = "branch_vm"
+	APIRootfListResponseOperationCodeCommitVm         APIRootfListResponseOperationCode = "commit_vm"
+	APIRootfListResponseOperationCodeDeleteVm         APIRootfListResponseOperationCode = "delete_vm"
+	APIRootfListResponseOperationCodeGetVmSSHKey      APIRootfListResponseOperationCode = "get_vm_ssh_key"
+	APIRootfListResponseOperationCodeUploadRootfs     APIRootfListResponseOperationCode = "upload_rootfs"
+	APIRootfListResponseOperationCodeDeleteRootfs     APIRootfListResponseOperationCode = "delete_rootfs"
+	APIRootfListResponseOperationCodeListRootfs       APIRootfListResponseOperationCode = "list_rootfs"
+)
+
+func (r APIRootfListResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIRootfListResponseOperationCodeListClusters, APIRootfListResponseOperationCodeGetCluster, APIRootfListResponseOperationCodeCreateCluster, APIRootfListResponseOperationCodeDeleteCluster, APIRootfListResponseOperationCodeUpdateCluster, APIRootfListResponseOperationCodeGetClusterSSHKey, APIRootfListResponseOperationCodeListVms, APIRootfListResponseOperationCodeGetVm, APIRootfListResponseOperationCodeUpdateVm, APIRootfListResponseOperationCodeBranchVm, APIRootfListResponseOperationCodeCommitVm, APIRootfListResponseOperationCodeDeleteVm, APIRootfListResponseOperationCodeGetVmSSHKey, APIRootfListResponseOperationCodeUploadRootfs, APIRootfListResponseOperationCodeDeleteRootfs, APIRootfListResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIRootfDeleteResponse struct {
-	Data        APIRootfDeleteResponseData `json:"data,required"`
-	DurationNs  int64                      `json:"duration_ns,required"`
-	OperationID string                     `json:"operation_id,required"`
+	Data          APIRootfDeleteResponseData          `json:"data,required"`
+	DurationNs    int64                               `json:"duration_ns,required"`
+	OperationCode APIRootfDeleteResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                              `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                      `json:"time_start,required"`
 	JSON      apiRootfDeleteResponseJSON `json:"-"`
@@ -129,12 +161,13 @@ type APIRootfDeleteResponse struct {
 // apiRootfDeleteResponseJSON contains the JSON metadata for the struct
 // [APIRootfDeleteResponse]
 type apiRootfDeleteResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIRootfDeleteResponse) UnmarshalJSON(data []byte) (err error) {
@@ -166,10 +199,40 @@ func (r apiRootfDeleteResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIRootfDeleteResponseOperationCode string
+
+const (
+	APIRootfDeleteResponseOperationCodeListClusters     APIRootfDeleteResponseOperationCode = "list_clusters"
+	APIRootfDeleteResponseOperationCodeGetCluster       APIRootfDeleteResponseOperationCode = "get_cluster"
+	APIRootfDeleteResponseOperationCodeCreateCluster    APIRootfDeleteResponseOperationCode = "create_cluster"
+	APIRootfDeleteResponseOperationCodeDeleteCluster    APIRootfDeleteResponseOperationCode = "delete_cluster"
+	APIRootfDeleteResponseOperationCodeUpdateCluster    APIRootfDeleteResponseOperationCode = "update_cluster"
+	APIRootfDeleteResponseOperationCodeGetClusterSSHKey APIRootfDeleteResponseOperationCode = "get_cluster_ssh_key"
+	APIRootfDeleteResponseOperationCodeListVms          APIRootfDeleteResponseOperationCode = "list_vms"
+	APIRootfDeleteResponseOperationCodeGetVm            APIRootfDeleteResponseOperationCode = "get_vm"
+	APIRootfDeleteResponseOperationCodeUpdateVm         APIRootfDeleteResponseOperationCode = "update_vm"
+	APIRootfDeleteResponseOperationCodeBranchVm         APIRootfDeleteResponseOperationCode = "branch_vm"
+	APIRootfDeleteResponseOperationCodeCommitVm         APIRootfDeleteResponseOperationCode = "commit_vm"
+	APIRootfDeleteResponseOperationCodeDeleteVm         APIRootfDeleteResponseOperationCode = "delete_vm"
+	APIRootfDeleteResponseOperationCodeGetVmSSHKey      APIRootfDeleteResponseOperationCode = "get_vm_ssh_key"
+	APIRootfDeleteResponseOperationCodeUploadRootfs     APIRootfDeleteResponseOperationCode = "upload_rootfs"
+	APIRootfDeleteResponseOperationCodeDeleteRootfs     APIRootfDeleteResponseOperationCode = "delete_rootfs"
+	APIRootfDeleteResponseOperationCodeListRootfs       APIRootfDeleteResponseOperationCode = "list_rootfs"
+)
+
+func (r APIRootfDeleteResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIRootfDeleteResponseOperationCodeListClusters, APIRootfDeleteResponseOperationCodeGetCluster, APIRootfDeleteResponseOperationCodeCreateCluster, APIRootfDeleteResponseOperationCodeDeleteCluster, APIRootfDeleteResponseOperationCodeUpdateCluster, APIRootfDeleteResponseOperationCodeGetClusterSSHKey, APIRootfDeleteResponseOperationCodeListVms, APIRootfDeleteResponseOperationCodeGetVm, APIRootfDeleteResponseOperationCodeUpdateVm, APIRootfDeleteResponseOperationCodeBranchVm, APIRootfDeleteResponseOperationCodeCommitVm, APIRootfDeleteResponseOperationCodeDeleteVm, APIRootfDeleteResponseOperationCodeGetVmSSHKey, APIRootfDeleteResponseOperationCodeUploadRootfs, APIRootfDeleteResponseOperationCodeDeleteRootfs, APIRootfDeleteResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIRootfUploadResponse struct {
-	Data        APIRootfUploadResponseData `json:"data,required"`
-	DurationNs  int64                      `json:"duration_ns,required"`
-	OperationID string                     `json:"operation_id,required"`
+	Data          APIRootfUploadResponseData          `json:"data,required"`
+	DurationNs    int64                               `json:"duration_ns,required"`
+	OperationCode APIRootfUploadResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                              `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                      `json:"time_start,required"`
 	JSON      apiRootfUploadResponseJSON `json:"-"`
@@ -178,12 +241,13 @@ type APIRootfUploadResponse struct {
 // apiRootfUploadResponseJSON contains the JSON metadata for the struct
 // [APIRootfUploadResponse]
 type apiRootfUploadResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIRootfUploadResponse) UnmarshalJSON(data []byte) (err error) {
@@ -213,6 +277,35 @@ func (r *APIRootfUploadResponseData) UnmarshalJSON(data []byte) (err error) {
 
 func (r apiRootfUploadResponseDataJSON) RawJSON() string {
 	return r.raw
+}
+
+type APIRootfUploadResponseOperationCode string
+
+const (
+	APIRootfUploadResponseOperationCodeListClusters     APIRootfUploadResponseOperationCode = "list_clusters"
+	APIRootfUploadResponseOperationCodeGetCluster       APIRootfUploadResponseOperationCode = "get_cluster"
+	APIRootfUploadResponseOperationCodeCreateCluster    APIRootfUploadResponseOperationCode = "create_cluster"
+	APIRootfUploadResponseOperationCodeDeleteCluster    APIRootfUploadResponseOperationCode = "delete_cluster"
+	APIRootfUploadResponseOperationCodeUpdateCluster    APIRootfUploadResponseOperationCode = "update_cluster"
+	APIRootfUploadResponseOperationCodeGetClusterSSHKey APIRootfUploadResponseOperationCode = "get_cluster_ssh_key"
+	APIRootfUploadResponseOperationCodeListVms          APIRootfUploadResponseOperationCode = "list_vms"
+	APIRootfUploadResponseOperationCodeGetVm            APIRootfUploadResponseOperationCode = "get_vm"
+	APIRootfUploadResponseOperationCodeUpdateVm         APIRootfUploadResponseOperationCode = "update_vm"
+	APIRootfUploadResponseOperationCodeBranchVm         APIRootfUploadResponseOperationCode = "branch_vm"
+	APIRootfUploadResponseOperationCodeCommitVm         APIRootfUploadResponseOperationCode = "commit_vm"
+	APIRootfUploadResponseOperationCodeDeleteVm         APIRootfUploadResponseOperationCode = "delete_vm"
+	APIRootfUploadResponseOperationCodeGetVmSSHKey      APIRootfUploadResponseOperationCode = "get_vm_ssh_key"
+	APIRootfUploadResponseOperationCodeUploadRootfs     APIRootfUploadResponseOperationCode = "upload_rootfs"
+	APIRootfUploadResponseOperationCodeDeleteRootfs     APIRootfUploadResponseOperationCode = "delete_rootfs"
+	APIRootfUploadResponseOperationCodeListRootfs       APIRootfUploadResponseOperationCode = "list_rootfs"
+)
+
+func (r APIRootfUploadResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIRootfUploadResponseOperationCodeListClusters, APIRootfUploadResponseOperationCodeGetCluster, APIRootfUploadResponseOperationCodeCreateCluster, APIRootfUploadResponseOperationCodeDeleteCluster, APIRootfUploadResponseOperationCodeUpdateCluster, APIRootfUploadResponseOperationCodeGetClusterSSHKey, APIRootfUploadResponseOperationCodeListVms, APIRootfUploadResponseOperationCodeGetVm, APIRootfUploadResponseOperationCodeUpdateVm, APIRootfUploadResponseOperationCodeBranchVm, APIRootfUploadResponseOperationCodeCommitVm, APIRootfUploadResponseOperationCodeDeleteVm, APIRootfUploadResponseOperationCodeGetVmSSHKey, APIRootfUploadResponseOperationCodeUploadRootfs, APIRootfUploadResponseOperationCodeDeleteRootfs, APIRootfUploadResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
 }
 
 type APIRootfUploadParams struct {

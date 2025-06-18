@@ -123,6 +123,55 @@ func (r BranchRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// A struct containing information about an attempted VM deletion request. Reports
+// information in the event of a partial failure so billing can still be udpated
+// appropriately.
+type DeleteResponse struct {
+	DeletedIDs []string              `json:"deleted_ids,required"`
+	Errors     []DeleteResponseError `json:"errors,required"`
+	JSON       deleteResponseJSON    `json:"-"`
+}
+
+// deleteResponseJSON contains the JSON metadata for the struct [DeleteResponse]
+type deleteResponseJSON struct {
+	DeletedIDs  apijson.Field
+	Errors      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeleteResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Contains a VM ID and the reason that it could not be deleted.
+type DeleteResponseError struct {
+	ID    string                  `json:"id,required"`
+	Error string                  `json:"error,required"`
+	JSON  deleteResponseErrorJSON `json:"-"`
+}
+
+// deleteResponseErrorJSON contains the JSON metadata for the struct
+// [DeleteResponseError]
+type deleteResponseErrorJSON struct {
+	ID          apijson.Field
+	Error       apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *DeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r deleteResponseErrorJSON) RawJSON() string {
+	return r.raw
+}
+
 type UpdateVmParam struct {
 	Alias param.Field[string]        `json:"alias"`
 	State param.Field[UpdateVmState] `json:"state"`
@@ -154,12 +203,18 @@ type Vm struct {
 	Children []string `json:"children,required"`
 	// The VM's cluster ID
 	ClusterID string `json:"cluster_id,required"`
+	// What is the size of the "disk" allocated to this VM
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The VM's local IP address on the VM subnet
 	IPAddress string `json:"ip_address,required"`
+	// How much RAM is allocated to this VM
+	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
 	NetworkInfo VmNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State VmState `json:"state,required"`
+	// How many vCPUs were allocated to this VM
+	VcpuCount int64 `json:"vcpu_count,required"`
 	// Human-readable name assigned to the VM.
 	Alias string `json:"alias,nullable"`
 	// The parent VM's ID, if present. If None, then this VM is a root VM.
@@ -172,9 +227,12 @@ type vmJSON struct {
 	ID          apijson.Field
 	Children    apijson.Field
 	ClusterID   apijson.Field
+	FsSizeMib   apijson.Field
 	IPAddress   apijson.Field
+	MemSizeMib  apijson.Field
 	NetworkInfo apijson.Field
 	State       apijson.Field
+	VcpuCount   apijson.Field
 	Alias       apijson.Field
 	ParentID    apijson.Field
 	raw         string
@@ -238,9 +296,10 @@ func (r VmState) IsKnown() bool {
 }
 
 type APIVmGetResponse struct {
-	Data        APIVmGetResponseData `json:"data,required"`
-	DurationNs  int64                `json:"duration_ns,required"`
-	OperationID string               `json:"operation_id,required"`
+	Data          APIVmGetResponseData          `json:"data,required"`
+	DurationNs    int64                         `json:"duration_ns,required"`
+	OperationCode APIVmGetResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                        `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                `json:"time_start,required"`
 	JSON      apiVmGetResponseJSON `json:"-"`
@@ -249,12 +308,13 @@ type APIVmGetResponse struct {
 // apiVmGetResponseJSON contains the JSON metadata for the struct
 // [APIVmGetResponse]
 type apiVmGetResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmGetResponse) UnmarshalJSON(data []byte) (err error) {
@@ -272,12 +332,18 @@ type APIVmGetResponseData struct {
 	Children []string `json:"children,required"`
 	// The VM's cluster ID
 	ClusterID string `json:"cluster_id,required"`
+	// What is the size of the "disk" allocated to this VM
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The VM's local IP address on the VM subnet
 	IPAddress string `json:"ip_address,required"`
+	// How much RAM is allocated to this VM
+	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
 	NetworkInfo APIVmGetResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmGetResponseDataState `json:"state,required"`
+	// How many vCPUs were allocated to this VM
+	VcpuCount int64 `json:"vcpu_count,required"`
 	// Human-readable name assigned to the VM.
 	Alias string `json:"alias,nullable"`
 	// The parent VM's ID, if present. If None, then this VM is a root VM.
@@ -291,9 +357,12 @@ type apiVmGetResponseDataJSON struct {
 	ID          apijson.Field
 	Children    apijson.Field
 	ClusterID   apijson.Field
+	FsSizeMib   apijson.Field
 	IPAddress   apijson.Field
+	MemSizeMib  apijson.Field
 	NetworkInfo apijson.Field
 	State       apijson.Field
+	VcpuCount   apijson.Field
 	Alias       apijson.Field
 	ParentID    apijson.Field
 	raw         string
@@ -357,10 +426,40 @@ func (r APIVmGetResponseDataState) IsKnown() bool {
 	return false
 }
 
+type APIVmGetResponseOperationCode string
+
+const (
+	APIVmGetResponseOperationCodeListClusters     APIVmGetResponseOperationCode = "list_clusters"
+	APIVmGetResponseOperationCodeGetCluster       APIVmGetResponseOperationCode = "get_cluster"
+	APIVmGetResponseOperationCodeCreateCluster    APIVmGetResponseOperationCode = "create_cluster"
+	APIVmGetResponseOperationCodeDeleteCluster    APIVmGetResponseOperationCode = "delete_cluster"
+	APIVmGetResponseOperationCodeUpdateCluster    APIVmGetResponseOperationCode = "update_cluster"
+	APIVmGetResponseOperationCodeGetClusterSSHKey APIVmGetResponseOperationCode = "get_cluster_ssh_key"
+	APIVmGetResponseOperationCodeListVms          APIVmGetResponseOperationCode = "list_vms"
+	APIVmGetResponseOperationCodeGetVm            APIVmGetResponseOperationCode = "get_vm"
+	APIVmGetResponseOperationCodeUpdateVm         APIVmGetResponseOperationCode = "update_vm"
+	APIVmGetResponseOperationCodeBranchVm         APIVmGetResponseOperationCode = "branch_vm"
+	APIVmGetResponseOperationCodeCommitVm         APIVmGetResponseOperationCode = "commit_vm"
+	APIVmGetResponseOperationCodeDeleteVm         APIVmGetResponseOperationCode = "delete_vm"
+	APIVmGetResponseOperationCodeGetVmSSHKey      APIVmGetResponseOperationCode = "get_vm_ssh_key"
+	APIVmGetResponseOperationCodeUploadRootfs     APIVmGetResponseOperationCode = "upload_rootfs"
+	APIVmGetResponseOperationCodeDeleteRootfs     APIVmGetResponseOperationCode = "delete_rootfs"
+	APIVmGetResponseOperationCodeListRootfs       APIVmGetResponseOperationCode = "list_rootfs"
+)
+
+func (r APIVmGetResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIVmGetResponseOperationCodeListClusters, APIVmGetResponseOperationCodeGetCluster, APIVmGetResponseOperationCodeCreateCluster, APIVmGetResponseOperationCodeDeleteCluster, APIVmGetResponseOperationCodeUpdateCluster, APIVmGetResponseOperationCodeGetClusterSSHKey, APIVmGetResponseOperationCodeListVms, APIVmGetResponseOperationCodeGetVm, APIVmGetResponseOperationCodeUpdateVm, APIVmGetResponseOperationCodeBranchVm, APIVmGetResponseOperationCodeCommitVm, APIVmGetResponseOperationCodeDeleteVm, APIVmGetResponseOperationCodeGetVmSSHKey, APIVmGetResponseOperationCodeUploadRootfs, APIVmGetResponseOperationCodeDeleteRootfs, APIVmGetResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIVmUpdateResponse struct {
-	Data        APIVmUpdateResponseData `json:"data,required"`
-	DurationNs  int64                   `json:"duration_ns,required"`
-	OperationID string                  `json:"operation_id,required"`
+	Data          APIVmUpdateResponseData          `json:"data,required"`
+	DurationNs    int64                            `json:"duration_ns,required"`
+	OperationCode APIVmUpdateResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                           `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                   `json:"time_start,required"`
 	JSON      apiVmUpdateResponseJSON `json:"-"`
@@ -369,12 +468,13 @@ type APIVmUpdateResponse struct {
 // apiVmUpdateResponseJSON contains the JSON metadata for the struct
 // [APIVmUpdateResponse]
 type apiVmUpdateResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmUpdateResponse) UnmarshalJSON(data []byte) (err error) {
@@ -392,12 +492,18 @@ type APIVmUpdateResponseData struct {
 	Children []string `json:"children,required"`
 	// The VM's cluster ID
 	ClusterID string `json:"cluster_id,required"`
+	// What is the size of the "disk" allocated to this VM
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The VM's local IP address on the VM subnet
 	IPAddress string `json:"ip_address,required"`
+	// How much RAM is allocated to this VM
+	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
 	NetworkInfo APIVmUpdateResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmUpdateResponseDataState `json:"state,required"`
+	// How many vCPUs were allocated to this VM
+	VcpuCount int64 `json:"vcpu_count,required"`
 	// Human-readable name assigned to the VM.
 	Alias string `json:"alias,nullable"`
 	// The parent VM's ID, if present. If None, then this VM is a root VM.
@@ -411,9 +517,12 @@ type apiVmUpdateResponseDataJSON struct {
 	ID          apijson.Field
 	Children    apijson.Field
 	ClusterID   apijson.Field
+	FsSizeMib   apijson.Field
 	IPAddress   apijson.Field
+	MemSizeMib  apijson.Field
 	NetworkInfo apijson.Field
 	State       apijson.Field
+	VcpuCount   apijson.Field
 	Alias       apijson.Field
 	ParentID    apijson.Field
 	raw         string
@@ -477,10 +586,40 @@ func (r APIVmUpdateResponseDataState) IsKnown() bool {
 	return false
 }
 
+type APIVmUpdateResponseOperationCode string
+
+const (
+	APIVmUpdateResponseOperationCodeListClusters     APIVmUpdateResponseOperationCode = "list_clusters"
+	APIVmUpdateResponseOperationCodeGetCluster       APIVmUpdateResponseOperationCode = "get_cluster"
+	APIVmUpdateResponseOperationCodeCreateCluster    APIVmUpdateResponseOperationCode = "create_cluster"
+	APIVmUpdateResponseOperationCodeDeleteCluster    APIVmUpdateResponseOperationCode = "delete_cluster"
+	APIVmUpdateResponseOperationCodeUpdateCluster    APIVmUpdateResponseOperationCode = "update_cluster"
+	APIVmUpdateResponseOperationCodeGetClusterSSHKey APIVmUpdateResponseOperationCode = "get_cluster_ssh_key"
+	APIVmUpdateResponseOperationCodeListVms          APIVmUpdateResponseOperationCode = "list_vms"
+	APIVmUpdateResponseOperationCodeGetVm            APIVmUpdateResponseOperationCode = "get_vm"
+	APIVmUpdateResponseOperationCodeUpdateVm         APIVmUpdateResponseOperationCode = "update_vm"
+	APIVmUpdateResponseOperationCodeBranchVm         APIVmUpdateResponseOperationCode = "branch_vm"
+	APIVmUpdateResponseOperationCodeCommitVm         APIVmUpdateResponseOperationCode = "commit_vm"
+	APIVmUpdateResponseOperationCodeDeleteVm         APIVmUpdateResponseOperationCode = "delete_vm"
+	APIVmUpdateResponseOperationCodeGetVmSSHKey      APIVmUpdateResponseOperationCode = "get_vm_ssh_key"
+	APIVmUpdateResponseOperationCodeUploadRootfs     APIVmUpdateResponseOperationCode = "upload_rootfs"
+	APIVmUpdateResponseOperationCodeDeleteRootfs     APIVmUpdateResponseOperationCode = "delete_rootfs"
+	APIVmUpdateResponseOperationCodeListRootfs       APIVmUpdateResponseOperationCode = "list_rootfs"
+)
+
+func (r APIVmUpdateResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIVmUpdateResponseOperationCodeListClusters, APIVmUpdateResponseOperationCodeGetCluster, APIVmUpdateResponseOperationCodeCreateCluster, APIVmUpdateResponseOperationCodeDeleteCluster, APIVmUpdateResponseOperationCodeUpdateCluster, APIVmUpdateResponseOperationCodeGetClusterSSHKey, APIVmUpdateResponseOperationCodeListVms, APIVmUpdateResponseOperationCodeGetVm, APIVmUpdateResponseOperationCodeUpdateVm, APIVmUpdateResponseOperationCodeBranchVm, APIVmUpdateResponseOperationCodeCommitVm, APIVmUpdateResponseOperationCodeDeleteVm, APIVmUpdateResponseOperationCodeGetVmSSHKey, APIVmUpdateResponseOperationCodeUploadRootfs, APIVmUpdateResponseOperationCodeDeleteRootfs, APIVmUpdateResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIVmListResponse struct {
-	Data        []APIVmListResponseData `json:"data,required"`
-	DurationNs  int64                   `json:"duration_ns,required"`
-	OperationID string                  `json:"operation_id,required"`
+	Data          []APIVmListResponseData        `json:"data,required"`
+	DurationNs    int64                          `json:"duration_ns,required"`
+	OperationCode APIVmListResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                         `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                 `json:"time_start,required"`
 	JSON      apiVmListResponseJSON `json:"-"`
@@ -489,12 +628,13 @@ type APIVmListResponse struct {
 // apiVmListResponseJSON contains the JSON metadata for the struct
 // [APIVmListResponse]
 type apiVmListResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmListResponse) UnmarshalJSON(data []byte) (err error) {
@@ -512,12 +652,18 @@ type APIVmListResponseData struct {
 	Children []string `json:"children,required"`
 	// The VM's cluster ID
 	ClusterID string `json:"cluster_id,required"`
+	// What is the size of the "disk" allocated to this VM
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The VM's local IP address on the VM subnet
 	IPAddress string `json:"ip_address,required"`
+	// How much RAM is allocated to this VM
+	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
 	NetworkInfo APIVmListResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmListResponseDataState `json:"state,required"`
+	// How many vCPUs were allocated to this VM
+	VcpuCount int64 `json:"vcpu_count,required"`
 	// Human-readable name assigned to the VM.
 	Alias string `json:"alias,nullable"`
 	// The parent VM's ID, if present. If None, then this VM is a root VM.
@@ -531,9 +677,12 @@ type apiVmListResponseDataJSON struct {
 	ID          apijson.Field
 	Children    apijson.Field
 	ClusterID   apijson.Field
+	FsSizeMib   apijson.Field
 	IPAddress   apijson.Field
+	MemSizeMib  apijson.Field
 	NetworkInfo apijson.Field
 	State       apijson.Field
+	VcpuCount   apijson.Field
 	Alias       apijson.Field
 	ParentID    apijson.Field
 	raw         string
@@ -597,10 +746,43 @@ func (r APIVmListResponseDataState) IsKnown() bool {
 	return false
 }
 
+type APIVmListResponseOperationCode string
+
+const (
+	APIVmListResponseOperationCodeListClusters     APIVmListResponseOperationCode = "list_clusters"
+	APIVmListResponseOperationCodeGetCluster       APIVmListResponseOperationCode = "get_cluster"
+	APIVmListResponseOperationCodeCreateCluster    APIVmListResponseOperationCode = "create_cluster"
+	APIVmListResponseOperationCodeDeleteCluster    APIVmListResponseOperationCode = "delete_cluster"
+	APIVmListResponseOperationCodeUpdateCluster    APIVmListResponseOperationCode = "update_cluster"
+	APIVmListResponseOperationCodeGetClusterSSHKey APIVmListResponseOperationCode = "get_cluster_ssh_key"
+	APIVmListResponseOperationCodeListVms          APIVmListResponseOperationCode = "list_vms"
+	APIVmListResponseOperationCodeGetVm            APIVmListResponseOperationCode = "get_vm"
+	APIVmListResponseOperationCodeUpdateVm         APIVmListResponseOperationCode = "update_vm"
+	APIVmListResponseOperationCodeBranchVm         APIVmListResponseOperationCode = "branch_vm"
+	APIVmListResponseOperationCodeCommitVm         APIVmListResponseOperationCode = "commit_vm"
+	APIVmListResponseOperationCodeDeleteVm         APIVmListResponseOperationCode = "delete_vm"
+	APIVmListResponseOperationCodeGetVmSSHKey      APIVmListResponseOperationCode = "get_vm_ssh_key"
+	APIVmListResponseOperationCodeUploadRootfs     APIVmListResponseOperationCode = "upload_rootfs"
+	APIVmListResponseOperationCodeDeleteRootfs     APIVmListResponseOperationCode = "delete_rootfs"
+	APIVmListResponseOperationCodeListRootfs       APIVmListResponseOperationCode = "list_rootfs"
+)
+
+func (r APIVmListResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIVmListResponseOperationCodeListClusters, APIVmListResponseOperationCodeGetCluster, APIVmListResponseOperationCodeCreateCluster, APIVmListResponseOperationCodeDeleteCluster, APIVmListResponseOperationCodeUpdateCluster, APIVmListResponseOperationCodeGetClusterSSHKey, APIVmListResponseOperationCodeListVms, APIVmListResponseOperationCodeGetVm, APIVmListResponseOperationCodeUpdateVm, APIVmListResponseOperationCodeBranchVm, APIVmListResponseOperationCodeCommitVm, APIVmListResponseOperationCodeDeleteVm, APIVmListResponseOperationCodeGetVmSSHKey, APIVmListResponseOperationCodeUploadRootfs, APIVmListResponseOperationCodeDeleteRootfs, APIVmListResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIVmDeleteResponse struct {
-	Data        APIVmDeleteResponseData `json:"data,required"`
-	DurationNs  int64                   `json:"duration_ns,required"`
-	OperationID string                  `json:"operation_id,required"`
+	// A struct containing information about an attempted VM deletion request. Reports
+	// information in the event of a partial failure so billing can still be udpated
+	// appropriately.
+	Data          APIVmDeleteResponseData          `json:"data,required"`
+	DurationNs    int64                            `json:"duration_ns,required"`
+	OperationCode APIVmDeleteResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                           `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                   `json:"time_start,required"`
 	JSON      apiVmDeleteResponseJSON `json:"-"`
@@ -609,12 +791,13 @@ type APIVmDeleteResponse struct {
 // apiVmDeleteResponseJSON contains the JSON metadata for the struct
 // [APIVmDeleteResponse]
 type apiVmDeleteResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmDeleteResponse) UnmarshalJSON(data []byte) (err error) {
@@ -625,37 +808,20 @@ func (r apiVmDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// A struct containing information about an attempted VM deletion request. Reports
+// information in the event of a partial failure so billing can still be udpated
+// appropriately.
 type APIVmDeleteResponseData struct {
-	// The ID of the VM.
-	ID string `json:"id,required"`
-	// The IDs of direct children branched from this VM.
-	Children []string `json:"children,required"`
-	// The VM's cluster ID
-	ClusterID string `json:"cluster_id,required"`
-	// The VM's local IP address on the VM subnet
-	IPAddress string `json:"ip_address,required"`
-	// The VM's network configuration
-	NetworkInfo APIVmDeleteResponseDataNetworkInfo `json:"network_info,required"`
-	// Whether the VM is running, paused, or not started.
-	State APIVmDeleteResponseDataState `json:"state,required"`
-	// Human-readable name assigned to the VM.
-	Alias string `json:"alias,nullable"`
-	// The parent VM's ID, if present. If None, then this VM is a root VM.
-	ParentID string                      `json:"parent_id,nullable"`
-	JSON     apiVmDeleteResponseDataJSON `json:"-"`
+	DeletedIDs []string                       `json:"deleted_ids,required"`
+	Errors     []APIVmDeleteResponseDataError `json:"errors,required"`
+	JSON       apiVmDeleteResponseDataJSON    `json:"-"`
 }
 
 // apiVmDeleteResponseDataJSON contains the JSON metadata for the struct
 // [APIVmDeleteResponseData]
 type apiVmDeleteResponseDataJSON struct {
-	ID          apijson.Field
-	Children    apijson.Field
-	ClusterID   apijson.Field
-	IPAddress   apijson.Field
-	NetworkInfo apijson.Field
-	State       apijson.Field
-	Alias       apijson.Field
-	ParentID    apijson.Field
+	DeletedIDs  apijson.Field
+	Errors      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -668,59 +834,64 @@ func (r apiVmDeleteResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
-// The VM's network configuration
-type APIVmDeleteResponseDataNetworkInfo struct {
-	GuestIP     string                                 `json:"guest_ip,required"`
-	GuestMac    string                                 `json:"guest_mac,required"`
-	SSHPort     int64                                  `json:"ssh_port,required"`
-	Tap0IP      string                                 `json:"tap0_ip,required"`
-	Tap0Name    string                                 `json:"tap0_name,required"`
-	VmNamespace string                                 `json:"vm_namespace,required"`
-	JSON        apiVmDeleteResponseDataNetworkInfoJSON `json:"-"`
+// Contains a VM ID and the reason that it could not be deleted.
+type APIVmDeleteResponseDataError struct {
+	ID    string                           `json:"id,required"`
+	Error string                           `json:"error,required"`
+	JSON  apiVmDeleteResponseDataErrorJSON `json:"-"`
 }
 
-// apiVmDeleteResponseDataNetworkInfoJSON contains the JSON metadata for the struct
-// [APIVmDeleteResponseDataNetworkInfo]
-type apiVmDeleteResponseDataNetworkInfoJSON struct {
-	GuestIP     apijson.Field
-	GuestMac    apijson.Field
-	SSHPort     apijson.Field
-	Tap0IP      apijson.Field
-	Tap0Name    apijson.Field
-	VmNamespace apijson.Field
+// apiVmDeleteResponseDataErrorJSON contains the JSON metadata for the struct
+// [APIVmDeleteResponseDataError]
+type apiVmDeleteResponseDataErrorJSON struct {
+	ID          apijson.Field
+	Error       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *APIVmDeleteResponseDataNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *APIVmDeleteResponseDataError) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r apiVmDeleteResponseDataNetworkInfoJSON) RawJSON() string {
+func (r apiVmDeleteResponseDataErrorJSON) RawJSON() string {
 	return r.raw
 }
 
-// Whether the VM is running, paused, or not started.
-type APIVmDeleteResponseDataState string
+type APIVmDeleteResponseOperationCode string
 
 const (
-	APIVmDeleteResponseDataStateNotStarted APIVmDeleteResponseDataState = "Not started"
-	APIVmDeleteResponseDataStateRunning    APIVmDeleteResponseDataState = "Running"
-	APIVmDeleteResponseDataStatePaused     APIVmDeleteResponseDataState = "Paused"
+	APIVmDeleteResponseOperationCodeListClusters     APIVmDeleteResponseOperationCode = "list_clusters"
+	APIVmDeleteResponseOperationCodeGetCluster       APIVmDeleteResponseOperationCode = "get_cluster"
+	APIVmDeleteResponseOperationCodeCreateCluster    APIVmDeleteResponseOperationCode = "create_cluster"
+	APIVmDeleteResponseOperationCodeDeleteCluster    APIVmDeleteResponseOperationCode = "delete_cluster"
+	APIVmDeleteResponseOperationCodeUpdateCluster    APIVmDeleteResponseOperationCode = "update_cluster"
+	APIVmDeleteResponseOperationCodeGetClusterSSHKey APIVmDeleteResponseOperationCode = "get_cluster_ssh_key"
+	APIVmDeleteResponseOperationCodeListVms          APIVmDeleteResponseOperationCode = "list_vms"
+	APIVmDeleteResponseOperationCodeGetVm            APIVmDeleteResponseOperationCode = "get_vm"
+	APIVmDeleteResponseOperationCodeUpdateVm         APIVmDeleteResponseOperationCode = "update_vm"
+	APIVmDeleteResponseOperationCodeBranchVm         APIVmDeleteResponseOperationCode = "branch_vm"
+	APIVmDeleteResponseOperationCodeCommitVm         APIVmDeleteResponseOperationCode = "commit_vm"
+	APIVmDeleteResponseOperationCodeDeleteVm         APIVmDeleteResponseOperationCode = "delete_vm"
+	APIVmDeleteResponseOperationCodeGetVmSSHKey      APIVmDeleteResponseOperationCode = "get_vm_ssh_key"
+	APIVmDeleteResponseOperationCodeUploadRootfs     APIVmDeleteResponseOperationCode = "upload_rootfs"
+	APIVmDeleteResponseOperationCodeDeleteRootfs     APIVmDeleteResponseOperationCode = "delete_rootfs"
+	APIVmDeleteResponseOperationCodeListRootfs       APIVmDeleteResponseOperationCode = "list_rootfs"
 )
 
-func (r APIVmDeleteResponseDataState) IsKnown() bool {
+func (r APIVmDeleteResponseOperationCode) IsKnown() bool {
 	switch r {
-	case APIVmDeleteResponseDataStateNotStarted, APIVmDeleteResponseDataStateRunning, APIVmDeleteResponseDataStatePaused:
+	case APIVmDeleteResponseOperationCodeListClusters, APIVmDeleteResponseOperationCodeGetCluster, APIVmDeleteResponseOperationCodeCreateCluster, APIVmDeleteResponseOperationCodeDeleteCluster, APIVmDeleteResponseOperationCodeUpdateCluster, APIVmDeleteResponseOperationCodeGetClusterSSHKey, APIVmDeleteResponseOperationCodeListVms, APIVmDeleteResponseOperationCodeGetVm, APIVmDeleteResponseOperationCodeUpdateVm, APIVmDeleteResponseOperationCodeBranchVm, APIVmDeleteResponseOperationCodeCommitVm, APIVmDeleteResponseOperationCodeDeleteVm, APIVmDeleteResponseOperationCodeGetVmSSHKey, APIVmDeleteResponseOperationCodeUploadRootfs, APIVmDeleteResponseOperationCodeDeleteRootfs, APIVmDeleteResponseOperationCodeListRootfs:
 		return true
 	}
 	return false
 }
 
 type APIVmBranchResponse struct {
-	Data        APIVmBranchResponseData `json:"data,required"`
-	DurationNs  int64                   `json:"duration_ns,required"`
-	OperationID string                  `json:"operation_id,required"`
+	Data          APIVmBranchResponseData          `json:"data,required"`
+	DurationNs    int64                            `json:"duration_ns,required"`
+	OperationCode APIVmBranchResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                           `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                   `json:"time_start,required"`
 	JSON      apiVmBranchResponseJSON `json:"-"`
@@ -729,12 +900,13 @@ type APIVmBranchResponse struct {
 // apiVmBranchResponseJSON contains the JSON metadata for the struct
 // [APIVmBranchResponse]
 type apiVmBranchResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmBranchResponse) UnmarshalJSON(data []byte) (err error) {
@@ -752,12 +924,18 @@ type APIVmBranchResponseData struct {
 	Children []string `json:"children,required"`
 	// The VM's cluster ID
 	ClusterID string `json:"cluster_id,required"`
+	// What is the size of the "disk" allocated to this VM
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The VM's local IP address on the VM subnet
 	IPAddress string `json:"ip_address,required"`
+	// How much RAM is allocated to this VM
+	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
 	NetworkInfo APIVmBranchResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmBranchResponseDataState `json:"state,required"`
+	// How many vCPUs were allocated to this VM
+	VcpuCount int64 `json:"vcpu_count,required"`
 	// Human-readable name assigned to the VM.
 	Alias string `json:"alias,nullable"`
 	// The parent VM's ID, if present. If None, then this VM is a root VM.
@@ -771,9 +949,12 @@ type apiVmBranchResponseDataJSON struct {
 	ID          apijson.Field
 	Children    apijson.Field
 	ClusterID   apijson.Field
+	FsSizeMib   apijson.Field
 	IPAddress   apijson.Field
+	MemSizeMib  apijson.Field
 	NetworkInfo apijson.Field
 	State       apijson.Field
+	VcpuCount   apijson.Field
 	Alias       apijson.Field
 	ParentID    apijson.Field
 	raw         string
@@ -837,10 +1018,40 @@ func (r APIVmBranchResponseDataState) IsKnown() bool {
 	return false
 }
 
+type APIVmBranchResponseOperationCode string
+
+const (
+	APIVmBranchResponseOperationCodeListClusters     APIVmBranchResponseOperationCode = "list_clusters"
+	APIVmBranchResponseOperationCodeGetCluster       APIVmBranchResponseOperationCode = "get_cluster"
+	APIVmBranchResponseOperationCodeCreateCluster    APIVmBranchResponseOperationCode = "create_cluster"
+	APIVmBranchResponseOperationCodeDeleteCluster    APIVmBranchResponseOperationCode = "delete_cluster"
+	APIVmBranchResponseOperationCodeUpdateCluster    APIVmBranchResponseOperationCode = "update_cluster"
+	APIVmBranchResponseOperationCodeGetClusterSSHKey APIVmBranchResponseOperationCode = "get_cluster_ssh_key"
+	APIVmBranchResponseOperationCodeListVms          APIVmBranchResponseOperationCode = "list_vms"
+	APIVmBranchResponseOperationCodeGetVm            APIVmBranchResponseOperationCode = "get_vm"
+	APIVmBranchResponseOperationCodeUpdateVm         APIVmBranchResponseOperationCode = "update_vm"
+	APIVmBranchResponseOperationCodeBranchVm         APIVmBranchResponseOperationCode = "branch_vm"
+	APIVmBranchResponseOperationCodeCommitVm         APIVmBranchResponseOperationCode = "commit_vm"
+	APIVmBranchResponseOperationCodeDeleteVm         APIVmBranchResponseOperationCode = "delete_vm"
+	APIVmBranchResponseOperationCodeGetVmSSHKey      APIVmBranchResponseOperationCode = "get_vm_ssh_key"
+	APIVmBranchResponseOperationCodeUploadRootfs     APIVmBranchResponseOperationCode = "upload_rootfs"
+	APIVmBranchResponseOperationCodeDeleteRootfs     APIVmBranchResponseOperationCode = "delete_rootfs"
+	APIVmBranchResponseOperationCodeListRootfs       APIVmBranchResponseOperationCode = "list_rootfs"
+)
+
+func (r APIVmBranchResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIVmBranchResponseOperationCodeListClusters, APIVmBranchResponseOperationCodeGetCluster, APIVmBranchResponseOperationCodeCreateCluster, APIVmBranchResponseOperationCodeDeleteCluster, APIVmBranchResponseOperationCodeUpdateCluster, APIVmBranchResponseOperationCodeGetClusterSSHKey, APIVmBranchResponseOperationCodeListVms, APIVmBranchResponseOperationCodeGetVm, APIVmBranchResponseOperationCodeUpdateVm, APIVmBranchResponseOperationCodeBranchVm, APIVmBranchResponseOperationCodeCommitVm, APIVmBranchResponseOperationCodeDeleteVm, APIVmBranchResponseOperationCodeGetVmSSHKey, APIVmBranchResponseOperationCodeUploadRootfs, APIVmBranchResponseOperationCodeDeleteRootfs, APIVmBranchResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIVmCommitResponse struct {
-	Data        APIVmCommitResponseData `json:"data,required"`
-	DurationNs  int64                   `json:"duration_ns,required"`
-	OperationID string                  `json:"operation_id,required"`
+	Data          APIVmCommitResponseData          `json:"data,required"`
+	DurationNs    int64                            `json:"duration_ns,required"`
+	OperationCode APIVmCommitResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                           `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                   `json:"time_start,required"`
 	JSON      apiVmCommitResponseJSON `json:"-"`
@@ -849,12 +1060,13 @@ type APIVmCommitResponse struct {
 // apiVmCommitResponseJSON contains the JSON metadata for the struct
 // [APIVmCommitResponse]
 type apiVmCommitResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmCommitResponse) UnmarshalJSON(data []byte) (err error) {
@@ -886,10 +1098,40 @@ func (r apiVmCommitResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIVmCommitResponseOperationCode string
+
+const (
+	APIVmCommitResponseOperationCodeListClusters     APIVmCommitResponseOperationCode = "list_clusters"
+	APIVmCommitResponseOperationCodeGetCluster       APIVmCommitResponseOperationCode = "get_cluster"
+	APIVmCommitResponseOperationCodeCreateCluster    APIVmCommitResponseOperationCode = "create_cluster"
+	APIVmCommitResponseOperationCodeDeleteCluster    APIVmCommitResponseOperationCode = "delete_cluster"
+	APIVmCommitResponseOperationCodeUpdateCluster    APIVmCommitResponseOperationCode = "update_cluster"
+	APIVmCommitResponseOperationCodeGetClusterSSHKey APIVmCommitResponseOperationCode = "get_cluster_ssh_key"
+	APIVmCommitResponseOperationCodeListVms          APIVmCommitResponseOperationCode = "list_vms"
+	APIVmCommitResponseOperationCodeGetVm            APIVmCommitResponseOperationCode = "get_vm"
+	APIVmCommitResponseOperationCodeUpdateVm         APIVmCommitResponseOperationCode = "update_vm"
+	APIVmCommitResponseOperationCodeBranchVm         APIVmCommitResponseOperationCode = "branch_vm"
+	APIVmCommitResponseOperationCodeCommitVm         APIVmCommitResponseOperationCode = "commit_vm"
+	APIVmCommitResponseOperationCodeDeleteVm         APIVmCommitResponseOperationCode = "delete_vm"
+	APIVmCommitResponseOperationCodeGetVmSSHKey      APIVmCommitResponseOperationCode = "get_vm_ssh_key"
+	APIVmCommitResponseOperationCodeUploadRootfs     APIVmCommitResponseOperationCode = "upload_rootfs"
+	APIVmCommitResponseOperationCodeDeleteRootfs     APIVmCommitResponseOperationCode = "delete_rootfs"
+	APIVmCommitResponseOperationCodeListRootfs       APIVmCommitResponseOperationCode = "list_rootfs"
+)
+
+func (r APIVmCommitResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIVmCommitResponseOperationCodeListClusters, APIVmCommitResponseOperationCodeGetCluster, APIVmCommitResponseOperationCodeCreateCluster, APIVmCommitResponseOperationCodeDeleteCluster, APIVmCommitResponseOperationCodeUpdateCluster, APIVmCommitResponseOperationCodeGetClusterSSHKey, APIVmCommitResponseOperationCodeListVms, APIVmCommitResponseOperationCodeGetVm, APIVmCommitResponseOperationCodeUpdateVm, APIVmCommitResponseOperationCodeBranchVm, APIVmCommitResponseOperationCodeCommitVm, APIVmCommitResponseOperationCodeDeleteVm, APIVmCommitResponseOperationCodeGetVmSSHKey, APIVmCommitResponseOperationCodeUploadRootfs, APIVmCommitResponseOperationCodeDeleteRootfs, APIVmCommitResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIVmGetSSHKeyResponse struct {
-	Data        string `json:"data,required"`
-	DurationNs  int64  `json:"duration_ns,required"`
-	OperationID string `json:"operation_id,required"`
+	Data          string                              `json:"data,required"`
+	DurationNs    int64                               `json:"duration_ns,required"`
+	OperationCode APIVmGetSSHKeyResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                              `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                      `json:"time_start,required"`
 	JSON      apiVmGetSSHKeyResponseJSON `json:"-"`
@@ -898,12 +1140,13 @@ type APIVmGetSSHKeyResponse struct {
 // apiVmGetSSHKeyResponseJSON contains the JSON metadata for the struct
 // [APIVmGetSSHKeyResponse]
 type apiVmGetSSHKeyResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIVmGetSSHKeyResponse) UnmarshalJSON(data []byte) (err error) {
@@ -912,6 +1155,35 @@ func (r *APIVmGetSSHKeyResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r apiVmGetSSHKeyResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type APIVmGetSSHKeyResponseOperationCode string
+
+const (
+	APIVmGetSSHKeyResponseOperationCodeListClusters     APIVmGetSSHKeyResponseOperationCode = "list_clusters"
+	APIVmGetSSHKeyResponseOperationCodeGetCluster       APIVmGetSSHKeyResponseOperationCode = "get_cluster"
+	APIVmGetSSHKeyResponseOperationCodeCreateCluster    APIVmGetSSHKeyResponseOperationCode = "create_cluster"
+	APIVmGetSSHKeyResponseOperationCodeDeleteCluster    APIVmGetSSHKeyResponseOperationCode = "delete_cluster"
+	APIVmGetSSHKeyResponseOperationCodeUpdateCluster    APIVmGetSSHKeyResponseOperationCode = "update_cluster"
+	APIVmGetSSHKeyResponseOperationCodeGetClusterSSHKey APIVmGetSSHKeyResponseOperationCode = "get_cluster_ssh_key"
+	APIVmGetSSHKeyResponseOperationCodeListVms          APIVmGetSSHKeyResponseOperationCode = "list_vms"
+	APIVmGetSSHKeyResponseOperationCodeGetVm            APIVmGetSSHKeyResponseOperationCode = "get_vm"
+	APIVmGetSSHKeyResponseOperationCodeUpdateVm         APIVmGetSSHKeyResponseOperationCode = "update_vm"
+	APIVmGetSSHKeyResponseOperationCodeBranchVm         APIVmGetSSHKeyResponseOperationCode = "branch_vm"
+	APIVmGetSSHKeyResponseOperationCodeCommitVm         APIVmGetSSHKeyResponseOperationCode = "commit_vm"
+	APIVmGetSSHKeyResponseOperationCodeDeleteVm         APIVmGetSSHKeyResponseOperationCode = "delete_vm"
+	APIVmGetSSHKeyResponseOperationCodeGetVmSSHKey      APIVmGetSSHKeyResponseOperationCode = "get_vm_ssh_key"
+	APIVmGetSSHKeyResponseOperationCodeUploadRootfs     APIVmGetSSHKeyResponseOperationCode = "upload_rootfs"
+	APIVmGetSSHKeyResponseOperationCodeDeleteRootfs     APIVmGetSSHKeyResponseOperationCode = "delete_rootfs"
+	APIVmGetSSHKeyResponseOperationCodeListRootfs       APIVmGetSSHKeyResponseOperationCode = "list_rootfs"
+)
+
+func (r APIVmGetSSHKeyResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIVmGetSSHKeyResponseOperationCodeListClusters, APIVmGetSSHKeyResponseOperationCodeGetCluster, APIVmGetSSHKeyResponseOperationCodeCreateCluster, APIVmGetSSHKeyResponseOperationCodeDeleteCluster, APIVmGetSSHKeyResponseOperationCodeUpdateCluster, APIVmGetSSHKeyResponseOperationCodeGetClusterSSHKey, APIVmGetSSHKeyResponseOperationCodeListVms, APIVmGetSSHKeyResponseOperationCodeGetVm, APIVmGetSSHKeyResponseOperationCodeUpdateVm, APIVmGetSSHKeyResponseOperationCodeBranchVm, APIVmGetSSHKeyResponseOperationCodeCommitVm, APIVmGetSSHKeyResponseOperationCodeDeleteVm, APIVmGetSSHKeyResponseOperationCodeGetVmSSHKey, APIVmGetSSHKeyResponseOperationCodeUploadRootfs, APIVmGetSSHKeyResponseOperationCodeDeleteRootfs, APIVmGetSSHKeyResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
 }
 
 type APIVmUpdateParams struct {
