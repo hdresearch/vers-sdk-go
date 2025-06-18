@@ -74,15 +74,14 @@ func (r *APIClusterService) List(ctx context.Context, opts ...option.RequestOpti
 }
 
 // Delete a cluster.
-func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (err error) {
+func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterDeleteResponse, err error) {
 	opts = append(r.Options[:], opts...)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if clusterIDOrAlias == "" {
 		err = errors.New("missing required cluster_id_or_alias parameter")
 		return
 	}
 	path := fmt.Sprintf("api/cluster/%s", clusterIDOrAlias)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
 	return
 }
 
@@ -218,9 +217,10 @@ func (r UpdateClusterParam) MarshalJSON() (data []byte, err error) {
 }
 
 type APIClusterNewResponse struct {
-	Data        APIClusterNewResponseData `json:"data,required"`
-	DurationNs  int64                     `json:"duration_ns,required"`
-	OperationID string                    `json:"operation_id,required"`
+	Data          APIClusterNewResponseData          `json:"data,required"`
+	DurationNs    int64                              `json:"duration_ns,required"`
+	OperationCode APIClusterNewResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                             `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                     `json:"time_start,required"`
 	JSON      apiClusterNewResponseJSON `json:"-"`
@@ -229,12 +229,13 @@ type APIClusterNewResponse struct {
 // apiClusterNewResponseJSON contains the JSON metadata for the struct
 // [APIClusterNewResponse]
 type apiClusterNewResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIClusterNewResponse) UnmarshalJSON(data []byte) (err error) {
@@ -248,6 +249,8 @@ func (r apiClusterNewResponseJSON) RawJSON() string {
 type APIClusterNewResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The size of the cluster's backing file
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The ID of the cluster's root VM.
 	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
@@ -263,6 +266,7 @@ type APIClusterNewResponseData struct {
 // [APIClusterNewResponseData]
 type apiClusterNewResponseDataJSON struct {
 	ID          apijson.Field
+	FsSizeMib   apijson.Field
 	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
@@ -279,10 +283,40 @@ func (r apiClusterNewResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIClusterNewResponseOperationCode string
+
+const (
+	APIClusterNewResponseOperationCodeListClusters     APIClusterNewResponseOperationCode = "list_clusters"
+	APIClusterNewResponseOperationCodeGetCluster       APIClusterNewResponseOperationCode = "get_cluster"
+	APIClusterNewResponseOperationCodeCreateCluster    APIClusterNewResponseOperationCode = "create_cluster"
+	APIClusterNewResponseOperationCodeDeleteCluster    APIClusterNewResponseOperationCode = "delete_cluster"
+	APIClusterNewResponseOperationCodeUpdateCluster    APIClusterNewResponseOperationCode = "update_cluster"
+	APIClusterNewResponseOperationCodeGetClusterSSHKey APIClusterNewResponseOperationCode = "get_cluster_ssh_key"
+	APIClusterNewResponseOperationCodeListVms          APIClusterNewResponseOperationCode = "list_vms"
+	APIClusterNewResponseOperationCodeGetVm            APIClusterNewResponseOperationCode = "get_vm"
+	APIClusterNewResponseOperationCodeUpdateVm         APIClusterNewResponseOperationCode = "update_vm"
+	APIClusterNewResponseOperationCodeBranchVm         APIClusterNewResponseOperationCode = "branch_vm"
+	APIClusterNewResponseOperationCodeCommitVm         APIClusterNewResponseOperationCode = "commit_vm"
+	APIClusterNewResponseOperationCodeDeleteVm         APIClusterNewResponseOperationCode = "delete_vm"
+	APIClusterNewResponseOperationCodeGetVmSSHKey      APIClusterNewResponseOperationCode = "get_vm_ssh_key"
+	APIClusterNewResponseOperationCodeUploadRootfs     APIClusterNewResponseOperationCode = "upload_rootfs"
+	APIClusterNewResponseOperationCodeDeleteRootfs     APIClusterNewResponseOperationCode = "delete_rootfs"
+	APIClusterNewResponseOperationCodeListRootfs       APIClusterNewResponseOperationCode = "list_rootfs"
+)
+
+func (r APIClusterNewResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIClusterNewResponseOperationCodeListClusters, APIClusterNewResponseOperationCodeGetCluster, APIClusterNewResponseOperationCodeCreateCluster, APIClusterNewResponseOperationCodeDeleteCluster, APIClusterNewResponseOperationCodeUpdateCluster, APIClusterNewResponseOperationCodeGetClusterSSHKey, APIClusterNewResponseOperationCodeListVms, APIClusterNewResponseOperationCodeGetVm, APIClusterNewResponseOperationCodeUpdateVm, APIClusterNewResponseOperationCodeBranchVm, APIClusterNewResponseOperationCodeCommitVm, APIClusterNewResponseOperationCodeDeleteVm, APIClusterNewResponseOperationCodeGetVmSSHKey, APIClusterNewResponseOperationCodeUploadRootfs, APIClusterNewResponseOperationCodeDeleteRootfs, APIClusterNewResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIClusterGetResponse struct {
-	Data        APIClusterGetResponseData `json:"data,required"`
-	DurationNs  int64                     `json:"duration_ns,required"`
-	OperationID string                    `json:"operation_id,required"`
+	Data          APIClusterGetResponseData          `json:"data,required"`
+	DurationNs    int64                              `json:"duration_ns,required"`
+	OperationCode APIClusterGetResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                             `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                     `json:"time_start,required"`
 	JSON      apiClusterGetResponseJSON `json:"-"`
@@ -291,12 +325,13 @@ type APIClusterGetResponse struct {
 // apiClusterGetResponseJSON contains the JSON metadata for the struct
 // [APIClusterGetResponse]
 type apiClusterGetResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIClusterGetResponse) UnmarshalJSON(data []byte) (err error) {
@@ -310,6 +345,8 @@ func (r apiClusterGetResponseJSON) RawJSON() string {
 type APIClusterGetResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The size of the cluster's backing file
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The ID of the cluster's root VM.
 	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
@@ -325,6 +362,7 @@ type APIClusterGetResponseData struct {
 // [APIClusterGetResponseData]
 type apiClusterGetResponseDataJSON struct {
 	ID          apijson.Field
+	FsSizeMib   apijson.Field
 	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
@@ -341,10 +379,40 @@ func (r apiClusterGetResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIClusterGetResponseOperationCode string
+
+const (
+	APIClusterGetResponseOperationCodeListClusters     APIClusterGetResponseOperationCode = "list_clusters"
+	APIClusterGetResponseOperationCodeGetCluster       APIClusterGetResponseOperationCode = "get_cluster"
+	APIClusterGetResponseOperationCodeCreateCluster    APIClusterGetResponseOperationCode = "create_cluster"
+	APIClusterGetResponseOperationCodeDeleteCluster    APIClusterGetResponseOperationCode = "delete_cluster"
+	APIClusterGetResponseOperationCodeUpdateCluster    APIClusterGetResponseOperationCode = "update_cluster"
+	APIClusterGetResponseOperationCodeGetClusterSSHKey APIClusterGetResponseOperationCode = "get_cluster_ssh_key"
+	APIClusterGetResponseOperationCodeListVms          APIClusterGetResponseOperationCode = "list_vms"
+	APIClusterGetResponseOperationCodeGetVm            APIClusterGetResponseOperationCode = "get_vm"
+	APIClusterGetResponseOperationCodeUpdateVm         APIClusterGetResponseOperationCode = "update_vm"
+	APIClusterGetResponseOperationCodeBranchVm         APIClusterGetResponseOperationCode = "branch_vm"
+	APIClusterGetResponseOperationCodeCommitVm         APIClusterGetResponseOperationCode = "commit_vm"
+	APIClusterGetResponseOperationCodeDeleteVm         APIClusterGetResponseOperationCode = "delete_vm"
+	APIClusterGetResponseOperationCodeGetVmSSHKey      APIClusterGetResponseOperationCode = "get_vm_ssh_key"
+	APIClusterGetResponseOperationCodeUploadRootfs     APIClusterGetResponseOperationCode = "upload_rootfs"
+	APIClusterGetResponseOperationCodeDeleteRootfs     APIClusterGetResponseOperationCode = "delete_rootfs"
+	APIClusterGetResponseOperationCodeListRootfs       APIClusterGetResponseOperationCode = "list_rootfs"
+)
+
+func (r APIClusterGetResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIClusterGetResponseOperationCodeListClusters, APIClusterGetResponseOperationCodeGetCluster, APIClusterGetResponseOperationCodeCreateCluster, APIClusterGetResponseOperationCodeDeleteCluster, APIClusterGetResponseOperationCodeUpdateCluster, APIClusterGetResponseOperationCodeGetClusterSSHKey, APIClusterGetResponseOperationCodeListVms, APIClusterGetResponseOperationCodeGetVm, APIClusterGetResponseOperationCodeUpdateVm, APIClusterGetResponseOperationCodeBranchVm, APIClusterGetResponseOperationCodeCommitVm, APIClusterGetResponseOperationCodeDeleteVm, APIClusterGetResponseOperationCodeGetVmSSHKey, APIClusterGetResponseOperationCodeUploadRootfs, APIClusterGetResponseOperationCodeDeleteRootfs, APIClusterGetResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIClusterUpdateResponse struct {
-	Data        APIClusterUpdateResponseData `json:"data,required"`
-	DurationNs  int64                        `json:"duration_ns,required"`
-	OperationID string                       `json:"operation_id,required"`
+	Data          APIClusterUpdateResponseData          `json:"data,required"`
+	DurationNs    int64                                 `json:"duration_ns,required"`
+	OperationCode APIClusterUpdateResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                                `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                        `json:"time_start,required"`
 	JSON      apiClusterUpdateResponseJSON `json:"-"`
@@ -353,12 +421,13 @@ type APIClusterUpdateResponse struct {
 // apiClusterUpdateResponseJSON contains the JSON metadata for the struct
 // [APIClusterUpdateResponse]
 type apiClusterUpdateResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIClusterUpdateResponse) UnmarshalJSON(data []byte) (err error) {
@@ -372,6 +441,8 @@ func (r apiClusterUpdateResponseJSON) RawJSON() string {
 type APIClusterUpdateResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The size of the cluster's backing file
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The ID of the cluster's root VM.
 	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
@@ -387,6 +458,7 @@ type APIClusterUpdateResponseData struct {
 // [APIClusterUpdateResponseData]
 type apiClusterUpdateResponseDataJSON struct {
 	ID          apijson.Field
+	FsSizeMib   apijson.Field
 	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
@@ -403,10 +475,40 @@ func (r apiClusterUpdateResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIClusterUpdateResponseOperationCode string
+
+const (
+	APIClusterUpdateResponseOperationCodeListClusters     APIClusterUpdateResponseOperationCode = "list_clusters"
+	APIClusterUpdateResponseOperationCodeGetCluster       APIClusterUpdateResponseOperationCode = "get_cluster"
+	APIClusterUpdateResponseOperationCodeCreateCluster    APIClusterUpdateResponseOperationCode = "create_cluster"
+	APIClusterUpdateResponseOperationCodeDeleteCluster    APIClusterUpdateResponseOperationCode = "delete_cluster"
+	APIClusterUpdateResponseOperationCodeUpdateCluster    APIClusterUpdateResponseOperationCode = "update_cluster"
+	APIClusterUpdateResponseOperationCodeGetClusterSSHKey APIClusterUpdateResponseOperationCode = "get_cluster_ssh_key"
+	APIClusterUpdateResponseOperationCodeListVms          APIClusterUpdateResponseOperationCode = "list_vms"
+	APIClusterUpdateResponseOperationCodeGetVm            APIClusterUpdateResponseOperationCode = "get_vm"
+	APIClusterUpdateResponseOperationCodeUpdateVm         APIClusterUpdateResponseOperationCode = "update_vm"
+	APIClusterUpdateResponseOperationCodeBranchVm         APIClusterUpdateResponseOperationCode = "branch_vm"
+	APIClusterUpdateResponseOperationCodeCommitVm         APIClusterUpdateResponseOperationCode = "commit_vm"
+	APIClusterUpdateResponseOperationCodeDeleteVm         APIClusterUpdateResponseOperationCode = "delete_vm"
+	APIClusterUpdateResponseOperationCodeGetVmSSHKey      APIClusterUpdateResponseOperationCode = "get_vm_ssh_key"
+	APIClusterUpdateResponseOperationCodeUploadRootfs     APIClusterUpdateResponseOperationCode = "upload_rootfs"
+	APIClusterUpdateResponseOperationCodeDeleteRootfs     APIClusterUpdateResponseOperationCode = "delete_rootfs"
+	APIClusterUpdateResponseOperationCodeListRootfs       APIClusterUpdateResponseOperationCode = "list_rootfs"
+)
+
+func (r APIClusterUpdateResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIClusterUpdateResponseOperationCodeListClusters, APIClusterUpdateResponseOperationCodeGetCluster, APIClusterUpdateResponseOperationCodeCreateCluster, APIClusterUpdateResponseOperationCodeDeleteCluster, APIClusterUpdateResponseOperationCodeUpdateCluster, APIClusterUpdateResponseOperationCodeGetClusterSSHKey, APIClusterUpdateResponseOperationCodeListVms, APIClusterUpdateResponseOperationCodeGetVm, APIClusterUpdateResponseOperationCodeUpdateVm, APIClusterUpdateResponseOperationCodeBranchVm, APIClusterUpdateResponseOperationCodeCommitVm, APIClusterUpdateResponseOperationCodeDeleteVm, APIClusterUpdateResponseOperationCodeGetVmSSHKey, APIClusterUpdateResponseOperationCodeUploadRootfs, APIClusterUpdateResponseOperationCodeDeleteRootfs, APIClusterUpdateResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIClusterListResponse struct {
-	Data        []APIClusterListResponseData `json:"data,required"`
-	DurationNs  int64                        `json:"duration_ns,required"`
-	OperationID string                       `json:"operation_id,required"`
+	Data          []APIClusterListResponseData        `json:"data,required"`
+	DurationNs    int64                               `json:"duration_ns,required"`
+	OperationCode APIClusterListResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                              `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                      `json:"time_start,required"`
 	JSON      apiClusterListResponseJSON `json:"-"`
@@ -415,12 +517,13 @@ type APIClusterListResponse struct {
 // apiClusterListResponseJSON contains the JSON metadata for the struct
 // [APIClusterListResponse]
 type apiClusterListResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIClusterListResponse) UnmarshalJSON(data []byte) (err error) {
@@ -434,6 +537,8 @@ func (r apiClusterListResponseJSON) RawJSON() string {
 type APIClusterListResponseData struct {
 	// The cluster's ID.
 	ID string `json:"id,required"`
+	// The size of the cluster's backing file
+	FsSizeMib int64 `json:"fs_size_mib,required"`
 	// The ID of the cluster's root VM.
 	RootVmID string `json:"root_vm_id,required"`
 	// How many VMs are currently running on this cluster.
@@ -449,6 +554,7 @@ type APIClusterListResponseData struct {
 // [APIClusterListResponseData]
 type apiClusterListResponseDataJSON struct {
 	ID          apijson.Field
+	FsSizeMib   apijson.Field
 	RootVmID    apijson.Field
 	VmCount     apijson.Field
 	Vms         apijson.Field
@@ -465,10 +571,133 @@ func (r apiClusterListResponseDataJSON) RawJSON() string {
 	return r.raw
 }
 
+type APIClusterListResponseOperationCode string
+
+const (
+	APIClusterListResponseOperationCodeListClusters     APIClusterListResponseOperationCode = "list_clusters"
+	APIClusterListResponseOperationCodeGetCluster       APIClusterListResponseOperationCode = "get_cluster"
+	APIClusterListResponseOperationCodeCreateCluster    APIClusterListResponseOperationCode = "create_cluster"
+	APIClusterListResponseOperationCodeDeleteCluster    APIClusterListResponseOperationCode = "delete_cluster"
+	APIClusterListResponseOperationCodeUpdateCluster    APIClusterListResponseOperationCode = "update_cluster"
+	APIClusterListResponseOperationCodeGetClusterSSHKey APIClusterListResponseOperationCode = "get_cluster_ssh_key"
+	APIClusterListResponseOperationCodeListVms          APIClusterListResponseOperationCode = "list_vms"
+	APIClusterListResponseOperationCodeGetVm            APIClusterListResponseOperationCode = "get_vm"
+	APIClusterListResponseOperationCodeUpdateVm         APIClusterListResponseOperationCode = "update_vm"
+	APIClusterListResponseOperationCodeBranchVm         APIClusterListResponseOperationCode = "branch_vm"
+	APIClusterListResponseOperationCodeCommitVm         APIClusterListResponseOperationCode = "commit_vm"
+	APIClusterListResponseOperationCodeDeleteVm         APIClusterListResponseOperationCode = "delete_vm"
+	APIClusterListResponseOperationCodeGetVmSSHKey      APIClusterListResponseOperationCode = "get_vm_ssh_key"
+	APIClusterListResponseOperationCodeUploadRootfs     APIClusterListResponseOperationCode = "upload_rootfs"
+	APIClusterListResponseOperationCodeDeleteRootfs     APIClusterListResponseOperationCode = "delete_rootfs"
+	APIClusterListResponseOperationCodeListRootfs       APIClusterListResponseOperationCode = "list_rootfs"
+)
+
+func (r APIClusterListResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIClusterListResponseOperationCodeListClusters, APIClusterListResponseOperationCodeGetCluster, APIClusterListResponseOperationCodeCreateCluster, APIClusterListResponseOperationCodeDeleteCluster, APIClusterListResponseOperationCodeUpdateCluster, APIClusterListResponseOperationCodeGetClusterSSHKey, APIClusterListResponseOperationCodeListVms, APIClusterListResponseOperationCodeGetVm, APIClusterListResponseOperationCodeUpdateVm, APIClusterListResponseOperationCodeBranchVm, APIClusterListResponseOperationCodeCommitVm, APIClusterListResponseOperationCodeDeleteVm, APIClusterListResponseOperationCodeGetVmSSHKey, APIClusterListResponseOperationCodeUploadRootfs, APIClusterListResponseOperationCodeDeleteRootfs, APIClusterListResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
+type APIClusterDeleteResponse struct {
+	// A struct containing information about an attempted cluster deletion request.
+	// Reports information in the event of a partial failure so billing can still be
+	// udpated appropriately.
+	Data          APIClusterDeleteResponseData          `json:"data,required"`
+	DurationNs    int64                                 `json:"duration_ns,required"`
+	OperationCode APIClusterDeleteResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                                `json:"operation_id,required"`
+	// Unix epoch time (secs)
+	TimeStart int64                        `json:"time_start,required"`
+	JSON      apiClusterDeleteResponseJSON `json:"-"`
+}
+
+// apiClusterDeleteResponseJSON contains the JSON metadata for the struct
+// [APIClusterDeleteResponse]
+type apiClusterDeleteResponseJSON struct {
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *APIClusterDeleteResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterDeleteResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// A struct containing information about an attempted cluster deletion request.
+// Reports information in the event of a partial failure so billing can still be
+// udpated appropriately.
+type APIClusterDeleteResponseData struct {
+	ClusterID string `json:"cluster_id,required"`
+	// A struct containing information about an attempted VM deletion request. Reports
+	// information in the event of a partial failure so billing can still be udpated
+	// appropriately.
+	Vms     DeleteResponse                   `json:"vms,required"`
+	FsError string                           `json:"fs_error,nullable"`
+	JSON    apiClusterDeleteResponseDataJSON `json:"-"`
+}
+
+// apiClusterDeleteResponseDataJSON contains the JSON metadata for the struct
+// [APIClusterDeleteResponseData]
+type apiClusterDeleteResponseDataJSON struct {
+	ClusterID   apijson.Field
+	Vms         apijson.Field
+	FsError     apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIClusterDeleteResponseData) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiClusterDeleteResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+type APIClusterDeleteResponseOperationCode string
+
+const (
+	APIClusterDeleteResponseOperationCodeListClusters     APIClusterDeleteResponseOperationCode = "list_clusters"
+	APIClusterDeleteResponseOperationCodeGetCluster       APIClusterDeleteResponseOperationCode = "get_cluster"
+	APIClusterDeleteResponseOperationCodeCreateCluster    APIClusterDeleteResponseOperationCode = "create_cluster"
+	APIClusterDeleteResponseOperationCodeDeleteCluster    APIClusterDeleteResponseOperationCode = "delete_cluster"
+	APIClusterDeleteResponseOperationCodeUpdateCluster    APIClusterDeleteResponseOperationCode = "update_cluster"
+	APIClusterDeleteResponseOperationCodeGetClusterSSHKey APIClusterDeleteResponseOperationCode = "get_cluster_ssh_key"
+	APIClusterDeleteResponseOperationCodeListVms          APIClusterDeleteResponseOperationCode = "list_vms"
+	APIClusterDeleteResponseOperationCodeGetVm            APIClusterDeleteResponseOperationCode = "get_vm"
+	APIClusterDeleteResponseOperationCodeUpdateVm         APIClusterDeleteResponseOperationCode = "update_vm"
+	APIClusterDeleteResponseOperationCodeBranchVm         APIClusterDeleteResponseOperationCode = "branch_vm"
+	APIClusterDeleteResponseOperationCodeCommitVm         APIClusterDeleteResponseOperationCode = "commit_vm"
+	APIClusterDeleteResponseOperationCodeDeleteVm         APIClusterDeleteResponseOperationCode = "delete_vm"
+	APIClusterDeleteResponseOperationCodeGetVmSSHKey      APIClusterDeleteResponseOperationCode = "get_vm_ssh_key"
+	APIClusterDeleteResponseOperationCodeUploadRootfs     APIClusterDeleteResponseOperationCode = "upload_rootfs"
+	APIClusterDeleteResponseOperationCodeDeleteRootfs     APIClusterDeleteResponseOperationCode = "delete_rootfs"
+	APIClusterDeleteResponseOperationCodeListRootfs       APIClusterDeleteResponseOperationCode = "list_rootfs"
+)
+
+func (r APIClusterDeleteResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIClusterDeleteResponseOperationCodeListClusters, APIClusterDeleteResponseOperationCodeGetCluster, APIClusterDeleteResponseOperationCodeCreateCluster, APIClusterDeleteResponseOperationCodeDeleteCluster, APIClusterDeleteResponseOperationCodeUpdateCluster, APIClusterDeleteResponseOperationCodeGetClusterSSHKey, APIClusterDeleteResponseOperationCodeListVms, APIClusterDeleteResponseOperationCodeGetVm, APIClusterDeleteResponseOperationCodeUpdateVm, APIClusterDeleteResponseOperationCodeBranchVm, APIClusterDeleteResponseOperationCodeCommitVm, APIClusterDeleteResponseOperationCodeDeleteVm, APIClusterDeleteResponseOperationCodeGetVmSSHKey, APIClusterDeleteResponseOperationCodeUploadRootfs, APIClusterDeleteResponseOperationCodeDeleteRootfs, APIClusterDeleteResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
+}
+
 type APIClusterGetSSHKeyResponse struct {
-	Data        string `json:"data,required"`
-	DurationNs  int64  `json:"duration_ns,required"`
-	OperationID string `json:"operation_id,required"`
+	Data          string                                   `json:"data,required"`
+	DurationNs    int64                                    `json:"duration_ns,required"`
+	OperationCode APIClusterGetSSHKeyResponseOperationCode `json:"operation_code,required"`
+	OperationID   string                                   `json:"operation_id,required"`
 	// Unix epoch time (secs)
 	TimeStart int64                           `json:"time_start,required"`
 	JSON      apiClusterGetSSHKeyResponseJSON `json:"-"`
@@ -477,12 +706,13 @@ type APIClusterGetSSHKeyResponse struct {
 // apiClusterGetSSHKeyResponseJSON contains the JSON metadata for the struct
 // [APIClusterGetSSHKeyResponse]
 type apiClusterGetSSHKeyResponseJSON struct {
-	Data        apijson.Field
-	DurationNs  apijson.Field
-	OperationID apijson.Field
-	TimeStart   apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
+	Data          apijson.Field
+	DurationNs    apijson.Field
+	OperationCode apijson.Field
+	OperationID   apijson.Field
+	TimeStart     apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
 }
 
 func (r *APIClusterGetSSHKeyResponse) UnmarshalJSON(data []byte) (err error) {
@@ -491,6 +721,35 @@ func (r *APIClusterGetSSHKeyResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r apiClusterGetSSHKeyResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+type APIClusterGetSSHKeyResponseOperationCode string
+
+const (
+	APIClusterGetSSHKeyResponseOperationCodeListClusters     APIClusterGetSSHKeyResponseOperationCode = "list_clusters"
+	APIClusterGetSSHKeyResponseOperationCodeGetCluster       APIClusterGetSSHKeyResponseOperationCode = "get_cluster"
+	APIClusterGetSSHKeyResponseOperationCodeCreateCluster    APIClusterGetSSHKeyResponseOperationCode = "create_cluster"
+	APIClusterGetSSHKeyResponseOperationCodeDeleteCluster    APIClusterGetSSHKeyResponseOperationCode = "delete_cluster"
+	APIClusterGetSSHKeyResponseOperationCodeUpdateCluster    APIClusterGetSSHKeyResponseOperationCode = "update_cluster"
+	APIClusterGetSSHKeyResponseOperationCodeGetClusterSSHKey APIClusterGetSSHKeyResponseOperationCode = "get_cluster_ssh_key"
+	APIClusterGetSSHKeyResponseOperationCodeListVms          APIClusterGetSSHKeyResponseOperationCode = "list_vms"
+	APIClusterGetSSHKeyResponseOperationCodeGetVm            APIClusterGetSSHKeyResponseOperationCode = "get_vm"
+	APIClusterGetSSHKeyResponseOperationCodeUpdateVm         APIClusterGetSSHKeyResponseOperationCode = "update_vm"
+	APIClusterGetSSHKeyResponseOperationCodeBranchVm         APIClusterGetSSHKeyResponseOperationCode = "branch_vm"
+	APIClusterGetSSHKeyResponseOperationCodeCommitVm         APIClusterGetSSHKeyResponseOperationCode = "commit_vm"
+	APIClusterGetSSHKeyResponseOperationCodeDeleteVm         APIClusterGetSSHKeyResponseOperationCode = "delete_vm"
+	APIClusterGetSSHKeyResponseOperationCodeGetVmSSHKey      APIClusterGetSSHKeyResponseOperationCode = "get_vm_ssh_key"
+	APIClusterGetSSHKeyResponseOperationCodeUploadRootfs     APIClusterGetSSHKeyResponseOperationCode = "upload_rootfs"
+	APIClusterGetSSHKeyResponseOperationCodeDeleteRootfs     APIClusterGetSSHKeyResponseOperationCode = "delete_rootfs"
+	APIClusterGetSSHKeyResponseOperationCodeListRootfs       APIClusterGetSSHKeyResponseOperationCode = "list_rootfs"
+)
+
+func (r APIClusterGetSSHKeyResponseOperationCode) IsKnown() bool {
+	switch r {
+	case APIClusterGetSSHKeyResponseOperationCodeListClusters, APIClusterGetSSHKeyResponseOperationCodeGetCluster, APIClusterGetSSHKeyResponseOperationCodeCreateCluster, APIClusterGetSSHKeyResponseOperationCodeDeleteCluster, APIClusterGetSSHKeyResponseOperationCodeUpdateCluster, APIClusterGetSSHKeyResponseOperationCodeGetClusterSSHKey, APIClusterGetSSHKeyResponseOperationCodeListVms, APIClusterGetSSHKeyResponseOperationCodeGetVm, APIClusterGetSSHKeyResponseOperationCodeUpdateVm, APIClusterGetSSHKeyResponseOperationCodeBranchVm, APIClusterGetSSHKeyResponseOperationCodeCommitVm, APIClusterGetSSHKeyResponseOperationCodeDeleteVm, APIClusterGetSSHKeyResponseOperationCodeGetVmSSHKey, APIClusterGetSSHKeyResponseOperationCodeUploadRootfs, APIClusterGetSSHKeyResponseOperationCodeDeleteRootfs, APIClusterGetSSHKeyResponseOperationCodeListRootfs:
+		return true
+	}
+	return false
 }
 
 type APIClusterNewParams struct {
