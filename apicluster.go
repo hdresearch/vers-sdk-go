@@ -97,49 +97,49 @@ func (r *APIClusterService) GetSSHKey(ctx context.Context, clusterIDOrAlias stri
 	return
 }
 
-type CreateParam struct {
-	ClusterType param.Field[CreateClusterType] `json:"cluster_type,required"`
-	Params      param.Field[interface{}]       `json:"params,required"`
+type ClusterCreateParams struct {
+	ClusterType param.Field[ClusterCreateParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[interface{}]                    `json:"params,required"`
 }
 
-func (r CreateParam) MarshalJSON() (data []byte, err error) {
+func (r ClusterCreateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r CreateParam) implementsCreateUnionParam() {}
+func (r ClusterCreateParams) implementsClusterCreateParamsUnion() {}
 
-// Satisfied by [CreateNewClusterParamsParam],
-// [CreateClusterFromCommitParamsParam], [CreateParam].
-type CreateUnionParam interface {
-	implementsCreateUnionParam()
+// Satisfied by [ClusterCreateParamsNewClusterParams],
+// [ClusterCreateParamsClusterFromCommitParams], [ClusterCreateParams].
+type ClusterCreateParamsUnion interface {
+	implementsClusterCreateParamsUnion()
 }
 
-type CreateNewClusterParamsParam struct {
-	ClusterType param.Field[CreateNewClusterParamsClusterType] `json:"cluster_type,required"`
-	Params      param.Field[CreateNewClusterParamsParamsParam] `json:"params,required"`
+type ClusterCreateParamsNewClusterParams struct {
+	ClusterType param.Field[ClusterCreateParamsNewClusterParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[ClusterCreateParamsNewClusterParamsParams]      `json:"params,required"`
 }
 
-func (r CreateNewClusterParamsParam) MarshalJSON() (data []byte, err error) {
+func (r ClusterCreateParamsNewClusterParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r CreateNewClusterParamsParam) implementsCreateUnionParam() {}
+func (r ClusterCreateParamsNewClusterParams) implementsClusterCreateParamsUnion() {}
 
-type CreateNewClusterParamsClusterType string
+type ClusterCreateParamsNewClusterParamsClusterType string
 
 const (
-	CreateNewClusterParamsClusterTypeNew CreateNewClusterParamsClusterType = "new"
+	ClusterCreateParamsNewClusterParamsClusterTypeNew ClusterCreateParamsNewClusterParamsClusterType = "new"
 )
 
-func (r CreateNewClusterParamsClusterType) IsKnown() bool {
+func (r ClusterCreateParamsNewClusterParamsClusterType) IsKnown() bool {
 	switch r {
-	case CreateNewClusterParamsClusterTypeNew:
+	case ClusterCreateParamsNewClusterParamsClusterTypeNew:
 		return true
 	}
 	return false
 }
 
-type CreateNewClusterParamsParamsParam struct {
+type ClusterCreateParamsNewClusterParamsParams struct {
 	ClusterAlias param.Field[string] `json:"cluster_alias"`
 	// The amount of total space to allocate to the cluster
 	FsSizeClusterMib param.Field[int64] `json:"fs_size_cluster_mib"`
@@ -153,66 +153,66 @@ type CreateNewClusterParamsParamsParam struct {
 	VmAlias     param.Field[string] `json:"vm_alias"`
 }
 
-func (r CreateNewClusterParamsParamsParam) MarshalJSON() (data []byte, err error) {
+func (r ClusterCreateParamsNewClusterParamsParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type CreateClusterFromCommitParamsParam struct {
-	ClusterType param.Field[CreateClusterFromCommitParamsClusterType] `json:"cluster_type,required"`
-	Params      param.Field[CreateClusterFromCommitParamsParamsParam] `json:"params,required"`
+type ClusterCreateParamsClusterFromCommitParams struct {
+	ClusterType param.Field[ClusterCreateParamsClusterFromCommitParamsClusterType] `json:"cluster_type,required"`
+	Params      param.Field[ClusterCreateParamsClusterFromCommitParamsParams]      `json:"params,required"`
 }
 
-func (r CreateClusterFromCommitParamsParam) MarshalJSON() (data []byte, err error) {
+func (r ClusterCreateParamsClusterFromCommitParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-func (r CreateClusterFromCommitParamsParam) implementsCreateUnionParam() {}
+func (r ClusterCreateParamsClusterFromCommitParams) implementsClusterCreateParamsUnion() {}
 
-type CreateClusterFromCommitParamsClusterType string
+type ClusterCreateParamsClusterFromCommitParamsClusterType string
 
 const (
-	CreateClusterFromCommitParamsClusterTypeFromCommit CreateClusterFromCommitParamsClusterType = "from_commit"
+	ClusterCreateParamsClusterFromCommitParamsClusterTypeFromCommit ClusterCreateParamsClusterFromCommitParamsClusterType = "from_commit"
 )
 
-func (r CreateClusterFromCommitParamsClusterType) IsKnown() bool {
+func (r ClusterCreateParamsClusterFromCommitParamsClusterType) IsKnown() bool {
 	switch r {
-	case CreateClusterFromCommitParamsClusterTypeFromCommit:
+	case ClusterCreateParamsClusterFromCommitParamsClusterTypeFromCommit:
 		return true
 	}
 	return false
 }
 
-type CreateClusterFromCommitParamsParamsParam struct {
+type ClusterCreateParamsClusterFromCommitParamsParams struct {
 	CommitKey        param.Field[string] `json:"commit_key,required"`
 	ClusterAlias     param.Field[string] `json:"cluster_alias"`
 	FsSizeClusterMib param.Field[int64]  `json:"fs_size_cluster_mib"`
 	VmAlias          param.Field[string] `json:"vm_alias"`
 }
 
-func (r CreateClusterFromCommitParamsParamsParam) MarshalJSON() (data []byte, err error) {
+func (r ClusterCreateParamsClusterFromCommitParamsParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type CreateClusterType string
+type ClusterCreateParamsClusterType string
 
 const (
-	CreateClusterTypeNew        CreateClusterType = "new"
-	CreateClusterTypeFromCommit CreateClusterType = "from_commit"
+	ClusterCreateParamsClusterTypeNew        ClusterCreateParamsClusterType = "new"
+	ClusterCreateParamsClusterTypeFromCommit ClusterCreateParamsClusterType = "from_commit"
 )
 
-func (r CreateClusterType) IsKnown() bool {
+func (r ClusterCreateParamsClusterType) IsKnown() bool {
 	switch r {
-	case CreateClusterTypeNew, CreateClusterTypeFromCommit:
+	case ClusterCreateParamsClusterTypeNew, ClusterCreateParamsClusterTypeFromCommit:
 		return true
 	}
 	return false
 }
 
-type UpdateClusterParam struct {
+type ClusterPatchParams struct {
 	Alias param.Field[string] `json:"alias"`
 }
 
-func (r UpdateClusterParam) MarshalJSON() (data []byte, err error) {
+func (r ClusterPatchParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -256,7 +256,7 @@ type APIClusterNewResponseData struct {
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
+	Vms []VmDto `json:"vms,required"`
 	// Human-readable name assigned to the cluster.
 	Alias string                        `json:"alias,nullable"`
 	JSON  apiClusterNewResponseDataJSON `json:"-"`
@@ -352,7 +352,7 @@ type APIClusterGetResponseData struct {
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
+	Vms []VmDto `json:"vms,required"`
 	// Human-readable name assigned to the cluster.
 	Alias string                        `json:"alias,nullable"`
 	JSON  apiClusterGetResponseDataJSON `json:"-"`
@@ -448,7 +448,7 @@ type APIClusterUpdateResponseData struct {
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
+	Vms []VmDto `json:"vms,required"`
 	// Human-readable name assigned to the cluster.
 	Alias string                           `json:"alias,nullable"`
 	JSON  apiClusterUpdateResponseDataJSON `json:"-"`
@@ -544,7 +544,7 @@ type APIClusterListResponseData struct {
 	// How many VMs are currently running on this cluster.
 	VmCount int64 `json:"vm_count,required"`
 	// The VMs that are children of the cluster, including the root VM.
-	Vms []Vm `json:"vms,required"`
+	Vms []VmDto `json:"vms,required"`
 	// Human-readable name assigned to the cluster.
 	Alias string                         `json:"alias,nullable"`
 	JSON  apiClusterListResponseDataJSON `json:"-"`
@@ -641,7 +641,7 @@ type APIClusterDeleteResponseData struct {
 	// A struct containing information about an attempted VM deletion request. Reports
 	// information in the event of a partial failure so billing can still be udpated
 	// appropriately.
-	Vms     DeleteResponse                   `json:"vms,required"`
+	Vms     VmDeleteResponse                 `json:"vms,required"`
 	FsError string                           `json:"fs_error,nullable"`
 	JSON    apiClusterDeleteResponseDataJSON `json:"-"`
 }
@@ -753,17 +753,17 @@ func (r APIClusterGetSSHKeyResponseOperationCode) IsKnown() bool {
 }
 
 type APIClusterNewParams struct {
-	Create CreateUnionParam `json:"create,required"`
+	ClusterCreateParams ClusterCreateParamsUnion `json:"cluster_create_params,required"`
 }
 
 func (r APIClusterNewParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.Create)
+	return apijson.MarshalRoot(r.ClusterCreateParams)
 }
 
 type APIClusterUpdateParams struct {
-	UpdateCluster UpdateClusterParam `json:"update_cluster,required"`
+	ClusterPatchParams ClusterPatchParams `json:"cluster_patch_params,required"`
 }
 
 func (r APIClusterUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.UpdateCluster)
+	return apijson.MarshalRoot(r.ClusterPatchParams)
 }

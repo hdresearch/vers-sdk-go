@@ -115,88 +115,65 @@ func (r *APIVmService) GetSSHKey(ctx context.Context, vmIDOrAlias string, opts .
 	return
 }
 
-type BranchRequestParam struct {
+type VmBranchParams struct {
 	Alias param.Field[string] `json:"alias"`
 }
 
-func (r BranchRequestParam) MarshalJSON() (data []byte, err error) {
+func (r VmBranchParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
 // A struct containing information about an attempted VM deletion request. Reports
 // information in the event of a partial failure so billing can still be udpated
 // appropriately.
-type DeleteResponse struct {
-	DeletedIDs []string              `json:"deleted_ids,required"`
-	Errors     []DeleteResponseError `json:"errors,required"`
-	JSON       deleteResponseJSON    `json:"-"`
+type VmDeleteResponse struct {
+	DeletedIDs []string                `json:"deleted_ids,required"`
+	Errors     []VmDeleteResponseError `json:"errors,required"`
+	JSON       vmDeleteResponseJSON    `json:"-"`
 }
 
-// deleteResponseJSON contains the JSON metadata for the struct [DeleteResponse]
-type deleteResponseJSON struct {
+// vmDeleteResponseJSON contains the JSON metadata for the struct
+// [VmDeleteResponse]
+type vmDeleteResponseJSON struct {
 	DeletedIDs  apijson.Field
 	Errors      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *DeleteResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *VmDeleteResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r deleteResponseJSON) RawJSON() string {
+func (r vmDeleteResponseJSON) RawJSON() string {
 	return r.raw
 }
 
 // Contains a VM ID and the reason that it could not be deleted.
-type DeleteResponseError struct {
-	ID    string                  `json:"id,required"`
-	Error string                  `json:"error,required"`
-	JSON  deleteResponseErrorJSON `json:"-"`
+type VmDeleteResponseError struct {
+	ID    string                    `json:"id,required"`
+	Error string                    `json:"error,required"`
+	JSON  vmDeleteResponseErrorJSON `json:"-"`
 }
 
-// deleteResponseErrorJSON contains the JSON metadata for the struct
-// [DeleteResponseError]
-type deleteResponseErrorJSON struct {
+// vmDeleteResponseErrorJSON contains the JSON metadata for the struct
+// [VmDeleteResponseError]
+type vmDeleteResponseErrorJSON struct {
 	ID          apijson.Field
 	Error       apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *DeleteResponseError) UnmarshalJSON(data []byte) (err error) {
+func (r *VmDeleteResponseError) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r deleteResponseErrorJSON) RawJSON() string {
+func (r vmDeleteResponseErrorJSON) RawJSON() string {
 	return r.raw
 }
 
-type UpdateVmParam struct {
-	Alias param.Field[string]        `json:"alias"`
-	State param.Field[UpdateVmState] `json:"state"`
-}
-
-func (r UpdateVmParam) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type UpdateVmState string
-
-const (
-	UpdateVmStateRunning UpdateVmState = "Running"
-	UpdateVmStatePaused  UpdateVmState = "Paused"
-)
-
-func (r UpdateVmState) IsKnown() bool {
-	switch r {
-	case UpdateVmStateRunning, UpdateVmStatePaused:
-		return true
-	}
-	return false
-}
-
-type Vm struct {
+type VmDto struct {
 	// The ID of the VM.
 	ID string `json:"id,required"`
 	// The IDs of direct children branched from this VM.
@@ -210,20 +187,20 @@ type Vm struct {
 	// How much RAM is allocated to this VM
 	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
-	NetworkInfo VmNetworkInfo `json:"network_info,required"`
+	NetworkInfo VmDtoNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
-	State VmState `json:"state,required"`
+	State VmDtoState `json:"state,required"`
 	// How many vCPUs were allocated to this VM
 	VcpuCount int64 `json:"vcpu_count,required"`
 	// Human-readable name assigned to the VM.
 	Alias string `json:"alias,nullable"`
 	// The parent VM's ID, if present. If None, then this VM is a root VM.
-	ParentID string `json:"parent_id,nullable"`
-	JSON     vmJSON `json:"-"`
+	ParentID string    `json:"parent_id,nullable"`
+	JSON     vmDtoJSON `json:"-"`
 }
 
-// vmJSON contains the JSON metadata for the struct [Vm]
-type vmJSON struct {
+// vmDtoJSON contains the JSON metadata for the struct [VmDto]
+type vmDtoJSON struct {
 	ID          apijson.Field
 	Children    apijson.Field
 	ClusterID   apijson.Field
@@ -239,27 +216,28 @@ type vmJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *Vm) UnmarshalJSON(data []byte) (err error) {
+func (r *VmDto) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r vmJSON) RawJSON() string {
+func (r vmDtoJSON) RawJSON() string {
 	return r.raw
 }
 
 // The VM's network configuration
-type VmNetworkInfo struct {
-	GuestIP     string            `json:"guest_ip,required"`
-	GuestMac    string            `json:"guest_mac,required"`
-	SSHPort     int64             `json:"ssh_port,required"`
-	Tap0IP      string            `json:"tap0_ip,required"`
-	Tap0Name    string            `json:"tap0_name,required"`
-	VmNamespace string            `json:"vm_namespace,required"`
-	JSON        vmNetworkInfoJSON `json:"-"`
+type VmDtoNetworkInfo struct {
+	GuestIP     string               `json:"guest_ip,required"`
+	GuestMac    string               `json:"guest_mac,required"`
+	SSHPort     int64                `json:"ssh_port,required"`
+	Tap0IP      string               `json:"tap0_ip,required"`
+	Tap0Name    string               `json:"tap0_name,required"`
+	VmNamespace string               `json:"vm_namespace,required"`
+	JSON        vmDtoNetworkInfoJSON `json:"-"`
 }
 
-// vmNetworkInfoJSON contains the JSON metadata for the struct [VmNetworkInfo]
-type vmNetworkInfoJSON struct {
+// vmDtoNetworkInfoJSON contains the JSON metadata for the struct
+// [VmDtoNetworkInfo]
+type vmDtoNetworkInfoJSON struct {
 	GuestIP     apijson.Field
 	GuestMac    apijson.Field
 	SSHPort     apijson.Field
@@ -270,26 +248,50 @@ type vmNetworkInfoJSON struct {
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *VmNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+func (r *VmDtoNetworkInfo) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r vmNetworkInfoJSON) RawJSON() string {
+func (r vmDtoNetworkInfoJSON) RawJSON() string {
 	return r.raw
 }
 
 // Whether the VM is running, paused, or not started.
-type VmState string
+type VmDtoState string
 
 const (
-	VmStateNotStarted VmState = "Not started"
-	VmStateRunning    VmState = "Running"
-	VmStatePaused     VmState = "Paused"
+	VmDtoStateNotStarted VmDtoState = "Not started"
+	VmDtoStateRunning    VmDtoState = "Running"
+	VmDtoStatePaused     VmDtoState = "Paused"
 )
 
-func (r VmState) IsKnown() bool {
+func (r VmDtoState) IsKnown() bool {
 	switch r {
-	case VmStateNotStarted, VmStateRunning, VmStatePaused:
+	case VmDtoStateNotStarted, VmDtoStateRunning, VmDtoStatePaused:
+		return true
+	}
+	return false
+}
+
+type VmPatchParams struct {
+	Alias param.Field[string]             `json:"alias"`
+	State param.Field[VmPatchParamsState] `json:"state"`
+}
+
+func (r VmPatchParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type VmPatchParamsState string
+
+const (
+	VmPatchParamsStateRunning VmPatchParamsState = "Running"
+	VmPatchParamsStatePaused  VmPatchParamsState = "Paused"
+)
+
+func (r VmPatchParamsState) IsKnown() bool {
+	switch r {
+	case VmPatchParamsStateRunning, VmPatchParamsStatePaused:
 		return true
 	}
 	return false
@@ -1187,11 +1189,11 @@ func (r APIVmGetSSHKeyResponseOperationCode) IsKnown() bool {
 }
 
 type APIVmUpdateParams struct {
-	UpdateVm UpdateVmParam `json:"update_vm,required"`
+	VmPatchParams VmPatchParams `json:"vm_patch_params,required"`
 }
 
 func (r APIVmUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.UpdateVm)
+	return apijson.MarshalRoot(r.VmPatchParams)
 }
 
 type APIVmDeleteParams struct {
@@ -1208,9 +1210,9 @@ func (r APIVmDeleteParams) URLQuery() (v url.Values) {
 }
 
 type APIVmBranchParams struct {
-	BranchRequest BranchRequestParam `json:"branch_request,required"`
+	VmBranchParams VmBranchParams `json:"vm_branch_params,required"`
 }
 
 func (r APIVmBranchParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.BranchRequest)
+	return apijson.MarshalRoot(r.VmBranchParams)
 }
