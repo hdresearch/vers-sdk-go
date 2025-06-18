@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.1.0-alpha.16 (2025-06-18)
+
+Full Changelog: [v0.1.0-alpha.15...v0.1.0-alpha.16](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.15...v0.1.0-alpha.16)
+
+### Features
+
+* **api:** api update ([564109d](https://github.com/hdresearch/vers-sdk-go/commit/564109da6f5d65031c5b22b41b4cd63c79edbffb))
+* **api:** api update ([59db8e2](https://github.com/hdresearch/vers-sdk-go/commit/59db8e2c1b6d08d6222be29cd7cbbe696d32d69f))
+* **api:** api update ([05cb1fd](https://github.com/hdresearch/vers-sdk-go/commit/05cb1fd8f00f3967f6f1d3b662093c02286a9422))
+* **api:** api update ([bd84151](https://github.com/hdresearch/vers-sdk-go/commit/bd841510383a897faa964c0adebe41a6370a18fa))
+* **api:** api update ([8c651d2](https://github.com/hdresearch/vers-sdk-go/commit/8c651d2e1af24465c6a8cea3c22ff2539f26abea))
+* **api:** api update ([6598489](https://github.com/hdresearch/vers-sdk-go/commit/65984891114cc5304caa50ad3c444e82238dadf0))
+* **api:** api update ([898c3d3](https://github.com/hdresearch/vers-sdk-go/commit/898c3d360fd79c741d4f196cc8970b6b2e615420))
+* **api:** api update ([7420618](https://github.com/hdresearch/vers-sdk-go/commit/742061846508e231fbfa5d3501aec05367c155b6))
+* **api:** api update ([abde737](https://github.com/hdresearch/vers-sdk-go/commit/abde7379cf7f8da86ae8a935d2b4d3ef4923f847))
+* **api:** api update ([ec9a730](https://github.com/hdresearch/vers-sdk-go/commit/ec9a730aa261ae16f76cabbe5e69d33b89c6d910))
+* **client:** add debug log helper ([f85ffb6](https://github.com/hdresearch/vers-sdk-go/commit/f85ffb6b8cc77b6bf3ff3ca2979e5eb198eabb76))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([927b764](https://github.com/hdresearch/vers-sdk-go/commit/927b7647030dafe3914f843419f955180cd7f011))
+
 ## 0.1.0-alpha.15 (2025-06-04)
 
 Full Changelog: [v0.1.0-alpha.14...v0.1.0-alpha.15](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.14...v0.1.0-alpha.15)
