@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.0-alpha.17 (2025-07-01)
+
+Full Changelog: [v0.1.0-alpha.16...v0.1.0-alpha.17](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.16...v0.1.0-alpha.17)
+
+### Features
+
+* **api:** api update ([0c94f47](https://github.com/hdresearch/vers-sdk-go/commit/0c94f47ad73401a83eca05d8b68ae4f20d482d06))
+
+
+### Bug Fixes
+
+* don't try to deserialize as json when ResponseBodyInto is []byte ([a1a4813](https://github.com/hdresearch/vers-sdk-go/commit/a1a4813881447732899d1af7d28c5e8a0c2c6fb9))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([866c252](https://github.com/hdresearch/vers-sdk-go/commit/866c252cd6e0423f0879003b1a7f44bb0e3c87c7))
+
 ## 0.1.0-alpha.16 (2025-06-18)
 
 Full Changelog: [v0.1.0-alpha.15...v0.1.0-alpha.16](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.15...v0.1.0-alpha.16)
