@@ -1091,7 +1091,6 @@ type APIVmCommitResponseData struct {
 	ClusterID        string                      `json:"cluster_id,required"`
 	CommitID         string                      `json:"commit_id,required"`
 	HostArchitecture string                      `json:"host_architecture,required"`
-	VmArchitecture   string                      `json:"vm_architecture,required"`
 	JSON             apiVmCommitResponseDataJSON `json:"-"`
 }
 
@@ -1101,7 +1100,6 @@ type apiVmCommitResponseDataJSON struct {
 	ClusterID        apijson.Field
 	CommitID         apijson.Field
 	HostArchitecture apijson.Field
-	VmArchitecture   apijson.Field
 	raw              string
 	ExtraFields      map[string]apijson.Field
 }
