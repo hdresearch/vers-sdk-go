@@ -92,14 +92,14 @@ func (r *APIVmService) Branch(ctx context.Context, vmIDOrAlias string, body APIV
 }
 
 // Commit a VM.
-func (r *APIVmService) Commit(ctx context.Context, vmIDOrAlias string, body APIVmCommitParams, opts ...option.RequestOption) (res *APIVmCommitResponse, err error) {
+func (r *APIVmService) Commit(ctx context.Context, vmIDOrAlias string, opts ...option.RequestOption) (res *APIVmCommitResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return
 	}
 	path := fmt.Sprintf("api/vm/%s/commit", vmIDOrAlias)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return
 }
 
@@ -120,14 +120,6 @@ type VmBranchParams struct {
 }
 
 func (r VmBranchParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-type VmCommitRequestParam struct {
-	Tags param.Field[[]string] `json:"tags"`
-}
-
-func (r VmCommitRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1088,20 +1080,16 @@ func (r apiVmCommitResponseJSON) RawJSON() string {
 }
 
 type APIVmCommitResponseData struct {
-	ClusterID        string                      `json:"cluster_id,required"`
-	CommitID         string                      `json:"commit_id,required"`
-	HostArchitecture string                      `json:"host_architecture,required"`
-	JSON             apiVmCommitResponseDataJSON `json:"-"`
+	ID   string                      `json:"id,required"`
+	JSON apiVmCommitResponseDataJSON `json:"-"`
 }
 
 // apiVmCommitResponseDataJSON contains the JSON metadata for the struct
 // [APIVmCommitResponseData]
 type apiVmCommitResponseDataJSON struct {
-	ClusterID        apijson.Field
-	CommitID         apijson.Field
-	HostArchitecture apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
+	ID          apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
 }
 
 func (r *APIVmCommitResponseData) UnmarshalJSON(data []byte) (err error) {
@@ -1227,12 +1215,4 @@ type APIVmBranchParams struct {
 
 func (r APIVmBranchParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.VmBranchParams)
-}
-
-type APIVmCommitParams struct {
-	VmCommitRequest VmCommitRequestParam `json:"vm_commit_request,required"`
-}
-
-func (r APIVmCommitParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.VmCommitRequest)
 }
