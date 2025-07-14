@@ -39,6 +39,7 @@ func (r *APITelemetryService) GetInfo(ctx context.Context, opts ...option.Reques
 }
 
 type TelemetryDto struct {
+	ID                  string           `json:"id,required"`
 	FsMibCurrent        int64            `json:"fs_mib_current,required"`
 	FsMibMax            int64            `json:"fs_mib_max,required"`
 	MemMibCurrent       int64            `json:"mem_mib_current,required"`
@@ -52,6 +53,7 @@ type TelemetryDto struct {
 
 // telemetryDtoJSON contains the JSON metadata for the struct [TelemetryDto]
 type telemetryDtoJSON struct {
+	ID                  apijson.Field
 	FsMibCurrent        apijson.Field
 	FsMibMax            apijson.Field
 	MemMibCurrent       apijson.Field
