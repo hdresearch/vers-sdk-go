@@ -151,7 +151,7 @@ func TestAPIVmBranchWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestAPIVmCommit(t *testing.T) {
+func TestAPIVmCommitWithOptionalParams(t *testing.T) {
 	t.Skip("skipped: tests are disabled for the time being")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -164,7 +164,15 @@ func TestAPIVmCommit(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Commit(context.TODO(), "vm_id_or_alias")
+	_, err := client.API.Vm.Commit(
+		context.TODO(),
+		"vm_id_or_alias",
+		vers.APIVmCommitParams{
+			VmCommitRequest: vers.VmCommitRequestParam{
+				Tags: vers.F([]string{"string"}),
+			},
+		},
+	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
