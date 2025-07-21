@@ -195,7 +195,7 @@ type VmDto struct {
 	// How much RAM is allocated to this VM
 	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
-	NetworkInfo VmNetworkInfoDto `json:"network_info,required"`
+	NetworkInfo VmDtoNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State VmDtoState `json:"state,required"`
 	// How many vCPUs were allocated to this VM
@@ -232,6 +232,38 @@ func (r vmDtoJSON) RawJSON() string {
 	return r.raw
 }
 
+// The VM's network configuration
+type VmDtoNetworkInfo struct {
+	GuestIP     string               `json:"guest_ip,required"`
+	GuestMac    string               `json:"guest_mac,required"`
+	SSHPort     int64                `json:"ssh_port,required"`
+	Tap0IP      string               `json:"tap0_ip,required"`
+	Tap0Name    string               `json:"tap0_name,required"`
+	VmNamespace string               `json:"vm_namespace,required"`
+	JSON        vmDtoNetworkInfoJSON `json:"-"`
+}
+
+// vmDtoNetworkInfoJSON contains the JSON metadata for the struct
+// [VmDtoNetworkInfo]
+type vmDtoNetworkInfoJSON struct {
+	GuestIP     apijson.Field
+	GuestMac    apijson.Field
+	SSHPort     apijson.Field
+	Tap0IP      apijson.Field
+	Tap0Name    apijson.Field
+	VmNamespace apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VmDtoNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmDtoNetworkInfoJSON) RawJSON() string {
+	return r.raw
+}
+
 // Whether the VM is running, paused, or not started.
 type VmDtoState string
 
@@ -247,37 +279,6 @@ func (r VmDtoState) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type VmNetworkInfoDto struct {
-	GuestIP     string               `json:"guest_ip,required"`
-	GuestMac    string               `json:"guest_mac,required"`
-	SSHPort     int64                `json:"ssh_port,required"`
-	Tap0IP      string               `json:"tap0_ip,required"`
-	Tap0Name    string               `json:"tap0_name,required"`
-	VmNamespace string               `json:"vm_namespace,required"`
-	JSON        vmNetworkInfoDtoJSON `json:"-"`
-}
-
-// vmNetworkInfoDtoJSON contains the JSON metadata for the struct
-// [VmNetworkInfoDto]
-type vmNetworkInfoDtoJSON struct {
-	GuestIP     apijson.Field
-	GuestMac    apijson.Field
-	SSHPort     apijson.Field
-	Tap0IP      apijson.Field
-	Tap0Name    apijson.Field
-	VmNamespace apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VmNetworkInfoDto) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vmNetworkInfoDtoJSON) RawJSON() string {
-	return r.raw
 }
 
 type VmPatchParams struct {
@@ -348,7 +349,7 @@ type APIVmGetResponseData struct {
 	// How much RAM is allocated to this VM
 	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
-	NetworkInfo VmNetworkInfoDto `json:"network_info,required"`
+	NetworkInfo APIVmGetResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmGetResponseDataState `json:"state,required"`
 	// How many vCPUs were allocated to this VM
@@ -383,6 +384,38 @@ func (r *APIVmGetResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiVmGetResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+// The VM's network configuration
+type APIVmGetResponseDataNetworkInfo struct {
+	GuestIP     string                              `json:"guest_ip,required"`
+	GuestMac    string                              `json:"guest_mac,required"`
+	SSHPort     int64                               `json:"ssh_port,required"`
+	Tap0IP      string                              `json:"tap0_ip,required"`
+	Tap0Name    string                              `json:"tap0_name,required"`
+	VmNamespace string                              `json:"vm_namespace,required"`
+	JSON        apiVmGetResponseDataNetworkInfoJSON `json:"-"`
+}
+
+// apiVmGetResponseDataNetworkInfoJSON contains the JSON metadata for the struct
+// [APIVmGetResponseDataNetworkInfo]
+type apiVmGetResponseDataNetworkInfoJSON struct {
+	GuestIP     apijson.Field
+	GuestMac    apijson.Field
+	SSHPort     apijson.Field
+	Tap0IP      apijson.Field
+	Tap0Name    apijson.Field
+	VmNamespace apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIVmGetResponseDataNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmGetResponseDataNetworkInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -476,7 +509,7 @@ type APIVmUpdateResponseData struct {
 	// How much RAM is allocated to this VM
 	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
-	NetworkInfo VmNetworkInfoDto `json:"network_info,required"`
+	NetworkInfo APIVmUpdateResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmUpdateResponseDataState `json:"state,required"`
 	// How many vCPUs were allocated to this VM
@@ -511,6 +544,38 @@ func (r *APIVmUpdateResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiVmUpdateResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+// The VM's network configuration
+type APIVmUpdateResponseDataNetworkInfo struct {
+	GuestIP     string                                 `json:"guest_ip,required"`
+	GuestMac    string                                 `json:"guest_mac,required"`
+	SSHPort     int64                                  `json:"ssh_port,required"`
+	Tap0IP      string                                 `json:"tap0_ip,required"`
+	Tap0Name    string                                 `json:"tap0_name,required"`
+	VmNamespace string                                 `json:"vm_namespace,required"`
+	JSON        apiVmUpdateResponseDataNetworkInfoJSON `json:"-"`
+}
+
+// apiVmUpdateResponseDataNetworkInfoJSON contains the JSON metadata for the struct
+// [APIVmUpdateResponseDataNetworkInfo]
+type apiVmUpdateResponseDataNetworkInfoJSON struct {
+	GuestIP     apijson.Field
+	GuestMac    apijson.Field
+	SSHPort     apijson.Field
+	Tap0IP      apijson.Field
+	Tap0Name    apijson.Field
+	VmNamespace apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIVmUpdateResponseDataNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmUpdateResponseDataNetworkInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -604,7 +669,7 @@ type APIVmListResponseData struct {
 	// How much RAM is allocated to this VM
 	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
-	NetworkInfo VmNetworkInfoDto `json:"network_info,required"`
+	NetworkInfo APIVmListResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmListResponseDataState `json:"state,required"`
 	// How many vCPUs were allocated to this VM
@@ -639,6 +704,38 @@ func (r *APIVmListResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiVmListResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+// The VM's network configuration
+type APIVmListResponseDataNetworkInfo struct {
+	GuestIP     string                               `json:"guest_ip,required"`
+	GuestMac    string                               `json:"guest_mac,required"`
+	SSHPort     int64                                `json:"ssh_port,required"`
+	Tap0IP      string                               `json:"tap0_ip,required"`
+	Tap0Name    string                               `json:"tap0_name,required"`
+	VmNamespace string                               `json:"vm_namespace,required"`
+	JSON        apiVmListResponseDataNetworkInfoJSON `json:"-"`
+}
+
+// apiVmListResponseDataNetworkInfoJSON contains the JSON metadata for the struct
+// [APIVmListResponseDataNetworkInfo]
+type apiVmListResponseDataNetworkInfoJSON struct {
+	GuestIP     apijson.Field
+	GuestMac    apijson.Field
+	SSHPort     apijson.Field
+	Tap0IP      apijson.Field
+	Tap0Name    apijson.Field
+	VmNamespace apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIVmListResponseDataNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmListResponseDataNetworkInfoJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -844,7 +941,7 @@ type APIVmBranchResponseData struct {
 	// How much RAM is allocated to this VM
 	MemSizeMib int64 `json:"mem_size_mib,required"`
 	// The VM's network configuration
-	NetworkInfo VmNetworkInfoDto `json:"network_info,required"`
+	NetworkInfo APIVmBranchResponseDataNetworkInfo `json:"network_info,required"`
 	// Whether the VM is running, paused, or not started.
 	State APIVmBranchResponseDataState `json:"state,required"`
 	// How many vCPUs were allocated to this VM
@@ -879,6 +976,38 @@ func (r *APIVmBranchResponseData) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r apiVmBranchResponseDataJSON) RawJSON() string {
+	return r.raw
+}
+
+// The VM's network configuration
+type APIVmBranchResponseDataNetworkInfo struct {
+	GuestIP     string                                 `json:"guest_ip,required"`
+	GuestMac    string                                 `json:"guest_mac,required"`
+	SSHPort     int64                                  `json:"ssh_port,required"`
+	Tap0IP      string                                 `json:"tap0_ip,required"`
+	Tap0Name    string                                 `json:"tap0_name,required"`
+	VmNamespace string                                 `json:"vm_namespace,required"`
+	JSON        apiVmBranchResponseDataNetworkInfoJSON `json:"-"`
+}
+
+// apiVmBranchResponseDataNetworkInfoJSON contains the JSON metadata for the struct
+// [APIVmBranchResponseDataNetworkInfo]
+type apiVmBranchResponseDataNetworkInfoJSON struct {
+	GuestIP     apijson.Field
+	GuestMac    apijson.Field
+	SSHPort     apijson.Field
+	Tap0IP      apijson.Field
+	Tap0Name    apijson.Field
+	VmNamespace apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *APIVmBranchResponseDataNetworkInfo) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r apiVmBranchResponseDataNetworkInfoJSON) RawJSON() string {
 	return r.raw
 }
 
