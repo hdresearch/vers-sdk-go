@@ -27,9 +27,9 @@ func TestAPIClusterNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.API.Cluster.New(context.TODO(), vers.APIClusterNewParams{
-		ClusterCreateParams: vers.ClusterCreateParamsNewClusterParams{
-			ClusterType: vers.F(vers.ClusterCreateParamsNewClusterParamsClusterTypeNew),
-			Params: vers.F(vers.ClusterCreateParamsNewClusterParamsParams{
+		ClusterCreateRequest: vers.ClusterCreateRequestNewClusterParamsParam{
+			ClusterType: vers.F(vers.ClusterCreateRequestNewClusterParamsClusterTypeNew),
+			Params: vers.F(vers.ClusterCreateRequestNewClusterParamsParamsParam{
 				ClusterAlias:     vers.F("cluster_alias"),
 				FsSizeClusterMib: vers.F(int64(0)),
 				FsSizeVmMib:      vers.F(int64(0)),
@@ -90,7 +90,7 @@ func TestAPIClusterUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"cluster_id_or_alias",
 		vers.APIClusterUpdateParams{
-			ClusterPatchParams: vers.ClusterPatchParams{
+			ClusterPatchRequest: vers.ClusterPatchRequestParam{
 				Alias: vers.F("alias"),
 			},
 		},

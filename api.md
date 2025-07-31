@@ -4,8 +4,8 @@
 
 Params Types:
 
-- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#ClusterCreateParamsUnion">ClusterCreateParamsUnion</a>
-- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#ClusterPatchParams">ClusterPatchParams</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#ClusterCreateRequestUnionParam">ClusterCreateRequestUnionParam</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#ClusterPatchRequestParam">ClusterPatchRequestParam</a>
 
 Response Types:
 
