@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.0-alpha.18 (2025-07-31)
+
+Full Changelog: [v0.1.0-alpha.17...v0.1.0-alpha.18](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.17...v0.1.0-alpha.18)
+
+### Features
+
+* **api:** api update ([665dbaa](https://github.com/hdresearch/vers-sdk-go/commit/665dbaacd9c29486da1f0553cfd8dc57488f436f))
+* **api:** api update ([ba5b54d](https://github.com/hdresearch/vers-sdk-go/commit/ba5b54d79a9172f9283e6fe5d63719174ebac63f))
+* **api:** api update ([07b2261](https://github.com/hdresearch/vers-sdk-go/commit/07b2261fb4c86f617b12cdfadad59280e170ce2e))
+* **api:** api update ([cfde722](https://github.com/hdresearch/vers-sdk-go/commit/cfde7226946642aabecff6d5cdb037b722cbe0af))
+* **api:** manual updates ([a49c373](https://github.com/hdresearch/vers-sdk-go/commit/a49c373af6c47a0f563b9ee0b22ac9cdaeb36055))
+
+
+### Bug Fixes
+
+* **client:** process custom base url ahead of time ([55adab7](https://github.com/hdresearch/vers-sdk-go/commit/55adab7d2675e529ef88947e24b8570c1355f1b3))
+
 ## 0.1.0-alpha.17 (2025-07-14)
 
 Full Changelog: [v0.1.0-alpha.16...v0.1.0-alpha.17](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.16...v0.1.0-alpha.17)
