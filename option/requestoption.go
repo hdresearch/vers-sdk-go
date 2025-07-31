@@ -27,14 +27,15 @@ type RequestOption = requestconfig.RequestOption
 // For security reasons, ensure that the base URL is trusted.
 func WithBaseURL(base string) RequestOption {
 	u, err := url.Parse(base)
+	if err == nil && u.Path != "" && !strings.HasSuffix(u.Path, "/") {
+		u.Path += "/"
+	}
+
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		if err != nil {
-			return fmt.Errorf("requestoption: WithBaseURL failed to parse url %s\n", err)
+			return fmt.Errorf("requestoption: WithBaseURL failed to parse url %s", err)
 		}
 
-		if u.Path != "" && !strings.HasSuffix(u.Path, "/") {
-			u.Path += "/"
-		}
 		r.BaseURL = u
 		return nil
 	})
@@ -262,7 +263,7 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "production" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentProduction() RequestOption {
-	return requestconfig.WithDefaultBaseURL("http://13.219.19.157/")
+	return requestconfig.WithDefaultBaseURL("https://api.vers.sh/")
 }
 
 // WithAPIKey returns a RequestOption that sets the client setting "api_key".
