@@ -115,11 +115,11 @@ func (r *APIVmService) GetSSHKey(ctx context.Context, vmIDOrAlias string, opts .
 	return
 }
 
-type VmBranchParams struct {
+type VmBranchRequestParam struct {
 	Alias param.Field[string] `json:"alias"`
 }
 
-func (r VmBranchParams) MarshalJSON() (data []byte, err error) {
+func (r VmBranchRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -281,25 +281,25 @@ func (r VmDtoState) IsKnown() bool {
 	return false
 }
 
-type VmPatchParams struct {
-	Alias param.Field[string]             `json:"alias"`
-	State param.Field[VmPatchParamsState] `json:"state"`
+type VmPatchRequestParam struct {
+	Alias param.Field[string]              `json:"alias"`
+	State param.Field[VmPatchRequestState] `json:"state"`
 }
 
-func (r VmPatchParams) MarshalJSON() (data []byte, err error) {
+func (r VmPatchRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type VmPatchParamsState string
+type VmPatchRequestState string
 
 const (
-	VmPatchParamsStateRunning VmPatchParamsState = "Running"
-	VmPatchParamsStatePaused  VmPatchParamsState = "Paused"
+	VmPatchRequestStateRunning VmPatchRequestState = "Running"
+	VmPatchRequestStatePaused  VmPatchRequestState = "Paused"
 )
 
-func (r VmPatchParamsState) IsKnown() bool {
+func (r VmPatchRequestState) IsKnown() bool {
 	switch r {
-	case VmPatchParamsStateRunning, VmPatchParamsStatePaused:
+	case VmPatchRequestStateRunning, VmPatchRequestStatePaused:
 		return true
 	}
 	return false
@@ -1201,11 +1201,11 @@ func (r APIVmGetSSHKeyResponseOperationCode) IsKnown() bool {
 }
 
 type APIVmUpdateParams struct {
-	VmPatchParams VmPatchParams `json:"vm_patch_params,required"`
+	VmPatchRequest VmPatchRequestParam `json:"vm_patch_request,required"`
 }
 
 func (r APIVmUpdateParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.VmPatchParams)
+	return apijson.MarshalRoot(r.VmPatchRequest)
 }
 
 type APIVmDeleteParams struct {
@@ -1222,11 +1222,11 @@ func (r APIVmDeleteParams) URLQuery() (v url.Values) {
 }
 
 type APIVmBranchParams struct {
-	VmBranchParams VmBranchParams `json:"vm_branch_params,required"`
+	VmBranchRequest VmBranchRequestParam `json:"vm_branch_request,required"`
 }
 
 func (r APIVmBranchParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r.VmBranchParams)
+	return apijson.MarshalRoot(r.VmBranchRequest)
 }
 
 type APIVmCommitParams struct {
