@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.0-alpha.19 (2025-08-09)
+
+Full Changelog: [v0.1.0-alpha.18...v0.1.0-alpha.19](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.18...v0.1.0-alpha.19)
+
+### Features
+
+* **client:** support optional json html escaping ([de69e13](https://github.com/hdresearch/vers-sdk-go/commit/de69e136a655903306a202d906eab75065040d6c))
+
+
+### Chores
+
+* update @stainless-api/prism-cli to v5.15.0 ([13c123f](https://github.com/hdresearch/vers-sdk-go/commit/13c123f2fee3cdc12d7ba8b5e1f9cf26528b4087))
+
 ## 0.1.0-alpha.18 (2025-07-31)
 
 Full Changelog: [v0.1.0-alpha.17...v0.1.0-alpha.18](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.17...v0.1.0-alpha.18)
