@@ -184,7 +184,7 @@ func (r ClusterCreateRequestClusterFromCommitParamsClusterType) IsKnown() bool {
 }
 
 type ClusterCreateRequestClusterFromCommitParamsParamsParam struct {
-	CommitID         param.Field[string] `json:"commit_id,required"`
+	CommitKey        param.Field[string] `json:"commit_key,required"`
 	ClusterAlias     param.Field[string] `json:"cluster_alias"`
 	FsSizeClusterMib param.Field[int64]  `json:"fs_size_cluster_mib"`
 	VmAlias          param.Field[string] `json:"vm_alias"`
