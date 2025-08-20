@@ -39,31 +39,43 @@ func (r *APITelemetryService) GetInfo(ctx context.Context, opts ...option.Reques
 }
 
 type TelemetryDto struct {
-	ID                  string           `json:"id,required"`
-	FsMibCurrent        int64            `json:"fs_mib_current,required"`
-	FsMibMax            int64            `json:"fs_mib_max,required"`
-	MemMibCurrent       int64            `json:"mem_mib_current,required"`
-	MemMibMax           int64            `json:"mem_mib_max,required"`
-	VcpuCurrent         int64            `json:"vcpu_current,required"`
-	VcpuMax             int64            `json:"vcpu_max,required"`
-	VmNetworkCountInUse int64            `json:"vm_network_count_in_use,required"`
-	VmNetworkCountTotal int64            `json:"vm_network_count_total,required"`
-	JSON                telemetryDtoJSON `json:"-"`
+	ID                   string           `json:"id,required"`
+	CPUCoresAvailable    int64            `json:"cpu_cores_available,required"`
+	CPUCoresMargin       int64            `json:"cpu_cores_margin,required"`
+	CPUCoresTotal        int64            `json:"cpu_cores_total,required"`
+	CPUCoresUsed         int64            `json:"cpu_cores_used,required"`
+	DiskDataMibAvailable int64            `json:"disk_data_mib_available,required"`
+	DiskDataMibTotal     int64            `json:"disk_data_mib_total,required"`
+	DiskVmMibAvailable   int64            `json:"disk_vm_mib_available,required"`
+	DiskVmMibTotal       int64            `json:"disk_vm_mib_total,required"`
+	MemoryMibAvailable   int64            `json:"memory_mib_available,required"`
+	MemoryMibMargin      int64            `json:"memory_mib_margin,required"`
+	MemoryMibTotal       int64            `json:"memory_mib_total,required"`
+	MemoryMibUsed        int64            `json:"memory_mib_used,required"`
+	VmNetworkCountInUse  int64            `json:"vm_network_count_in_use,required"`
+	VmNetworkCountTotal  int64            `json:"vm_network_count_total,required"`
+	JSON                 telemetryDtoJSON `json:"-"`
 }
 
 // telemetryDtoJSON contains the JSON metadata for the struct [TelemetryDto]
 type telemetryDtoJSON struct {
-	ID                  apijson.Field
-	FsMibCurrent        apijson.Field
-	FsMibMax            apijson.Field
-	MemMibCurrent       apijson.Field
-	MemMibMax           apijson.Field
-	VcpuCurrent         apijson.Field
-	VcpuMax             apijson.Field
-	VmNetworkCountInUse apijson.Field
-	VmNetworkCountTotal apijson.Field
-	raw                 string
-	ExtraFields         map[string]apijson.Field
+	ID                   apijson.Field
+	CPUCoresAvailable    apijson.Field
+	CPUCoresMargin       apijson.Field
+	CPUCoresTotal        apijson.Field
+	CPUCoresUsed         apijson.Field
+	DiskDataMibAvailable apijson.Field
+	DiskDataMibTotal     apijson.Field
+	DiskVmMibAvailable   apijson.Field
+	DiskVmMibTotal       apijson.Field
+	MemoryMibAvailable   apijson.Field
+	MemoryMibMargin      apijson.Field
+	MemoryMibTotal       apijson.Field
+	MemoryMibUsed        apijson.Field
+	VmNetworkCountInUse  apijson.Field
+	VmNetworkCountTotal  apijson.Field
+	raw                  string
+	ExtraFields          map[string]apijson.Field
 }
 
 func (r *TelemetryDto) UnmarshalJSON(data []byte) (err error) {
