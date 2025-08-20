@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.1.0-alpha.20 (2025-08-20)
+
+Full Changelog: [v0.1.0-alpha.19...v0.1.0-alpha.20](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.19...v0.1.0-alpha.20)
+
+### Features
+
+* **api:** api update ([1f9b530](https://github.com/hdresearch/vers-sdk-go/commit/1f9b5308aee1eeed2e615a7d9953e4bac181617c))
+* **api:** api update ([a5f1095](https://github.com/hdresearch/vers-sdk-go/commit/a5f1095152aeb7a499517febc081b398ef64efc0))
+* **api:** api update ([87c46e5](https://github.com/hdresearch/vers-sdk-go/commit/87c46e53d3c526ad5413d7d1b03da9b3dfc78dbd))
+* **api:** api update ([63e1a90](https://github.com/hdresearch/vers-sdk-go/commit/63e1a9034e8e259638e6f76f1a77aa2af6a8a34f))
+
+
+### Chores
+
+* **internal:** codegen related update ([ada02e9](https://github.com/hdresearch/vers-sdk-go/commit/ada02e92eec1d5879d5461b399cb8b43ed5758fa))
+* **internal:** update comment in script ([f9dc810](https://github.com/hdresearch/vers-sdk-go/commit/f9dc810c497bb91161e1251d5360ebb71ae31e56))
+
 ## 0.1.0-alpha.19 (2025-08-09)
 
 Full Changelog: [v0.1.0-alpha.18...v0.1.0-alpha.19](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.18...v0.1.0-alpha.19)
