@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.21 (2025-09-15)
+
+Full Changelog: [v0.1.0-alpha.20...v0.1.0-alpha.21](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.20...v0.1.0-alpha.21)
+
+### Bug Fixes
+
+* close body before retrying ([80568a5](https://github.com/hdresearch/vers-sdk-go/commit/80568a5dd911ca76d2819dea1be5370984e3899e))
+
 ## 0.1.0-alpha.20 (2025-08-20)
 
 Full Changelog: [v0.1.0-alpha.19...v0.1.0-alpha.20](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.19...v0.1.0-alpha.20)
