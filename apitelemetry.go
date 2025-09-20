@@ -5,6 +5,7 @@ package vers
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
 	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
@@ -32,7 +33,7 @@ func NewAPITelemetryService(opts ...option.RequestOption) (r *APITelemetryServic
 
 // Get telemetry information
 func (r *APITelemetryService) GetInfo(ctx context.Context, opts ...option.RequestOption) (res *TelemetryDto, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "api/telemetry"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
