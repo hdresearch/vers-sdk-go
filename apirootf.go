@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
 	"github.com/hdresearch/vers-sdk-go/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAPIRootfService(opts ...option.RequestOption) (r *APIRootfService) {
 
 // List all available rootfs names on the server.
 func (r *APIRootfService) List(ctx context.Context, opts ...option.RequestOption) (res *APIRootfListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "api/rootfs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -45,7 +46,7 @@ func (r *APIRootfService) List(ctx context.Context, opts ...option.RequestOption
 
 // Delete an existing rootfs from the server.
 func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...option.RequestOption) (res *APIRootfDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if rootfsID == "" {
 		err = errors.New("missing required rootfs_id parameter")
 		return
@@ -58,7 +59,7 @@ func (r *APIRootfService) Delete(ctx context.Context, rootfsID string, opts ...o
 // Upload a rootfs tar archive to the server. The archive should contain the
 // Dockerfile and all necessary dependencies.
 func (r *APIRootfService) Upload(ctx context.Context, rootfsID string, body APIRootfUploadParams, opts ...option.RequestOption) (res *APIRootfUploadResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if rootfsID == "" {
 		err = errors.New("missing required rootfs_id parameter")
 		return

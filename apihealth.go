@@ -5,6 +5,7 @@ package vers
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
 	"github.com/hdresearch/vers-sdk-go/option"
@@ -31,7 +32,7 @@ func NewAPIHealthService(opts ...option.RequestOption) (r *APIHealthService) {
 
 // Get health of the API.
 func (r *APIHealthService) Check(ctx context.Context, opts ...option.RequestOption) (res *string, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "text/plain")}, opts...)
 	path := "api/health"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)

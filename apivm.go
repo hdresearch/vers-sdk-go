@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
 	"github.com/hdresearch/vers-sdk-go/internal/apiquery"
@@ -37,7 +38,7 @@ func NewAPIVmService(opts ...option.RequestOption) (r *APIVmService) {
 
 // Retrieve information on a particular VM.
 func (r *APIVmService) Get(ctx context.Context, vmIDOrAlias string, opts ...option.RequestOption) (res *APIVmGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return
@@ -49,7 +50,7 @@ func (r *APIVmService) Get(ctx context.Context, vmIDOrAlias string, opts ...opti
 
 // Update VM state.
 func (r *APIVmService) Update(ctx context.Context, vmIDOrAlias string, body APIVmUpdateParams, opts ...option.RequestOption) (res *APIVmUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return
@@ -61,7 +62,7 @@ func (r *APIVmService) Update(ctx context.Context, vmIDOrAlias string, body APIV
 
 // List all VMs.
 func (r *APIVmService) List(ctx context.Context, opts ...option.RequestOption) (res *APIVmListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "api/vm"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -69,7 +70,7 @@ func (r *APIVmService) List(ctx context.Context, opts ...option.RequestOption) (
 
 // Delete a VM.
 func (r *APIVmService) Delete(ctx context.Context, vmIDOrAlias string, body APIVmDeleteParams, opts ...option.RequestOption) (res *APIVmDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return
@@ -81,7 +82,7 @@ func (r *APIVmService) Delete(ctx context.Context, vmIDOrAlias string, body APIV
 
 // Branch a VM.
 func (r *APIVmService) Branch(ctx context.Context, vmIDOrAlias string, body APIVmBranchParams, opts ...option.RequestOption) (res *APIVmBranchResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return
@@ -93,7 +94,7 @@ func (r *APIVmService) Branch(ctx context.Context, vmIDOrAlias string, body APIV
 
 // Commit a VM.
 func (r *APIVmService) Commit(ctx context.Context, vmIDOrAlias string, body APIVmCommitParams, opts ...option.RequestOption) (res *APIVmCommitResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return
@@ -105,7 +106,7 @@ func (r *APIVmService) Commit(ctx context.Context, vmIDOrAlias string, body APIV
 
 // Get the SSH private key for VM access
 func (r *APIVmService) GetSSHKey(ctx context.Context, vmIDOrAlias string, opts ...option.RequestOption) (res *APIVmGetSSHKeyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if vmIDOrAlias == "" {
 		err = errors.New("missing required vm_id_or_alias parameter")
 		return

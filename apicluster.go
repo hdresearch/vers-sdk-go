@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"slices"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
 	"github.com/hdresearch/vers-sdk-go/internal/param"
@@ -35,7 +36,7 @@ func NewAPIClusterService(opts ...option.RequestOption) (r *APIClusterService) {
 
 // Create a new cluster.
 func (r *APIClusterService) New(ctx context.Context, body APIClusterNewParams, opts ...option.RequestOption) (res *APIClusterNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "api/cluster"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *APIClusterService) New(ctx context.Context, body APIClusterNewParams, o
 
 // Retrieve information on a particular cluster.
 func (r *APIClusterService) Get(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterGetResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if clusterIDOrAlias == "" {
 		err = errors.New("missing required cluster_id_or_alias parameter")
 		return
@@ -55,7 +56,7 @@ func (r *APIClusterService) Get(ctx context.Context, clusterIDOrAlias string, op
 
 // Update a cluster's configuration
 func (r *APIClusterService) Update(ctx context.Context, clusterIDOrAlias string, body APIClusterUpdateParams, opts ...option.RequestOption) (res *APIClusterUpdateResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if clusterIDOrAlias == "" {
 		err = errors.New("missing required cluster_id_or_alias parameter")
 		return
@@ -67,7 +68,7 @@ func (r *APIClusterService) Update(ctx context.Context, clusterIDOrAlias string,
 
 // List all clusters.
 func (r *APIClusterService) List(ctx context.Context, opts ...option.RequestOption) (res *APIClusterListResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "api/cluster"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -75,7 +76,7 @@ func (r *APIClusterService) List(ctx context.Context, opts ...option.RequestOpti
 
 // Delete a cluster.
 func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterDeleteResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if clusterIDOrAlias == "" {
 		err = errors.New("missing required cluster_id_or_alias parameter")
 		return
@@ -87,7 +88,7 @@ func (r *APIClusterService) Delete(ctx context.Context, clusterIDOrAlias string,
 
 // Get the SSH private key for VM access
 func (r *APIClusterService) GetSSHKey(ctx context.Context, clusterIDOrAlias string, opts ...option.RequestOption) (res *APIClusterGetSSHKeyResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if clusterIDOrAlias == "" {
 		err = errors.New("missing required cluster_id_or_alias parameter")
 		return
