@@ -13,7 +13,7 @@ import (
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
-func TestAPIVmGet(t *testing.T) {
+func TestOrchestratorVmDelete(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestAPIVmGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Get(context.TODO(), "vm_id_or_alias")
+	_, err := client.Orchestrator.Vm.Delete(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -36,7 +36,7 @@ func TestAPIVmGet(t *testing.T) {
 	}
 }
 
-func TestAPIVmUpdateWithOptionalParams(t *testing.T) {
+func TestOrchestratorVmBranch(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,153 +49,121 @@ func TestAPIVmUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.API.Vm.Update(
+	_, err := client.Orchestrator.Vm.Branch(context.TODO(), "vm_id")
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOrchestratorVmCommit(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Orchestrator.Vm.Commit(context.TODO(), "vm_id")
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOrchestratorVmNewRoot(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Orchestrator.Vm.NewRoot(context.TODO(), vers.OrchestratorVmNewRootParams{
+		NewRootRequest: vers.NewRootRequestParam{
+			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{
+				FsSizeMib:  vers.F(int64(0)),
+				ImageName:  vers.F("image_name"),
+				KernelName: vers.F("kernel_name"),
+				MemSizeMib: vers.F(int64(0)),
+				VcpuCount:  vers.F(int64(0)),
+			}),
+		},
+	})
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOrchestratorVmRestoreFromCommit(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Orchestrator.Vm.RestoreFromCommit(context.TODO(), vers.OrchestratorVmRestoreFromCommitParams{
+		VmFromCommitRequest: vers.VmFromCommitRequestParam{
+			CommitID: vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+		},
+	})
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestOrchestratorVmUpdateState(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Orchestrator.Vm.UpdateState(
 		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmUpdateParams{
-			VmPatchRequest: vers.VmPatchRequestParam{
-				Alias: vers.F("alias"),
-				State: vers.F(vers.VmPatchRequestStateRunning),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		vers.OrchestratorVmUpdateStateParams{
+			VmUpdateStateRequest: vers.VmUpdateStateRequestParam{
+				State: vers.F(vers.VmUpdateStateRequestStatePaused),
 			},
 		},
 	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmList(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.List(context.TODO())
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmDelete(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.Delete(
-		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmDeleteParams{
-			Recursive: vers.F(true),
-		},
-	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmBranchWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.Branch(
-		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmBranchParams{
-			VmBranchRequest: vers.VmBranchRequestParam{
-				Alias: vers.F("alias"),
-			},
-		},
-	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmCommitWithOptionalParams(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.Commit(
-		context.TODO(),
-		"vm_id_or_alias",
-		vers.APIVmCommitParams{
-			VmCommitRequest: vers.VmCommitRequestParam{
-				Tags: vers.F([]string{"string"}),
-			},
-		},
-	)
-	if err != nil {
-		var apierr *vers.Error
-		if errors.As(err, &apierr) {
-			t.Log(string(apierr.DumpRequest(true)))
-		}
-		t.Fatalf("err should be nil: %s", err.Error())
-	}
-}
-
-func TestAPIVmGetSSHKey(t *testing.T) {
-	t.Skip("Prism tests are disabled")
-	baseURL := "http://localhost:4010"
-	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
-		baseURL = envURL
-	}
-	if !testutil.CheckTestServer(t, baseURL) {
-		return
-	}
-	client := vers.NewClient(
-		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-	)
-	_, err := client.API.Vm.GetSSHKey(context.TODO(), "vm_id_or_alias")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
