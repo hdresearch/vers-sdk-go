@@ -45,10 +45,13 @@ import (
 	"fmt"
 
 	"github.com/hdresearch/vers-sdk-go"
+	"github.com/hdresearch/vers-sdk-go/option"
 )
 
 func main() {
-	client := vers.NewClient()
+	client := vers.NewClient(
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("VERS_API_KEY")
+	)
 	newVmResponse, err := client.Orchestrator.Vm.NewRoot(context.TODO(), vers.OrchestratorVmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
