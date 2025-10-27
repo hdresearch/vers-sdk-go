@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
 	"github.com/hdresearch/vers-sdk-go/internal/param"
@@ -15,26 +16,33 @@ import (
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
-// OrchestratorVmService contains methods and other services that help with
-// interacting with the vers API.
+// VmService contains methods and other services that help with interacting with
+// the vers API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
-// the [NewOrchestratorVmService] method instead.
-type OrchestratorVmService struct {
+// the [NewVmService] method instead.
+type VmService struct {
 	Options []option.RequestOption
 }
 
-// NewOrchestratorVmService generates a new service that applies the given options
-// to each request. These options are applied after the parent client's options (if
-// there is one), and before any request-specific options.
-func NewOrchestratorVmService(opts ...option.RequestOption) (r *OrchestratorVmService) {
-	r = &OrchestratorVmService{}
+// NewVmService generates a new service that applies the given options to each
+// request. These options are applied after the parent client's options (if there
+// is one), and before any request-specific options.
+func NewVmService(opts ...option.RequestOption) (r *VmService) {
+	r = &VmService{}
 	r.Options = opts
 	return
 }
 
-func (r *OrchestratorVmService) Delete(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmDeleteResponse, err error) {
+func (r *VmService) List(ctx context.Context, opts ...option.RequestOption) (res *[]Vm, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "vms"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+func (r *VmService) Delete(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
@@ -45,7 +53,7 @@ func (r *OrchestratorVmService) Delete(ctx context.Context, vmID string, opts ..
 	return
 }
 
-func (r *OrchestratorVmService) Branch(ctx context.Context, vmID string, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) Branch(ctx context.Context, vmID string, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
@@ -56,7 +64,7 @@ func (r *OrchestratorVmService) Branch(ctx context.Context, vmID string, opts ..
 	return
 }
 
-func (r *OrchestratorVmService) Commit(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
+func (r *VmService) Commit(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
@@ -67,21 +75,21 @@ func (r *OrchestratorVmService) Commit(ctx context.Context, vmID string, opts ..
 	return
 }
 
-func (r *OrchestratorVmService) NewRoot(ctx context.Context, body OrchestratorVmNewRootParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) NewRoot(ctx context.Context, body VmNewRootParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "vm/new_root"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-func (r *OrchestratorVmService) RestoreFromCommit(ctx context.Context, body OrchestratorVmRestoreFromCommitParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCommitParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "vm/from_commit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-func (r *OrchestratorVmService) UpdateState(ctx context.Context, vmID string, body OrchestratorVmUpdateStateParams, opts ...option.RequestOption) (err error) {
+func (r *VmService) UpdateState(ctx context.Context, vmID string, body VmUpdateStateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if vmID == "" {
@@ -138,6 +146,34 @@ func (r *NewVmResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r newVmResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type Vm struct {
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	IP        string    `json:"ip,required"`
+	OwnerID   string    `json:"owner_id,required" format:"uuid"`
+	VmID      string    `json:"vm_id,required" format:"uuid"`
+	Parent    string    `json:"parent,nullable" format:"uuid"`
+	JSON      vmJSON    `json:"-"`
+}
+
+// vmJSON contains the JSON metadata for the struct [Vm]
+type vmJSON struct {
+	CreatedAt   apijson.Field
+	IP          apijson.Field
+	OwnerID     apijson.Field
+	VmID        apijson.Field
+	Parent      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *Vm) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -224,28 +260,28 @@ func (r VmUpdateStateRequestState) IsKnown() bool {
 	return false
 }
 
-type OrchestratorVmNewRootParams struct {
+type VmNewRootParams struct {
 	NewRootRequest NewRootRequestParam `json:"new_root_request,required"`
 }
 
-func (r OrchestratorVmNewRootParams) MarshalJSON() (data []byte, err error) {
+func (r VmNewRootParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.NewRootRequest)
 }
 
-type OrchestratorVmRestoreFromCommitParams struct {
+type VmRestoreFromCommitParams struct {
 	// Request body for POST /api/vm/from_commit
 	VmFromCommitRequest VmFromCommitRequestParam `json:"vm_from_commit_request,required"`
 }
 
-func (r OrchestratorVmRestoreFromCommitParams) MarshalJSON() (data []byte, err error) {
+func (r VmRestoreFromCommitParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.VmFromCommitRequest)
 }
 
-type OrchestratorVmUpdateStateParams struct {
+type VmUpdateStateParams struct {
 	// Request body for PATCH /api/vm/{vm_id}/state
 	VmUpdateStateRequest VmUpdateStateRequestParam `json:"vm_update_state_request,required"`
 }
 
-func (r OrchestratorVmUpdateStateParams) MarshalJSON() (data []byte, err error) {
+func (r VmUpdateStateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.VmUpdateStateRequest)
 }

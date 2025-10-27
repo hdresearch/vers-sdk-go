@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	newVmResponse, err := client.Orchestrator.Vm.NewRoot(context.TODO(), vers.OrchestratorVmNewRootParams{
+	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
