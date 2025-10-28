@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.1.0-alpha.22 (2025-10-27)
+
+Full Changelog: [v0.1.0-alpha.21...v0.1.0-alpha.22](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.21...v0.1.0-alpha.22)
+
+### Features
+
+* **api:** api update ([938e40a](https://github.com/hdresearch/vers-sdk-go/commit/938e40aead4247bc249fcc0bf45667d09ec8a17c))
+* **api:** api update ([7e5a738](https://github.com/hdresearch/vers-sdk-go/commit/7e5a7383c7d2e02da99e13fc542e73dfc8134d6d))
+* **api:** api update ([ad679c3](https://github.com/hdresearch/vers-sdk-go/commit/ad679c38acb3dda9ce2c41e2dc83e938b774f370))
+
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([8882bee](https://github.com/hdresearch/vers-sdk-go/commit/8882bee07c7c60ba3013d60f663ad78a07666d7c))
+* use slices.Concat instead of sometimes modifying r.Options ([9951152](https://github.com/hdresearch/vers-sdk-go/commit/9951152fedd0264a85fdec7482f42a6d682919db))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([0b0ab5c](https://github.com/hdresearch/vers-sdk-go/commit/0b0ab5c5aadd4bda0e74f82fe00638ac71547697))
+* do not install brew dependencies in ./scripts/bootstrap by default ([6bb66c3](https://github.com/hdresearch/vers-sdk-go/commit/6bb66c3c207c35f1cb82aca6f152497c80c9978b))
+* update more docs for 1.22 ([8c7d6a1](https://github.com/hdresearch/vers-sdk-go/commit/8c7d6a1ec28d28ac923c017aa80be6209dc229ff))
+
 ## 0.1.0-alpha.21 (2025-09-15)
 
 Full Changelog: [v0.1.0-alpha.20...v0.1.0-alpha.21](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.20...v0.1.0-alpha.21)

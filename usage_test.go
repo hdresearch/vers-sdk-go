@@ -24,10 +24,14 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	clusters, err := client.API.Cluster.List(context.TODO())
+	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
+		NewRootRequest: vers.NewRootRequestParam{
+			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
+		},
+	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Logf("%+v\n", clusters.OperationID)
+	t.Logf("%+v\n", newVmResponse.ID)
 }
