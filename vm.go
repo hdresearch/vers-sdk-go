@@ -53,14 +53,15 @@ func (r *VmService) Delete(ctx context.Context, vmID string, opts ...option.Requ
 	return
 }
 
-func (r *VmService) Branch(ctx context.Context, vmID string, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) Branch(ctx context.Context, vmID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return
 	}
 	path := fmt.Sprintf("vm/%s/branch", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
 }
 
@@ -75,17 +76,19 @@ func (r *VmService) Commit(ctx context.Context, vmID string, opts ...option.Requ
 	return
 }
 
-func (r *VmService) NewRoot(ctx context.Context, body VmNewRootParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) NewRoot(ctx context.Context, body VmNewRootParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "vm/new_root"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
 
-func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCommitParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCommitParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	path := "vm/from_commit"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
 	return
 }
 
@@ -128,30 +131,8 @@ func (r NewRootRequestVmConfigParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-type NewVmResponse struct {
-	// The VM ID, a (v4) UUID
-	ID   string            `json:"id,required"`
-	JSON newVmResponseJSON `json:"-"`
-}
-
-// newVmResponseJSON contains the JSON metadata for the struct [NewVmResponse]
-type newVmResponseJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *NewVmResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r newVmResponseJSON) RawJSON() string {
-	return r.raw
-}
-
 type Vm struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	IP        string    `json:"ip,required"`
 	OwnerID   string    `json:"owner_id,required" format:"uuid"`
 	VmID      string    `json:"vm_id,required" format:"uuid"`
 	Parent    string    `json:"parent,nullable" format:"uuid"`
@@ -161,7 +142,6 @@ type Vm struct {
 // vmJSON contains the JSON metadata for the struct [Vm]
 type vmJSON struct {
 	CreatedAt   apijson.Field
-	IP          apijson.Field
 	OwnerID     apijson.Field
 	VmID        apijson.Field
 	Parent      apijson.Field
