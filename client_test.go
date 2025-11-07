@@ -66,7 +66,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -105,7 +105,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -139,7 +139,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -172,7 +172,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -199,7 +199,7 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	err := client.Vm.NewRoot(cancelCtx, vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(cancelCtx, vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -223,7 +223,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	err := client.Vm.NewRoot(cancelCtx, vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(cancelCtx, vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -253,7 +253,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		err := client.Vm.NewRoot(deadlineCtx, vers.VmNewRootParams{
+		_, err := client.Vm.NewRoot(deadlineCtx, vers.VmNewRootParams{
 			NewRootRequest: vers.NewRootRequestParam{
 				VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 			},
