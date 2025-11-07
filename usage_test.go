@@ -24,7 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
+	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -33,4 +33,5 @@ func TestUsage(t *testing.T) {
 		t.Error(err)
 		return
 	}
+	t.Logf("%+v\n", newVmResponse.VmID)
 }

@@ -72,7 +72,7 @@ func TestVmBranch(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Vm.Branch(context.TODO(), "vm_id")
+	_, err := client.Vm.Branch(context.TODO(), "vm_id")
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -118,7 +118,7 @@ func TestVmNewRoot(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
+	_, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{
 				FsSizeMib:  vers.F(int64(0)),
@@ -151,7 +151,7 @@ func TestVmRestoreFromCommit(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Vm.RestoreFromCommit(context.TODO(), vers.VmRestoreFromCommitParams{
+	_, err := client.Vm.RestoreFromCommit(context.TODO(), vers.VmRestoreFromCommitParams{
 		VmFromCommitRequest: vers.VmFromCommitRequestParam{
 			CommitID: vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
