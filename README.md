@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/hdresearch/vers-sdk-go@v0.1.0-alpha.22'
+go get -u 'github.com/hdresearch/vers-sdk-go@v0.1.0-alpha.23'
 ```
 
 <!-- x-release-please-end -->
@@ -42,7 +42,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hdresearch/vers-sdk-go"
 	"github.com/hdresearch/vers-sdk-go/option"
@@ -52,7 +51,7 @@ func main() {
 	client := vers.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("VERS_API_KEY")
 	)
-	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
+	err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
@@ -60,7 +59,6 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", newVmResponse.ID)
 }
 
 ```
@@ -178,7 +176,7 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
+err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
 	NewRootRequest: vers.NewRootRequestParam{
 		VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 	},
@@ -266,7 +264,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-newVmResponse, err := client.Vm.NewRoot(
+err := client.Vm.NewRoot(
 	context.TODO(),
 	vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
@@ -278,7 +276,7 @@ newVmResponse, err := client.Vm.NewRoot(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", newVmResponse)
+null
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
