@@ -82,6 +82,17 @@ func (r *VmService) NewRoot(ctx context.Context, body VmNewRootParams, opts ...o
 	return
 }
 
+func (r *VmService) GetSSHKey(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmSSHKeyResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return
+	}
+	path := fmt.Sprintf("vm/%s/ssh_key", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCommitParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "vm/from_commit"
@@ -230,6 +241,33 @@ type VmFromCommitRequestParam struct {
 
 func (r VmFromCommitRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// Response body for GET /api/vm/{vm_id}/ssh_key
+type VmSSHKeyResponse struct {
+	// The SSH port that will be DNAT'd to the VM's netns (and, in turn, to its TAP
+	// device)
+	SSHPort int64 `json:"ssh_port,required"`
+	// Private SSH key in stringified OpenSSH format
+	SSHPrivateKey string               `json:"ssh_private_key,required"`
+	JSON          vmSSHKeyResponseJSON `json:"-"`
+}
+
+// vmSSHKeyResponseJSON contains the JSON metadata for the struct
+// [VmSSHKeyResponse]
+type vmSSHKeyResponseJSON struct {
+	SSHPort       apijson.Field
+	SSHPrivateKey apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *VmSSHKeyResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmSSHKeyResponseJSON) RawJSON() string {
+	return r.raw
 }
 
 // Request body for PATCH /api/vm/{vm_id}/state
