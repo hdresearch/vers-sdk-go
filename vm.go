@@ -102,7 +102,7 @@ func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCom
 
 func (r *VmService) UpdateState(ctx context.Context, vmID string, body VmUpdateStateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return
