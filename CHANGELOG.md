@@ -1,5 +1,36 @@
 # Changelog
 
+## 0.1.0-alpha.26 (2025-12-11)
+
+Full Changelog: [v0.1.0-alpha.25...v0.1.0-alpha.26](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.25...v0.1.0-alpha.26)
+
+### Features
+
+* **api:** api update ([81d6e1c](https://github.com/hdresearch/vers-sdk-go/commit/81d6e1cafa3a26b850167220b0f2738d8fb8a055))
+* **api:** api update ([772b863](https://github.com/hdresearch/vers-sdk-go/commit/772b86308ad8e27b84881f1ff9ac75587b42cf39))
+* **api:** api update ([e0ee19e](https://github.com/hdresearch/vers-sdk-go/commit/e0ee19e8398739a6516b93dac91bf67883dc3914))
+* **api:** api update ([e59e521](https://github.com/hdresearch/vers-sdk-go/commit/e59e52107f3d49c62ba23c64a81836a10b66e6e3))
+* **api:** api update ([4e45bde](https://github.com/hdresearch/vers-sdk-go/commit/4e45bde7b041ea000d80656e012d6a6a420c12e1))
+* **api:** api update ([4eb5bd3](https://github.com/hdresearch/vers-sdk-go/commit/4eb5bd3fb7db4cde45faabb2e725c812867b815a))
+* **api:** api update ([2e6d841](https://github.com/hdresearch/vers-sdk-go/commit/2e6d8410a2a13bfedda5ab242da60295ddb43c0d))
+* **api:** api update ([047a43b](https://github.com/hdresearch/vers-sdk-go/commit/047a43b92e4d87447a5b8df72adc6a1cb970e82a))
+* **api:** api update ([5e96d44](https://github.com/hdresearch/vers-sdk-go/commit/5e96d444b6b9e71cceaa458906a078033b772a5e))
+* **api:** api update ([90f0bd2](https://github.com/hdresearch/vers-sdk-go/commit/90f0bd218f4a2a2e88ff06397ce5e53a990ff04f))
+* **api:** api update ([ea4d105](https://github.com/hdresearch/vers-sdk-go/commit/ea4d1059fca11b35768232c3be7e01f1008afea6))
+
+
+### Bug Fixes
+
+* **client:** correctly specify Accept header with */* instead of empty ([30aeeb1](https://github.com/hdresearch/vers-sdk-go/commit/30aeeb1ca5c975bf680f9d36de004664bbbf3cde))
+* **mcp:** correct code tool API endpoint ([8f82671](https://github.com/hdresearch/vers-sdk-go/commit/8f826714237c10b6008f6b8775ce7fa82ab5a813))
+* rename param to avoid collision ([4479db6](https://github.com/hdresearch/vers-sdk-go/commit/4479db68cb76a7784d235e6d6209e9bcc15ddeeb))
+
+
+### Chores
+
+* elide duplicate aliases ([a7bcea9](https://github.com/hdresearch/vers-sdk-go/commit/a7bcea95c790db65fd84b1bad5e76a2b5e40ff56))
+* **internal:** codegen related update ([e6e5854](https://github.com/hdresearch/vers-sdk-go/commit/e6e585460ca789c9851afc3f821fc39bc4a781a8))
+
 ## 0.1.0-alpha.25 (2025-11-07)
 
 Full Changelog: [v0.1.0-alpha.24...v0.1.0-alpha.25](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.24...v0.1.0-alpha.25)
