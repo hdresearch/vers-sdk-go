@@ -36,7 +36,7 @@ func TestVmList(t *testing.T) {
 	}
 }
 
-func TestVmDelete(t *testing.T) {
+func TestVmDeleteWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -49,7 +49,13 @@ func TestVmDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Vm.Delete(context.TODO(), "vm_id")
+	_, err := client.Vm.Delete(
+		context.TODO(),
+		"vm_id",
+		vers.VmDeleteParams{
+			SkipWaitBoot: vers.F(true),
+		},
+	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -82,7 +88,7 @@ func TestVmBranch(t *testing.T) {
 	}
 }
 
-func TestVmCommit(t *testing.T) {
+func TestVmCommitWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -95,7 +101,14 @@ func TestVmCommit(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Vm.Commit(context.TODO(), "vm_id")
+	_, err := client.Vm.Commit(
+		context.TODO(),
+		"vm_id",
+		vers.VmCommitParams{
+			KeepPaused:   vers.F(true),
+			SkipWaitBoot: vers.F(true),
+		},
+	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {
@@ -105,7 +118,7 @@ func TestVmCommit(t *testing.T) {
 	}
 }
 
-func TestVmNewRoot(t *testing.T) {
+func TestVmNewRootWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -128,6 +141,7 @@ func TestVmNewRoot(t *testing.T) {
 				VcpuCount:  vers.F(int64(0)),
 			}),
 		},
+		WaitBoot: vers.F(true),
 	})
 	if err != nil {
 		var apierr *vers.Error
@@ -188,7 +202,7 @@ func TestVmRestoreFromCommit(t *testing.T) {
 	}
 }
 
-func TestVmUpdateState(t *testing.T) {
+func TestVmUpdateStateWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -208,6 +222,7 @@ func TestVmUpdateState(t *testing.T) {
 			VmUpdateStateRequest: vers.VmUpdateStateRequestParam{
 				State: vers.F(vers.VmUpdateStateRequestStatePaused),
 			},
+			SkipWaitBoot: vers.F(true),
 		},
 	)
 	if err != nil {
