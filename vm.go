@@ -7,10 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"slices"
 	"time"
 
 	"github.com/hdresearch/vers-sdk-go/internal/apijson"
+	"github.com/hdresearch/vers-sdk-go/internal/apiquery"
 	"github.com/hdresearch/vers-sdk-go/internal/param"
 	"github.com/hdresearch/vers-sdk-go/internal/requestconfig"
 	"github.com/hdresearch/vers-sdk-go/option"
@@ -42,14 +44,14 @@ func (r *VmService) List(ctx context.Context, opts ...option.RequestOption) (res
 	return
 }
 
-func (r *VmService) Delete(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmDeleteResponse, err error) {
+func (r *VmService) Delete(ctx context.Context, vmID string, body VmDeleteParams, opts ...option.RequestOption) (res *VmDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return
 	}
 	path := fmt.Sprintf("vm/%s", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
 	return
 }
 
@@ -64,21 +66,21 @@ func (r *VmService) Branch(ctx context.Context, vmID string, opts ...option.Requ
 	return
 }
 
-func (r *VmService) Commit(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
+func (r *VmService) Commit(ctx context.Context, vmID string, body VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return
 	}
 	path := fmt.Sprintf("vm/%s/commit", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-func (r *VmService) NewRoot(ctx context.Context, body VmNewRootParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) NewRoot(ctx context.Context, params VmNewRootParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "vm/new_root"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return
 }
 
@@ -100,7 +102,7 @@ func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCom
 	return
 }
 
-func (r *VmService) UpdateState(ctx context.Context, vmID string, body VmUpdateStateParams, opts ...option.RequestOption) (err error) {
+func (r *VmService) UpdateState(ctx context.Context, vmID string, params VmUpdateStateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if vmID == "" {
@@ -108,7 +110,7 @@ func (r *VmService) UpdateState(ctx context.Context, vmID string, body VmUpdateS
 		return
 	}
 	path := fmt.Sprintf("vm/%s/state", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
 	return
 }
 
@@ -163,17 +165,18 @@ func (r newVmResponseJSON) RawJSON() string {
 type Vm struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	OwnerID   string    `json:"owner_id,required" format:"uuid"`
-	VmID      string    `json:"vm_id,required" format:"uuid"`
-	Parent    string    `json:"parent,nullable" format:"uuid"`
-	JSON      vmJSON    `json:"-"`
+	// The state of a VM
+	State VmState `json:"state,required"`
+	VmID  string  `json:"vm_id,required" format:"uuid"`
+	JSON  vmJSON  `json:"-"`
 }
 
 // vmJSON contains the JSON metadata for the struct [Vm]
 type vmJSON struct {
 	CreatedAt   apijson.Field
 	OwnerID     apijson.Field
+	State       apijson.Field
 	VmID        apijson.Field
-	Parent      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -186,42 +189,33 @@ func (r vmJSON) RawJSON() string {
 	return r.raw
 }
 
-// The response body for POST /api/vm/{vm_id}/commit
-type VmCommitResponse struct {
-	// The commit ID, a (v4) UUID
-	CommitID string `json:"commit_id,required"`
-	// The host architecture, eg: "x86_64" (currently implemented with `uname -m“)
-	HostArchitecture string               `json:"host_architecture,required"`
-	JSON             vmCommitResponseJSON `json:"-"`
-}
+// The state of a VM
+type VmState string
 
-// vmCommitResponseJSON contains the JSON metadata for the struct
-// [VmCommitResponse]
-type vmCommitResponseJSON struct {
-	CommitID         apijson.Field
-	HostArchitecture apijson.Field
-	raw              string
-	ExtraFields      map[string]apijson.Field
-}
+const (
+	VmStateBooting VmState = "booting"
+	VmStateRunning VmState = "running"
+	VmStatePaused  VmState = "paused"
+)
 
-func (r *VmCommitResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vmCommitResponseJSON) RawJSON() string {
-	return r.raw
+func (r VmState) IsKnown() bool {
+	switch r {
+	case VmStateBooting, VmStateRunning, VmStatePaused:
+		return true
+	}
+	return false
 }
 
 // Response body for DELETE /api/vm/{vm_id}
 type VmDeleteResponse struct {
-	DeletedIDs []string             `json:"deleted_ids,required"`
-	JSON       vmDeleteResponseJSON `json:"-"`
+	VmID string               `json:"vm_id,required"`
+	JSON vmDeleteResponseJSON `json:"-"`
 }
 
 // vmDeleteResponseJSON contains the JSON metadata for the struct
 // [VmDeleteResponse]
 type vmDeleteResponseJSON struct {
-	DeletedIDs  apijson.Field
+	VmID        apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -296,12 +290,73 @@ func (r VmUpdateStateRequestState) IsKnown() bool {
 	return false
 }
 
+// A summary of a commit, appropriate for displaying on the frontend
+type VmCommitResponse struct {
+	CommitID string               `json:"commit_id,required"`
+	JSON     vmCommitResponseJSON `json:"-"`
+}
+
+// vmCommitResponseJSON contains the JSON metadata for the struct
+// [VmCommitResponse]
+type vmCommitResponseJSON struct {
+	CommitID    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VmCommitResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmCommitResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type VmDeleteParams struct {
+	// If true, return an error immediately if the VM is still booting. Default: false
+	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
+}
+
+// URLQuery serializes [VmDeleteParams]'s query parameters as `url.Values`.
+func (r VmDeleteParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type VmCommitParams struct {
+	// If true, keep VM paused after commit
+	KeepPaused param.Field[bool] `query:"keep_paused"`
+	// If true, return an error immediately if the VM is still booting. Default: false
+	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
+}
+
+// URLQuery serializes [VmCommitParams]'s query parameters as `url.Values`.
+func (r VmCommitParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type VmNewRootParams struct {
 	NewRootRequest NewRootRequestParam `json:"new_root_request,required"`
+	// If true, wait for the newly-created VM to finish booting before returning.
+	// Default: false.
+	WaitBoot param.Field[bool] `query:"wait_boot"`
 }
 
 func (r VmNewRootParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.NewRootRequest)
+}
+
+// URLQuery serializes [VmNewRootParams]'s query parameters as `url.Values`.
+func (r VmNewRootParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
 
 type VmRestoreFromCommitParams struct {
@@ -316,8 +371,18 @@ func (r VmRestoreFromCommitParams) MarshalJSON() (data []byte, err error) {
 type VmUpdateStateParams struct {
 	// Request body for PATCH /api/vm/{vm_id}/state
 	VmUpdateStateRequest VmUpdateStateRequestParam `json:"vm_update_state_request,required"`
+	// If true, error immediately if the VM is not finished booting. Defaults to false
+	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
 }
 
 func (r VmUpdateStateParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r.VmUpdateStateRequest)
+}
+
+// URLQuery serializes [VmUpdateStateParams]'s query parameters as `url.Values`.
+func (r VmUpdateStateParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
 }
