@@ -206,6 +206,29 @@ func (r VmState) IsKnown() bool {
 	return false
 }
 
+// The response body for POST /api/vm/{vm_id}/commit
+type VmCommitResponse struct {
+	// The UUID of the newly-created commit
+	CommitID string               `json:"commit_id,required" format:"uuid"`
+	JSON     vmCommitResponseJSON `json:"-"`
+}
+
+// vmCommitResponseJSON contains the JSON metadata for the struct
+// [VmCommitResponse]
+type vmCommitResponseJSON struct {
+	CommitID    apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VmCommitResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmCommitResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 // Response body for DELETE /api/vm/{vm_id}
 type VmDeleteResponse struct {
 	VmID string               `json:"vm_id,required"`
@@ -288,28 +311,6 @@ func (r VmUpdateStateRequestState) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-// A summary of a commit, appropriate for displaying on the frontend
-type VmCommitResponse struct {
-	CommitID string               `json:"commit_id,required"`
-	JSON     vmCommitResponseJSON `json:"-"`
-}
-
-// vmCommitResponseJSON contains the JSON metadata for the struct
-// [VmCommitResponse]
-type vmCommitResponseJSON struct {
-	CommitID    apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VmCommitResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vmCommitResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type VmDeleteParams struct {
