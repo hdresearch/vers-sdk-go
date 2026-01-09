@@ -52,15 +52,11 @@ func main() {
 	client := vers.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("VERS_API_KEY")
 	)
-	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
-		NewRootRequest: vers.NewRootRequestParam{
-			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
-		},
-	})
+	vms, err := client.Vm.List(context.TODO())
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", newVmResponse.VmID)
+	fmt.Printf("%+v\n", vms)
 }
 
 ```
@@ -149,7 +145,7 @@ client := vers.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Vm.NewRoot(context.TODO(), ...,
+client.Vm.List(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -178,18 +174,14 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
-	NewRootRequest: vers.NewRootRequestParam{
-		VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
-	},
-})
+_, err := client.Vm.List(context.TODO())
 if err != nil {
 	var apierr *vers.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/vm/new_root": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/api/v1/vms": 400 Bad Request { ... }
 }
 ```
 
@@ -207,13 +199,8 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Vm.NewRoot(
+client.Vm.List(
 	ctx,
-	vers.VmNewRootParams{
-		NewRootRequest: vers.NewRootRequestParam{
-			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
-		},
-	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -247,15 +234,7 @@ client := vers.NewClient(
 )
 
 // Override per-request:
-client.Vm.NewRoot(
-	context.TODO(),
-	vers.VmNewRootParams{
-		NewRootRequest: vers.NewRootRequestParam{
-			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
-		},
-	},
-	option.WithMaxRetries(5),
-)
+client.Vm.List(context.TODO(), option.WithMaxRetries(5))
 ```
 
 ### Accessing raw response data (e.g. response headers)
@@ -266,19 +245,11 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-newVmResponse, err := client.Vm.NewRoot(
-	context.TODO(),
-	vers.VmNewRootParams{
-		NewRootRequest: vers.NewRootRequestParam{
-			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
-		},
-	},
-	option.WithResponseInto(&response),
-)
+vms, err := client.Vm.List(context.TODO(), option.WithResponseInto(&response))
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", newVmResponse)
+fmt.Printf("%+v\n", vms)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)
