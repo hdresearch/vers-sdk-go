@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.1.0-alpha.27 (2026-01-09)
+
+Full Changelog: [v0.1.0-alpha.26...v0.1.0-alpha.27](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.26...v0.1.0-alpha.27)
+
+### Features
+
+* **api:** api update ([1b6ad28](https://github.com/hdresearch/vers-sdk-go/commit/1b6ad28ccf11a79921f8840ade2d318716660717))
+* **api:** api update ([822c0d5](https://github.com/hdresearch/vers-sdk-go/commit/822c0d5febb5281dc775adfeb63532b7e35cffdd))
+* **api:** api update ([0282596](https://github.com/hdresearch/vers-sdk-go/commit/02825960482ec9d8fd167ad87018debe75a5bc1e))
+
+
+### Bug Fixes
+
+* skip usage tests that don't work with Prism ([2cea8c3](https://github.com/hdresearch/vers-sdk-go/commit/2cea8c3141bf5cf11ea4b640baf8559380f7197b))
+
+
+### Chores
+
+* **internal:** codegen related update ([a18be1a](https://github.com/hdresearch/vers-sdk-go/commit/a18be1afe1c141c68bf40bc7af665907c5493c34))
+
 ## 0.1.0-alpha.26 (2025-12-11)
 
 Full Changelog: [v0.1.0-alpha.25...v0.1.0-alpha.26](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.25...v0.1.0-alpha.26)
