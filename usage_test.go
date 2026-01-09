@@ -25,10 +25,14 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	t.Skip("Prism tests are disabled")
-	vms, err := client.Vm.List(context.TODO())
+	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
+		NewRootRequest: vers.NewRootRequestParam{
+			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
+		},
+	})
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	t.Logf("%+v\n", vms)
+	t.Logf("%+v\n", newVmResponse.VmID)
 }
