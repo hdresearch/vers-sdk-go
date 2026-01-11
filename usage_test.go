@@ -24,6 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
+	t.Skip("Prism tests are disabled")
 	newVmResponse, err := client.Vm.NewRoot(context.TODO(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),

@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/hdresearch/vers-sdk-go@v0.1.0-alpha.26'
+go get -u 'github.com/hdresearch/vers-sdk-go@v0.1.0-alpha.27'
 ```
 
 <!-- x-release-please-end -->
@@ -189,7 +189,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/vm/new_root": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/api/v1/vm/new_root": 400 Bad Request { ... }
 }
 ```
 
