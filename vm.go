@@ -66,7 +66,7 @@ func (r *VmService) Branch(ctx context.Context, vmOrCommitID string, body VmBran
 	return
 }
 
-func (r *VmService) BranchByCommit(ctx context.Context, commitID string, body VmBranchByCommitParams, opts ...option.RequestOption) (res *VmBranchByCommitResponse, err error) {
+func (r *VmService) BranchByCommit(ctx context.Context, commitID string, body VmBranchByCommitParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if commitID == "" {
 		err = errors.New("missing required commit_id parameter")
@@ -77,7 +77,7 @@ func (r *VmService) BranchByCommit(ctx context.Context, commitID string, body Vm
 	return
 }
 
-func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchByVmParams, opts ...option.RequestOption) (res *VmBranchByVmResponse, err error) {
+func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchByVmParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
@@ -192,6 +192,26 @@ func (r *NewVmResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r newVmResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type NewVmsResponse struct {
+	Vms  []NewVmResponse    `json:"vms,required"`
+	JSON newVmsResponseJSON `json:"-"`
+}
+
+// newVmsResponseJSON contains the JSON metadata for the struct [NewVmsResponse]
+type newVmsResponseJSON struct {
+	Vms         apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *NewVmsResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r newVmsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -344,48 +364,6 @@ func (r VmUpdateStateRequestState) IsKnown() bool {
 		return true
 	}
 	return false
-}
-
-type VmBranchByCommitResponse struct {
-	Vms  []NewVmResponse              `json:"vms,required"`
-	JSON vmBranchByCommitResponseJSON `json:"-"`
-}
-
-// vmBranchByCommitResponseJSON contains the JSON metadata for the struct
-// [VmBranchByCommitResponse]
-type vmBranchByCommitResponseJSON struct {
-	Vms         apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VmBranchByCommitResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vmBranchByCommitResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type VmBranchByVmResponse struct {
-	Vms  []NewVmResponse          `json:"vms,required"`
-	JSON vmBranchByVmResponseJSON `json:"-"`
-}
-
-// vmBranchByVmResponseJSON contains the JSON metadata for the struct
-// [VmBranchByVmResponse]
-type vmBranchByVmResponseJSON struct {
-	Vms         apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *VmBranchByVmResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r vmBranchByVmResponseJSON) RawJSON() string {
-	return r.raw
 }
 
 type VmDeleteParams struct {
