@@ -55,7 +55,7 @@ func (r *VmService) Delete(ctx context.Context, vmID string, body VmDeleteParams
 	return
 }
 
-func (r *VmService) Branch(ctx context.Context, vmOrCommitID string, body VmBranchParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
+func (r *VmService) Branch(ctx context.Context, vmOrCommitID string, body VmBranchParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmOrCommitID == "" {
 		err = errors.New("missing required vm_or_commit_id parameter")
