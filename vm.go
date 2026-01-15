@@ -55,39 +55,6 @@ func (r *VmService) Delete(ctx context.Context, vmID string, body VmDeleteParams
 	return
 }
 
-func (r *VmService) Branch(ctx context.Context, vmOrCommitID string, body VmBranchParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if vmOrCommitID == "" {
-		err = errors.New("missing required vm_or_commit_id parameter")
-		return
-	}
-	path := fmt.Sprintf("api/v1/vm/%s/branch", vmOrCommitID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-func (r *VmService) BranchByCommit(ctx context.Context, commitID string, body VmBranchByCommitParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if commitID == "" {
-		err = errors.New("missing required commit_id parameter")
-		return
-	}
-	path := fmt.Sprintf("api/v1/vm/branch/by_commit/%s", commitID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchByVmParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if vmID == "" {
-		err = errors.New("missing required vm_id parameter")
-		return
-	}
-	path := fmt.Sprintf("api/v1/vm/branch/by_vm/%s", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
 func (r *VmService) Commit(ctx context.Context, vmID string, body VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
@@ -192,26 +159,6 @@ func (r *NewVmResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r newVmResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-type NewVmsResponse struct {
-	Vms  []NewVmResponse    `json:"vms,required"`
-	JSON newVmsResponseJSON `json:"-"`
-}
-
-// newVmsResponseJSON contains the JSON metadata for the struct [NewVmsResponse]
-type newVmsResponseJSON struct {
-	Vms         apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *NewVmsResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r newVmsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -373,54 +320,6 @@ type VmDeleteParams struct {
 
 // URLQuery serializes [VmDeleteParams]'s query parameters as `url.Values`.
 func (r VmDeleteParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type VmBranchParams struct {
-	// Number of VMs to branch (optional; default 1)
-	Count param.Field[int64] `query:"count"`
-	// If true, keep VM paused after commit. Only applicable when branching a VM ID.
-	KeepPaused param.Field[bool] `query:"keep_paused"`
-	// If true, immediately return an error if VM is booting instead of waiting. Only
-	// applicable when branching a VM ID.
-	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
-}
-
-// URLQuery serializes [VmBranchParams]'s query parameters as `url.Values`.
-func (r VmBranchParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type VmBranchByCommitParams struct {
-	// Number of VMs to branch (optional; default 1)
-	Count param.Field[int64] `query:"count"`
-}
-
-// URLQuery serializes [VmBranchByCommitParams]'s query parameters as `url.Values`.
-func (r VmBranchByCommitParams) URLQuery() (v url.Values) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-type VmBranchByVmParams struct {
-	// Number of VMs to branch (optional; default 1)
-	Count param.Field[int64] `query:"count"`
-	// If true, keep VM paused after commit
-	KeepPaused param.Field[bool] `query:"keep_paused"`
-	// If true, immediately return an error if VM is booting instead of waiting
-	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
-}
-
-// URLQuery serializes [VmBranchByVmParams]'s query parameters as `url.Values`.
-func (r VmBranchByVmParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
