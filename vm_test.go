@@ -65,6 +65,97 @@ func TestVmDeleteWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestVmBranchWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Vm.Branch(
+		context.TODO(),
+		"vm_or_commit_id",
+		vers.VmBranchParams{
+			Count:        vers.F(int64(0)),
+			KeepPaused:   vers.F(true),
+			SkipWaitBoot: vers.F(true),
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVmBranchByCommitWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Vm.BranchByCommit(
+		context.TODO(),
+		"commit_id",
+		vers.VmBranchByCommitParams{
+			Count: vers.F(int64(0)),
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVmBranchByVmWithOptionalParams(t *testing.T) {
+	t.Skip("Prism tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Vm.BranchByVm(
+		context.TODO(),
+		"vm_id",
+		vers.VmBranchByVmParams{
+			Count:        vers.F(int64(0)),
+			KeepPaused:   vers.F(true),
+			SkipWaitBoot: vers.F(true),
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestVmCommitWithOptionalParams(t *testing.T) {
 	t.Skip("Prism tests are disabled")
 	baseURL := "http://localhost:4010"
