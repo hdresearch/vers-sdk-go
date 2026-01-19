@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.1.0-alpha.28 (2026-01-19)
+
+Full Changelog: [v0.1.0-alpha.27...v0.1.0-alpha.28](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.27...v0.1.0-alpha.28)
+
+### Features
+
+* **api:** api update ([7b72f3f](https://github.com/hdresearch/vers-sdk-go/commit/7b72f3fa215b94dacb257d98faec0382b3de9874))
+* **api:** api update ([0bcea6e](https://github.com/hdresearch/vers-sdk-go/commit/0bcea6e81893321188f943b4175fbe1bdb55fd74))
+* **api:** api update ([5f276e4](https://github.com/hdresearch/vers-sdk-go/commit/5f276e4c8fbab720571cf846c3529f6b149f4348))
+* **api:** api update ([176bc77](https://github.com/hdresearch/vers-sdk-go/commit/176bc77566aee78e27b44115041135263e6062c3))
+* **api:** api update ([3cdca14](https://github.com/hdresearch/vers-sdk-go/commit/3cdca14c6d8fd354c03257a18a7aa07744d6a55b))
+* **api:** api update ([d79fa46](https://github.com/hdresearch/vers-sdk-go/commit/d79fa46d5b5158485fa8c58eebfb78cf6262e0da))
+* **api:** api update ([da6becc](https://github.com/hdresearch/vers-sdk-go/commit/da6becc87741ce60c8ced17e64d994cd2cf58b7c))
+
+
+### Bug Fixes
+
+* **docs:** add missing pointer prefix to api.md return types ([50850f4](https://github.com/hdresearch/vers-sdk-go/commit/50850f45fc4029c0054e834b42ea04644f77bc2f))
+
+
+### Chores
+
+* **internal:** update `actions/checkout` version ([4f19c78](https://github.com/hdresearch/vers-sdk-go/commit/4f19c788522e20480794b644bf6f98e1a72e000a))
+
 ## 0.1.0-alpha.27 (2026-01-09)
 
 Full Changelog: [v0.1.0-alpha.26...v0.1.0-alpha.27](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.26...v0.1.0-alpha.27)
