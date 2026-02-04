@@ -246,14 +246,15 @@ func (r vmJSON) RawJSON() string {
 type VmState string
 
 const (
-	VmStateBooting VmState = "booting"
-	VmStateRunning VmState = "running"
-	VmStatePaused  VmState = "paused"
+	VmStateBooting  VmState = "booting"
+	VmStateRunning  VmState = "running"
+	VmStatePaused   VmState = "paused"
+	VmStateSleeping VmState = "sleeping"
 )
 
 func (r VmState) IsKnown() bool {
 	switch r {
-	case VmStateBooting, VmStateRunning, VmStatePaused:
+	case VmStateBooting, VmStateRunning, VmStatePaused, VmStateSleeping:
 		return true
 	}
 	return false
