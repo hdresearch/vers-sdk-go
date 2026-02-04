@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.29 (2026-02-04)
+
+Full Changelog: [v0.1.0-alpha.28...v0.1.0-alpha.29](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.28...v0.1.0-alpha.29)
+
+### Features
+
+* **api:** api update ([b76ba6c](https://github.com/hdresearch/vers-sdk-go/commit/b76ba6c834d72f29c1440de5cec9f0870294994a))
+
 ## 0.1.0-alpha.28 (2026-01-19)
 
 Full Changelog: [v0.1.0-alpha.27...v0.1.0-alpha.28](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.27...v0.1.0-alpha.28)
