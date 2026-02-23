@@ -257,7 +257,7 @@ func TestVmRestoreFromCommit(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Vm.RestoreFromCommit(context.TODO(), vers.VmRestoreFromCommitParams{
-		VmFromCommitRequest: vers.VmFromCommitRequestParam{
+		VmFromCommitRequest: vers.VmFromCommitRequestCommitIDParam{
 			CommitID: vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
 	})
