@@ -307,12 +307,55 @@ func (r vmDeleteResponseJSON) RawJSON() string {
 
 // Request body for POST /api/v1/vm/from_commit
 type VmFromCommitRequestParam struct {
-	CommitID param.Field[string] `json:"commit_id,required" format:"uuid"`
+	// The commit ID to restore from (exactly one of commit_id or tag_name must be
+	// provided)
+	CommitID param.Field[string] `json:"commit_id" format:"uuid"`
+	// The tag name to restore from (exactly one of commit_id or tag_name must be
+	// provided)
+	TagName param.Field[string] `json:"tag_name"`
 }
 
 func (r VmFromCommitRequestParam) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
+
+func (r VmFromCommitRequestParam) implementsVmFromCommitRequestUnionParam() {}
+
+// Request body for POST /api/v1/vm/from_commit
+//
+// Satisfied by [VmFromCommitRequestCommitIDParam],
+// [VmFromCommitRequestTagNameParam], [VmFromCommitRequestParam].
+type VmFromCommitRequestUnionParam interface {
+	implementsVmFromCommitRequestUnionParam()
+}
+
+// The commit ID to restore from (exactly one of commit_id or tag_name must be
+// provided)
+type VmFromCommitRequestCommitIDParam struct {
+	// The commit ID to restore from (exactly one of commit_id or tag_name must be
+	// provided)
+	CommitID param.Field[string] `json:"commit_id,required" format:"uuid"`
+}
+
+func (r VmFromCommitRequestCommitIDParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r VmFromCommitRequestCommitIDParam) implementsVmFromCommitRequestUnionParam() {}
+
+// The tag name to restore from (exactly one of commit_id or tag_name must be
+// provided)
+type VmFromCommitRequestTagNameParam struct {
+	// The tag name to restore from (exactly one of commit_id or tag_name must be
+	// provided)
+	TagName param.Field[string] `json:"tag_name,required"`
+}
+
+func (r VmFromCommitRequestTagNameParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r VmFromCommitRequestTagNameParam) implementsVmFromCommitRequestUnionParam() {}
 
 // Response body for GET /api/vm/{vm_id}/ssh_key
 type VmSSHKeyResponse struct {
@@ -464,7 +507,7 @@ func (r VmNewRootParams) URLQuery() (v url.Values) {
 
 type VmRestoreFromCommitParams struct {
 	// Request body for POST /api/v1/vm/from_commit
-	VmFromCommitRequest VmFromCommitRequestParam `json:"vm_from_commit_request,required"`
+	VmFromCommitRequest VmFromCommitRequestUnionParam `json:"vm_from_commit_request,required"`
 }
 
 func (r VmRestoreFromCommitParams) MarshalJSON() (data []byte, err error) {

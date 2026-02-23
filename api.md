@@ -3,7 +3,7 @@
 Params Types:
 
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#NewRootRequestParam">NewRootRequestParam</a>
-- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#VmFromCommitRequestParam">VmFromCommitRequestParam</a>
+- <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#VmFromCommitRequestUnionParam">VmFromCommitRequestUnionParam</a>
 - <a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go">vers</a>.<a href="https://pkg.go.dev/github.com/hdresearch/vers-sdk-go#VmUpdateStateRequestParam">VmUpdateStateRequestParam</a>
 
 Response Types:
