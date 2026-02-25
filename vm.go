@@ -149,7 +149,7 @@ func (r *VmService) UpdateState(ctx context.Context, vmID string, params VmUpdat
 
 type NewRootRequestParam struct {
 	// Struct representing configuration options common to all VMs
-	VmConfig param.Field[NewRootRequestVmConfigParam] `json:"vm_config,required"`
+	VmConfig param.Field[NewRootRequestVmConfigParam] `json:"vm_config" api:"required"`
 }
 
 func (r NewRootRequestParam) MarshalJSON() (data []byte, err error) {
@@ -176,7 +176,7 @@ func (r NewRootRequestVmConfigParam) MarshalJSON() (data []byte, err error) {
 
 // Response body for new VM requests (new_root, from_commit, branch)
 type NewVmResponse struct {
-	VmID string            `json:"vm_id,required"`
+	VmID string            `json:"vm_id" api:"required"`
 	JSON newVmResponseJSON `json:"-"`
 }
 
@@ -196,7 +196,7 @@ func (r newVmResponseJSON) RawJSON() string {
 }
 
 type NewVmsResponse struct {
-	Vms  []NewVmResponse    `json:"vms,required"`
+	Vms  []NewVmResponse    `json:"vms" api:"required"`
 	JSON newVmsResponseJSON `json:"-"`
 }
 
@@ -216,11 +216,11 @@ func (r newVmsResponseJSON) RawJSON() string {
 }
 
 type Vm struct {
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	OwnerID   string    `json:"owner_id,required" format:"uuid"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	OwnerID   string    `json:"owner_id" api:"required" format:"uuid"`
 	// The state of a VM
-	State VmState `json:"state,required"`
-	VmID  string  `json:"vm_id,required" format:"uuid"`
+	State VmState `json:"state" api:"required"`
+	VmID  string  `json:"vm_id" api:"required" format:"uuid"`
 	JSON  vmJSON  `json:"-"`
 }
 
@@ -263,7 +263,7 @@ func (r VmState) IsKnown() bool {
 // The response body for POST /api/vm/{vm_id}/commit
 type VmCommitResponse struct {
 	// The UUID of the newly-created commit
-	CommitID string               `json:"commit_id,required" format:"uuid"`
+	CommitID string               `json:"commit_id" api:"required" format:"uuid"`
 	JSON     vmCommitResponseJSON `json:"-"`
 }
 
@@ -285,7 +285,7 @@ func (r vmCommitResponseJSON) RawJSON() string {
 
 // Response body for DELETE /api/vm/{vm_id}
 type VmDeleteResponse struct {
-	VmID string               `json:"vm_id,required"`
+	VmID string               `json:"vm_id" api:"required"`
 	JSON vmDeleteResponseJSON `json:"-"`
 }
 
@@ -334,7 +334,7 @@ type VmFromCommitRequestUnionParam interface {
 type VmFromCommitRequestCommitIDParam struct {
 	// The commit ID to restore from (exactly one of commit_id or tag_name must be
 	// provided)
-	CommitID param.Field[string] `json:"commit_id,required" format:"uuid"`
+	CommitID param.Field[string] `json:"commit_id" api:"required" format:"uuid"`
 }
 
 func (r VmFromCommitRequestCommitIDParam) MarshalJSON() (data []byte, err error) {
@@ -348,7 +348,7 @@ func (r VmFromCommitRequestCommitIDParam) implementsVmFromCommitRequestUnionPara
 type VmFromCommitRequestTagNameParam struct {
 	// The tag name to restore from (exactly one of commit_id or tag_name must be
 	// provided)
-	TagName param.Field[string] `json:"tag_name,required"`
+	TagName param.Field[string] `json:"tag_name" api:"required"`
 }
 
 func (r VmFromCommitRequestTagNameParam) MarshalJSON() (data []byte, err error) {
@@ -361,9 +361,9 @@ func (r VmFromCommitRequestTagNameParam) implementsVmFromCommitRequestUnionParam
 type VmSSHKeyResponse struct {
 	// The SSH port that will be DNAT'd to the VM's netns (and, in turn, to its TAP
 	// device)
-	SSHPort int64 `json:"ssh_port,required"`
+	SSHPort int64 `json:"ssh_port" api:"required"`
 	// Private SSH key in stringified OpenSSH format
-	SSHPrivateKey string               `json:"ssh_private_key,required"`
+	SSHPrivateKey string               `json:"ssh_private_key" api:"required"`
 	JSON          vmSSHKeyResponseJSON `json:"-"`
 }
 
@@ -387,7 +387,7 @@ func (r vmSSHKeyResponseJSON) RawJSON() string {
 // Request body for PATCH /api/vm/{vm_id}/state
 type VmUpdateStateRequestParam struct {
 	// The requested state for the VM
-	State param.Field[VmUpdateStateRequestState] `json:"state,required"`
+	State param.Field[VmUpdateStateRequestState] `json:"state" api:"required"`
 }
 
 func (r VmUpdateStateRequestParam) MarshalJSON() (data []byte, err error) {
@@ -487,7 +487,7 @@ func (r VmCommitParams) URLQuery() (v url.Values) {
 }
 
 type VmNewRootParams struct {
-	NewRootRequest NewRootRequestParam `json:"new_root_request,required"`
+	NewRootRequest NewRootRequestParam `json:"new_root_request" api:"required"`
 	// If true, wait for the newly-created VM to finish booting before returning.
 	// Default: false.
 	WaitBoot param.Field[bool] `query:"wait_boot"`
@@ -507,7 +507,7 @@ func (r VmNewRootParams) URLQuery() (v url.Values) {
 
 type VmRestoreFromCommitParams struct {
 	// Request body for POST /api/v1/vm/from_commit
-	VmFromCommitRequest VmFromCommitRequestUnionParam `json:"vm_from_commit_request,required"`
+	VmFromCommitRequest VmFromCommitRequestUnionParam `json:"vm_from_commit_request" api:"required"`
 }
 
 func (r VmRestoreFromCommitParams) MarshalJSON() (data []byte, err error) {
@@ -516,7 +516,7 @@ func (r VmRestoreFromCommitParams) MarshalJSON() (data []byte, err error) {
 
 type VmUpdateStateParams struct {
 	// Request body for PATCH /api/vm/{vm_id}/state
-	VmUpdateStateRequest VmUpdateStateRequestParam `json:"vm_update_state_request,required"`
+	VmUpdateStateRequest VmUpdateStateRequestParam `json:"vm_update_state_request" api:"required"`
 	// If true, error immediately if the VM is not finished booting. Defaults to false
 	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
 }
