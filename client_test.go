@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
+	_, _ = client.Vm.NewRoot(context.Background(), vers.VmNewRootParams{
 		NewRootRequest: vers.NewRootRequestParam{
 			VmConfig: vers.F(vers.NewRootRequestVmConfigParam{}),
 		},
