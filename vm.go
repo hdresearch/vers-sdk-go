@@ -41,98 +41,98 @@ func (r *VmService) List(ctx context.Context, opts ...option.RequestOption) (res
 	opts = slices.Concat(r.Options, opts)
 	path := "api/v1/vms"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) Delete(ctx context.Context, vmID string, body VmDeleteParams, opts ...option.RequestOption) (res *VmDeleteResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) Branch(ctx context.Context, vmOrCommitID string, body VmBranchParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmOrCommitID == "" {
 		err = errors.New("missing required vm_or_commit_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/branch", vmOrCommitID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) BranchByCommit(ctx context.Context, commitID string, body VmBranchByCommitParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if commitID == "" {
 		err = errors.New("missing required commit_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/branch/by_commit/%s", commitID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchByVmParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/branch/by_vm/%s", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) Commit(ctx context.Context, vmID string, body VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/commit", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) NewRoot(ctx context.Context, params VmNewRootParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "api/v1/vm/new_root"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) GetSSHKey(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmSSHKeyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/ssh_key", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCommitParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "api/v1/vm/from_commit"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) Status(ctx context.Context, vmID string, opts ...option.RequestOption) (res *Vm, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/status", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 func (r *VmService) UpdateState(ctx context.Context, vmID string, params VmUpdateStateParams, opts ...option.RequestOption) (err error) {
@@ -140,11 +140,11 @@ func (r *VmService) UpdateState(ctx context.Context, vmID string, params VmUpdat
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/state", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
-	return
+	return err
 }
 
 type NewRootRequestParam struct {
