@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.1.0-alpha.29 (2026-03-18)
+
+Full Changelog: [v0.1.0-alpha.28...v0.1.0-alpha.29](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.28...v0.1.0-alpha.29)
+
+### Features
+
+* **api:** api update ([ffbce1e](https://github.com/hdresearch/vers-sdk-go/commit/ffbce1eec152518a6c9e9275e015236633102708))
+* **api:** api update ([8fd3bf1](https://github.com/hdresearch/vers-sdk-go/commit/8fd3bf1c872dbee4942f34252b9c7dd9521d9a4e))
+* **api:** api update ([b76ba6c](https://github.com/hdresearch/vers-sdk-go/commit/b76ba6c834d72f29c1440de5cec9f0870294994a))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([af2afec](https://github.com/hdresearch/vers-sdk-go/commit/af2afec0289a4009f6fe4c9560d5607a13b5a873))
+
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([4af6e96](https://github.com/hdresearch/vers-sdk-go/commit/4af6e9685af6ed4a83c9a1dd66dd291fb6056b94))
+* **internal:** codegen related update ([403e173](https://github.com/hdresearch/vers-sdk-go/commit/403e173ece4d5b062c26d687dcfee62733946ee3))
+* **internal:** codegen related update ([1fe808f](https://github.com/hdresearch/vers-sdk-go/commit/1fe808f9ed8435d68e3c2d1cb07b91a423163f82))
+* **internal:** minor cleanup ([f60d232](https://github.com/hdresearch/vers-sdk-go/commit/f60d2327181219ec0e2e47b3a9550ccfd24076b2))
+* **internal:** move custom custom `json` tags to `api` ([0f813f1](https://github.com/hdresearch/vers-sdk-go/commit/0f813f133d373080e0c8db0288cba80b258e4b25))
+* **internal:** remove mock server code ([4814ca0](https://github.com/hdresearch/vers-sdk-go/commit/4814ca0642adbe1c98a2edb8383f4b5d98f2d039))
+* **internal:** tweak CI branches ([a254549](https://github.com/hdresearch/vers-sdk-go/commit/a2545491c909e15d343a45954e2855aec55ebfd2))
+* **internal:** use explicit returns ([c9ea33f](https://github.com/hdresearch/vers-sdk-go/commit/c9ea33f2d77f6d752c1ed983a1cd0ca0d291d5c4))
+* **internal:** use explicit returns in more places ([8fc2757](https://github.com/hdresearch/vers-sdk-go/commit/8fc2757975df9cd4063079a32b9a04ee9bd02a8a))
+* update mock server docs ([24874a4](https://github.com/hdresearch/vers-sdk-go/commit/24874a444a5dd2536df9fa3af5a1a6049598e212))
+
 ## 0.1.0-alpha.28 (2026-01-19)
 
 Full Changelog: [v0.1.0-alpha.27...v0.1.0-alpha.28](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.27...v0.1.0-alpha.28)
