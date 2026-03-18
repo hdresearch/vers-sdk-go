@@ -77,6 +77,17 @@ func (r *VmService) BranchByCommit(ctx context.Context, commitID string, body Vm
 	return res, err
 }
 
+func (r *VmService) BranchByTag(ctx context.Context, tagName string, body VmBranchByTagParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if tagName == "" {
+		err = errors.New("missing required tag_name parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("api/v1/vm/branch/by_tag/%s", tagName)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchByVmParams, opts ...option.RequestOption) (res *NewVmsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
@@ -106,6 +117,17 @@ func (r *VmService) NewRoot(ctx context.Context, params VmNewRootParams, opts ..
 	return res, err
 }
 
+func (r *VmService) GetMetadata(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmMetadataResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("api/v1/vm/%s/metadata", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return res, err
+}
+
 func (r *VmService) GetSSHKey(ctx context.Context, vmID string, opts ...option.RequestOption) (res *VmSSHKeyResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
@@ -115,6 +137,18 @@ func (r *VmService) GetSSHKey(ctx context.Context, vmID string, opts ...option.R
 	path := fmt.Sprintf("api/v1/vm/%s/ssh_key", vmID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
+}
+
+func (r *VmService) ResizeDisk(ctx context.Context, vmID string, params VmResizeDiskParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return err
+	}
+	path := fmt.Sprintf("api/v1/vm/%s/disk", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, nil, opts...)
+	return err
 }
 
 func (r *VmService) RestoreFromCommit(ctx context.Context, body VmRestoreFromCommitParams, opts ...option.RequestOption) (res *NewVmResponse, err error) {
@@ -357,6 +391,71 @@ func (r VmFromCommitRequestTagNameParam) MarshalJSON() (data []byte, err error) 
 
 func (r VmFromCommitRequestTagNameParam) implementsVmFromCommitRequestUnionParam() {}
 
+// Response for GET /api/v1/vm/{vm_id}/metadata
+type VmMetadataResponse struct {
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	IP        string    `json:"ip" api:"required"`
+	OwnerID   string    `json:"owner_id" api:"required" format:"uuid"`
+	// The state of a VM
+	State           VmMetadataResponseState `json:"state" api:"required"`
+	VmID            string                  `json:"vm_id" api:"required" format:"uuid"`
+	DeletedAt       time.Time               `json:"deleted_at" api:"nullable" format:"date-time"`
+	GrandparentVmID string                  `json:"grandparent_vm_id" api:"nullable" format:"uuid"`
+	ParentCommitID  string                  `json:"parent_commit_id" api:"nullable" format:"uuid"`
+	JSON            vmMetadataResponseJSON  `json:"-"`
+}
+
+// vmMetadataResponseJSON contains the JSON metadata for the struct
+// [VmMetadataResponse]
+type vmMetadataResponseJSON struct {
+	CreatedAt       apijson.Field
+	IP              apijson.Field
+	OwnerID         apijson.Field
+	State           apijson.Field
+	VmID            apijson.Field
+	DeletedAt       apijson.Field
+	GrandparentVmID apijson.Field
+	ParentCommitID  apijson.Field
+	raw             string
+	ExtraFields     map[string]apijson.Field
+}
+
+func (r *VmMetadataResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmMetadataResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// The state of a VM
+type VmMetadataResponseState string
+
+const (
+	VmMetadataResponseStateBooting  VmMetadataResponseState = "booting"
+	VmMetadataResponseStateRunning  VmMetadataResponseState = "running"
+	VmMetadataResponseStatePaused   VmMetadataResponseState = "paused"
+	VmMetadataResponseStateSleeping VmMetadataResponseState = "sleeping"
+)
+
+func (r VmMetadataResponseState) IsKnown() bool {
+	switch r {
+	case VmMetadataResponseStateBooting, VmMetadataResponseStateRunning, VmMetadataResponseStatePaused, VmMetadataResponseStateSleeping:
+		return true
+	}
+	return false
+}
+
+// Request body for PATCH /api/vm/{vm_id}/disk
+type VmResizeDiskRequestParam struct {
+	// The new disk size in MiB. Must be strictly greater than the current size.
+	FsSizeMib param.Field[int64] `json:"fs_size_mib" api:"required"`
+}
+
+func (r VmResizeDiskRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 // Response body for GET /api/vm/{vm_id}/ssh_key
 type VmSSHKeyResponse struct {
 	// The SSH port that will be DNAT'd to the VM's netns (and, in turn, to its TAP
@@ -454,6 +553,19 @@ func (r VmBranchByCommitParams) URLQuery() (v url.Values) {
 	})
 }
 
+type VmBranchByTagParams struct {
+	// Number of VMs to branch (optional; default 1)
+	Count param.Field[int64] `query:"count"`
+}
+
+// URLQuery serializes [VmBranchByTagParams]'s query parameters as `url.Values`.
+func (r VmBranchByTagParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
 type VmBranchByVmParams struct {
 	// Number of VMs to branch (optional; default 1)
 	Count param.Field[int64] `query:"count"`
@@ -499,6 +611,25 @@ func (r VmNewRootParams) MarshalJSON() (data []byte, err error) {
 
 // URLQuery serializes [VmNewRootParams]'s query parameters as `url.Values`.
 func (r VmNewRootParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type VmResizeDiskParams struct {
+	// Request body for PATCH /api/vm/{vm_id}/disk
+	VmResizeDiskRequest VmResizeDiskRequestParam `json:"vm_resize_disk_request" api:"required"`
+	// If true, return an error immediately if the VM is still booting. Default: false
+	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
+}
+
+func (r VmResizeDiskParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.VmResizeDiskRequest)
+}
+
+// URLQuery serializes [VmResizeDiskParams]'s query parameters as `url.Values`.
+func (r VmResizeDiskParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
