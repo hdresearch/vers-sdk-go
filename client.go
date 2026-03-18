@@ -16,8 +16,10 @@ import (
 // interacting with the vers API. You should not instantiate this client directly,
 // and instead use the [NewClient] method instead.
 type Client struct {
-	Options []option.RequestOption
-	Vm      *VmService
+	Options    []option.RequestOption
+	Vm         *VmService
+	Commits    *CommitService
+	CommitTags *CommitTagService
 }
 
 // DefaultClientOptions read from the environment (VERS_API_KEY, VERS_BASE_URL).
@@ -43,6 +45,8 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r = &Client{Options: opts}
 
 	r.Vm = NewVmService(opts...)
+	r.Commits = NewCommitService(opts...)
+	r.CommitTags = NewCommitTagService(opts...)
 
 	return
 }
