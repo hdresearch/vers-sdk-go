@@ -341,11 +341,11 @@ func (r vmDeleteResponseJSON) RawJSON() string {
 
 // Request body for POST /api/v1/vm/from_commit
 type VmFromCommitRequestParam struct {
-	// The commit ID to restore from (exactly one of commit_id or tag_name must be
-	// provided)
+	// The commit ID to restore from
 	CommitID param.Field[string] `json:"commit_id" format:"uuid"`
-	// The tag name to restore from (exactly one of commit_id or tag_name must be
-	// provided)
+	// A repository reference in "repo_name:tag_name" format
+	Ref param.Field[string] `json:"ref"`
+	// The tag name to restore from (legacy org-scoped tag)
 	TagName param.Field[string] `json:"tag_name"`
 }
 
@@ -358,16 +358,15 @@ func (r VmFromCommitRequestParam) implementsVmFromCommitRequestUnionParam() {}
 // Request body for POST /api/v1/vm/from_commit
 //
 // Satisfied by [VmFromCommitRequestCommitIDParam],
-// [VmFromCommitRequestTagNameParam], [VmFromCommitRequestParam].
+// [VmFromCommitRequestTagNameParam], [VmFromCommitRequestRefParam],
+// [VmFromCommitRequestParam].
 type VmFromCommitRequestUnionParam interface {
 	implementsVmFromCommitRequestUnionParam()
 }
 
-// The commit ID to restore from (exactly one of commit_id or tag_name must be
-// provided)
+// The commit ID to restore from
 type VmFromCommitRequestCommitIDParam struct {
-	// The commit ID to restore from (exactly one of commit_id or tag_name must be
-	// provided)
+	// The commit ID to restore from
 	CommitID param.Field[string] `json:"commit_id" api:"required" format:"uuid"`
 }
 
@@ -377,11 +376,9 @@ func (r VmFromCommitRequestCommitIDParam) MarshalJSON() (data []byte, err error)
 
 func (r VmFromCommitRequestCommitIDParam) implementsVmFromCommitRequestUnionParam() {}
 
-// The tag name to restore from (exactly one of commit_id or tag_name must be
-// provided)
+// The tag name to restore from (legacy org-scoped tag)
 type VmFromCommitRequestTagNameParam struct {
-	// The tag name to restore from (exactly one of commit_id or tag_name must be
-	// provided)
+	// The tag name to restore from (legacy org-scoped tag)
 	TagName param.Field[string] `json:"tag_name" api:"required"`
 }
 
@@ -390,6 +387,18 @@ func (r VmFromCommitRequestTagNameParam) MarshalJSON() (data []byte, err error) 
 }
 
 func (r VmFromCommitRequestTagNameParam) implementsVmFromCommitRequestUnionParam() {}
+
+// A repository reference in "repo_name:tag_name" format
+type VmFromCommitRequestRefParam struct {
+	// A repository reference in "repo_name:tag_name" format
+	Ref param.Field[string] `json:"ref" api:"required"`
+}
+
+func (r VmFromCommitRequestRefParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+func (r VmFromCommitRequestRefParam) implementsVmFromCommitRequestUnionParam() {}
 
 // Response for GET /api/v1/vm/{vm_id}/metadata
 type VmMetadataResponse struct {
