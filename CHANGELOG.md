@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.0-alpha.30 (2026-03-25)
+
+Full Changelog: [v0.1.0-alpha.29...v0.1.0-alpha.30](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.29...v0.1.0-alpha.30)
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([b96b485](https://github.com/hdresearch/vers-sdk-go/commit/b96b485f13b9e8af50f46a1171dfb0414d23ae56))
+* **internal:** update gitignore ([94dbe9a](https://github.com/hdresearch/vers-sdk-go/commit/94dbe9a9f52937e48aabc6bba13b11ce50cfb214))
+
 ## 0.1.0-alpha.29 (2026-03-18)
 
 Full Changelog: [v0.1.0-alpha.28...v0.1.0-alpha.29](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.28...v0.1.0-alpha.29)
