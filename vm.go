@@ -284,11 +284,12 @@ const (
 	VmStateRunning  VmState = "running"
 	VmStatePaused   VmState = "paused"
 	VmStateSleeping VmState = "sleeping"
+	VmStateDead     VmState = "dead"
 )
 
 func (r VmState) IsKnown() bool {
 	switch r {
-	case VmStateBooting, VmStateRunning, VmStatePaused, VmStateSleeping:
+	case VmStateBooting, VmStateRunning, VmStatePaused, VmStateSleeping, VmStateDead:
 		return true
 	}
 	return false
@@ -445,11 +446,12 @@ const (
 	VmMetadataResponseStateRunning  VmMetadataResponseState = "running"
 	VmMetadataResponseStatePaused   VmMetadataResponseState = "paused"
 	VmMetadataResponseStateSleeping VmMetadataResponseState = "sleeping"
+	VmMetadataResponseStateDead     VmMetadataResponseState = "dead"
 )
 
 func (r VmMetadataResponseState) IsKnown() bool {
 	switch r {
-	case VmMetadataResponseStateBooting, VmMetadataResponseStateRunning, VmMetadataResponseStatePaused, VmMetadataResponseStateSleeping:
+	case VmMetadataResponseStateBooting, VmMetadataResponseStateRunning, VmMetadataResponseStatePaused, VmMetadataResponseStateSleeping, VmMetadataResponseStateDead:
 		return true
 	}
 	return false
