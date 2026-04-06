@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.1.0-alpha.32 (2026-04-06)
+
+Full Changelog: [v0.1.0-alpha.31...v0.1.0-alpha.32](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.31...v0.1.0-alpha.32)
+
+### Features
+
+* **api:** api update ([73eaefa](https://github.com/hdresearch/vers-sdk-go/commit/73eaefae1cae48bd0d962c8f347967473da1c3cc))
+* **api:** api update ([2c6aad6](https://github.com/hdresearch/vers-sdk-go/commit/2c6aad6b7a5da3a770aa0dc1f074fdbd460c82b2))
+* **internal:** support comma format in multipart form encoding ([9e0e01d](https://github.com/hdresearch/vers-sdk-go/commit/9e0e01dfede7f5779b064762bb26cd261a38837e))
+
+
+### Bug Fixes
+
+* prevent duplicate ? in query params ([c6f72ad](https://github.com/hdresearch/vers-sdk-go/commit/c6f72ad8e6288410f184385fe078db8ebe9a42e6))
+
+
+### Chores
+
+* **ci:** support opting out of skipping builds on metadata-only commits ([5ccbaf2](https://github.com/hdresearch/vers-sdk-go/commit/5ccbaf2e362ebb848ab1f733d21b22ded22d68c0))
+* remove unnecessary error check for url parsing ([fe38a21](https://github.com/hdresearch/vers-sdk-go/commit/fe38a21d1671e063cb81a6133844ec74db4e6979))
+
 ## 0.1.0-alpha.31 (2026-03-25)
 
 Full Changelog: [v0.1.0-alpha.30...v0.1.0-alpha.31](https://github.com/hdresearch/vers-sdk-go/compare/v0.1.0-alpha.30...v0.1.0-alpha.31)
