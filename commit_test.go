@@ -13,7 +13,7 @@ import (
 	"github.com/hdresearch/vers-sdk-go/option"
 )
 
-func TestCommitUpdate(t *testing.T) {
+func TestCommitUpdateWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -31,7 +31,9 @@ func TestCommitUpdate(t *testing.T) {
 		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 		vers.CommitUpdateParams{
 			UpdateCommitRequest: vers.UpdateCommitRequestParam{
-				IsPublic: vers.F(true),
+				IsPublic:    vers.F(true),
+				Description: vers.F("description"),
+				Name:        vers.F("name"),
 			},
 		},
 	)
