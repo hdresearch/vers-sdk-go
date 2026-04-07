@@ -99,14 +99,14 @@ func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchBy
 	return res, err
 }
 
-func (r *VmService) Commit(ctx context.Context, vmID string, body VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
+func (r *VmService) Commit(ctx context.Context, vmID string, params VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/commit", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -599,6 +599,18 @@ type VmCommitParams struct {
 	KeepPaused param.Field[bool] `query:"keep_paused"`
 	// If true, return an error immediately if the VM is still booting. Default: false
 	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
+	// If provided, chelsea will use the requested commit UUID. Otherwise, it will
+	// generate a UUID itself.
+	CommitID param.Field[string] `json:"commit_id" format:"uuid"`
+	// Optional description for the commit.
+	Description param.Field[string] `json:"description"`
+	// Optional human-readable name for the commit. Defaults to auto-generated name if
+	// not provided.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r VmCommitParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 // URLQuery serializes [VmCommitParams]'s query parameters as `url.Values`.

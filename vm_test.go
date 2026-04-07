@@ -204,6 +204,9 @@ func TestVmCommitWithOptionalParams(t *testing.T) {
 		vers.VmCommitParams{
 			KeepPaused:   vers.F(true),
 			SkipWaitBoot: vers.F(true),
+			CommitID:     vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			Description:  vers.F("description"),
+			Name:         vers.F("name"),
 		},
 	)
 	if err != nil {
