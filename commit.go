@@ -147,6 +147,10 @@ func (r listCommitsResponseJSON) RawJSON() string {
 // Request body for PATCH /commits/{commit_id}
 type UpdateCommitRequestParam struct {
 	IsPublic param.Field[bool] `json:"is_public" api:"required"`
+	// Optional description for the commit.
+	Description param.Field[string] `json:"description"`
+	// Optional human-readable name for the commit.
+	Name param.Field[string] `json:"name"`
 }
 
 func (r UpdateCommitRequestParam) MarshalJSON() (data []byte, err error) {
