@@ -237,6 +237,9 @@ func TestVmNewRootWithOptionalParams(t *testing.T) {
 				FsSizeMib:  vers.F(int64(0)),
 				ImageName:  vers.F("image_name"),
 				KernelName: vers.F("kernel_name"),
+				Labels: vers.F(map[string]string{
+					"foo": "string",
+				}),
 				MemSizeMib: vers.F(int64(0)),
 				VcpuCount:  vers.F(int64(0)),
 			}),

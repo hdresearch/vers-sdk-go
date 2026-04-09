@@ -243,7 +243,8 @@ type NewRootRequestVmConfigParam struct {
 	// The filesystem base image name. Currently, must be 'default'
 	ImageName param.Field[string] `json:"image_name"`
 	// The kernel name. Currently, must be 'default.bin'
-	KernelName param.Field[string] `json:"kernel_name"`
+	KernelName param.Field[string]            `json:"kernel_name"`
+	Labels     param.Field[map[string]string] `json:"labels"`
 	// The RAM size, in MiB.
 	MemSizeMib param.Field[int64] `json:"mem_size_mib"`
 	// How many vCPUs to allocate to this VM (and its children)
@@ -299,9 +300,10 @@ type Vm struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	OwnerID   string    `json:"owner_id" api:"required" format:"uuid"`
 	// The state of a VM
-	State VmState `json:"state" api:"required"`
-	VmID  string  `json:"vm_id" api:"required" format:"uuid"`
-	JSON  vmJSON  `json:"-"`
+	State  VmState           `json:"state" api:"required"`
+	VmID   string            `json:"vm_id" api:"required" format:"uuid"`
+	Labels map[string]string `json:"labels" api:"nullable"`
+	JSON   vmJSON            `json:"-"`
 }
 
 // vmJSON contains the JSON metadata for the struct [Vm]
@@ -310,6 +312,7 @@ type vmJSON struct {
 	OwnerID     apijson.Field
 	State       apijson.Field
 	VmID        apijson.Field
+	Labels      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
