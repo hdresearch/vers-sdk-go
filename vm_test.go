@@ -204,6 +204,9 @@ func TestVmCommitWithOptionalParams(t *testing.T) {
 		vers.VmCommitParams{
 			KeepPaused:   vers.F(true),
 			SkipWaitBoot: vers.F(true),
+			CommitID:     vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			Description:  vers.F("description"),
+			Name:         vers.F("name"),
 		},
 	)
 	if err != nil {
@@ -234,12 +237,155 @@ func TestVmNewRootWithOptionalParams(t *testing.T) {
 				FsSizeMib:  vers.F(int64(0)),
 				ImageName:  vers.F("image_name"),
 				KernelName: vers.F("kernel_name"),
+				Labels: vers.F(map[string]string{
+					"foo": "string",
+				}),
 				MemSizeMib: vers.F(int64(0)),
 				VcpuCount:  vers.F(int64(0)),
 			}),
 		},
 		WaitBoot: vers.F(true),
 	})
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVmExecWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Vm.Exec(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		vers.VmExecParams{
+			VmExecRequest: vers.VmExecRequestParam{
+				Command: vers.F([]string{"string"}),
+				Env: vers.F(map[string]string{
+					"foo": "string",
+				}),
+				ExecID:      vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				Stdin:       vers.F("stdin"),
+				TimeoutSecs: vers.F(int64(0)),
+				WorkingDir:  vers.F("working_dir"),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVmExecStreamWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Vm.ExecStream(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		vers.VmExecStreamParams{
+			VmExecRequest: vers.VmExecRequestParam{
+				Command: vers.F([]string{"string"}),
+				Env: vers.F(map[string]string{
+					"foo": "string",
+				}),
+				ExecID:      vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				Stdin:       vers.F("stdin"),
+				TimeoutSecs: vers.F(int64(0)),
+				WorkingDir:  vers.F("working_dir"),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVmExecStreamAttachWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	err := client.Vm.ExecStreamAttach(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		vers.VmExecStreamAttachParams{
+			VmExecStreamAttachRequest: vers.VmExecStreamAttachRequestParam{
+				ExecID:     vers.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+				Cursor:     vers.F(int64(0)),
+				FromLatest: vers.F(true),
+			},
+		},
+	)
+	if err != nil {
+		var apierr *vers.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestVmGetLogsWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := vers.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Vm.GetLogs(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		vers.VmGetLogsParams{
+			MaxEntries: vers.F(int64(0)),
+			Offset:     vers.F(int64(0)),
+			Stream:     vers.F("stream"),
+		},
+	)
 	if err != nil {
 		var apierr *vers.Error
 		if errors.As(err, &apierr) {

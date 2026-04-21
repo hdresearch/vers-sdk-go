@@ -99,14 +99,14 @@ func (r *VmService) BranchByVm(ctx context.Context, vmID string, body VmBranchBy
 	return res, err
 }
 
-func (r *VmService) Commit(ctx context.Context, vmID string, body VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
+func (r *VmService) Commit(ctx context.Context, vmID string, params VmCommitParams, opts ...option.RequestOption) (res *VmCommitResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if vmID == "" {
 		err = errors.New("missing required vm_id parameter")
 		return nil, err
 	}
 	path := fmt.Sprintf("api/v1/vm/%s/commit", vmID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
 	return res, err
 }
 
@@ -114,6 +114,52 @@ func (r *VmService) NewRoot(ctx context.Context, params VmNewRootParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "api/v1/vm/new_root"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
+}
+
+func (r *VmService) Exec(ctx context.Context, vmID string, body VmExecParams, opts ...option.RequestOption) (res *VmExecResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("api/v1/vm/%s/exec", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+func (r *VmService) ExecStream(ctx context.Context, vmID string, body VmExecStreamParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return err
+	}
+	path := fmt.Sprintf("api/v1/vm/%s/exec/stream", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return err
+}
+
+func (r *VmService) ExecStreamAttach(ctx context.Context, vmID string, body VmExecStreamAttachParams, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return err
+	}
+	path := fmt.Sprintf("api/v1/vm/%s/exec/stream/attach", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, nil, opts...)
+	return err
+}
+
+func (r *VmService) GetLogs(ctx context.Context, vmID string, query VmGetLogsParams, opts ...option.RequestOption) (res *VmExecLogResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if vmID == "" {
+		err = errors.New("missing required vm_id parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("api/v1/vm/%s/logs", vmID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }
 
@@ -197,7 +243,8 @@ type NewRootRequestVmConfigParam struct {
 	// The filesystem base image name. Currently, must be 'default'
 	ImageName param.Field[string] `json:"image_name"`
 	// The kernel name. Currently, must be 'default.bin'
-	KernelName param.Field[string] `json:"kernel_name"`
+	KernelName param.Field[string]            `json:"kernel_name"`
+	Labels     param.Field[map[string]string] `json:"labels"`
 	// The RAM size, in MiB.
 	MemSizeMib param.Field[int64] `json:"mem_size_mib"`
 	// How many vCPUs to allocate to this VM (and its children)
@@ -253,9 +300,10 @@ type Vm struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	OwnerID   string    `json:"owner_id" api:"required" format:"uuid"`
 	// The state of a VM
-	State VmState `json:"state" api:"required"`
-	VmID  string  `json:"vm_id" api:"required" format:"uuid"`
-	JSON  vmJSON  `json:"-"`
+	State  VmState           `json:"state" api:"required"`
+	VmID   string            `json:"vm_id" api:"required" format:"uuid"`
+	Labels map[string]string `json:"labels" api:"nullable"`
+	JSON   vmJSON            `json:"-"`
 }
 
 // vmJSON contains the JSON metadata for the struct [Vm]
@@ -264,6 +312,7 @@ type vmJSON struct {
 	OwnerID     apijson.Field
 	State       apijson.Field
 	VmID        apijson.Field
+	Labels      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -338,6 +387,147 @@ func (r *VmDeleteResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r vmDeleteResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// Response for exec log tail requests.
+type VmExecLogResponse struct {
+	// Returned log entries.
+	Entries []VmExecLogResponseEntry `json:"entries" api:"required"`
+	// True when the end of file was reached.
+	Eof bool `json:"eof" api:"required"`
+	// Next byte offset to continue from.
+	NextOffset int64                 `json:"next_offset" api:"required"`
+	JSON       vmExecLogResponseJSON `json:"-"`
+}
+
+// vmExecLogResponseJSON contains the JSON metadata for the struct
+// [VmExecLogResponse]
+type vmExecLogResponseJSON struct {
+	Entries     apijson.Field
+	Eof         apijson.Field
+	NextOffset  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VmExecLogResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmExecLogResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Individual log entry describing emitted stdout/stderr chunk.
+type VmExecLogResponseEntry struct {
+	// Base64-encoded bytes from stdout/stderr chunk.
+	DataB64 string `json:"data_b64" api:"required"`
+	// Streams available for exec logging.
+	Stream    VmExecLogResponseEntriesStream `json:"stream" api:"required"`
+	Timestamp string                         `json:"timestamp" api:"required"`
+	ExecID    string                         `json:"exec_id" api:"nullable" format:"uuid"`
+	JSON      vmExecLogResponseEntryJSON     `json:"-"`
+}
+
+// vmExecLogResponseEntryJSON contains the JSON metadata for the struct
+// [VmExecLogResponseEntry]
+type vmExecLogResponseEntryJSON struct {
+	DataB64     apijson.Field
+	Stream      apijson.Field
+	Timestamp   apijson.Field
+	ExecID      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VmExecLogResponseEntry) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmExecLogResponseEntryJSON) RawJSON() string {
+	return r.raw
+}
+
+// Streams available for exec logging.
+type VmExecLogResponseEntriesStream string
+
+const (
+	VmExecLogResponseEntriesStreamStdout VmExecLogResponseEntriesStream = "stdout"
+	VmExecLogResponseEntriesStreamStderr VmExecLogResponseEntriesStream = "stderr"
+)
+
+func (r VmExecLogResponseEntriesStream) IsKnown() bool {
+	switch r {
+	case VmExecLogResponseEntriesStreamStdout, VmExecLogResponseEntriesStreamStderr:
+		return true
+	}
+	return false
+}
+
+// Request body for POST /api/vm/{vm_id}/exec
+type VmExecRequestParam struct {
+	// Command and arguments to execute.
+	Command param.Field[[]string] `json:"command" api:"required"`
+	// Optional environment variables to set for the process.
+	Env param.Field[map[string]string] `json:"env"`
+	// Optional exec identifier for tracking.
+	ExecID param.Field[string] `json:"exec_id" format:"uuid"`
+	// Optional stdin payload passed to the command.
+	Stdin param.Field[string] `json:"stdin"`
+	// Timeout in seconds (0 = no timeout).
+	TimeoutSecs param.Field[int64] `json:"timeout_secs"`
+	// Optional working directory for the command.
+	WorkingDir param.Field[string] `json:"working_dir"`
+}
+
+func (r VmExecRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Response body for POST /api/vm/{vm_id}/exec
+type VmExecResponse struct {
+	// Exit code returned by the command.
+	ExitCode int64 `json:"exit_code" api:"required"`
+	// UTF-8 decoded stderr (lossy).
+	Stderr string `json:"stderr" api:"required"`
+	// UTF-8 decoded stdout (lossy).
+	Stdout string `json:"stdout" api:"required"`
+	// Exec identifier associated with this run.
+	ExecID string             `json:"exec_id" api:"nullable" format:"uuid"`
+	JSON   vmExecResponseJSON `json:"-"`
+}
+
+// vmExecResponseJSON contains the JSON metadata for the struct [VmExecResponse]
+type vmExecResponseJSON struct {
+	ExitCode    apijson.Field
+	Stderr      apijson.Field
+	Stdout      apijson.Field
+	ExecID      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VmExecResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r vmExecResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+// Request body for POST /api/vm/{vm_id}/exec/stream/attach
+type VmExecStreamAttachRequestParam struct {
+	// Identifier of the exec stream session to reattach to.
+	ExecID param.Field[string] `json:"exec_id" api:"required" format:"uuid"`
+	// Optional cursor to resume from (exclusive). If omitted, the full retained
+	// backlog is replayed.
+	Cursor param.Field[int64] `json:"cursor"`
+	// Start streaming after the latest retained chunk (ignores cursor).
+	FromLatest param.Field[bool] `json:"from_latest"`
+}
+
+func (r VmExecStreamAttachRequestParam) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 // Request body for POST /api/v1/vm/from_commit
@@ -599,6 +789,18 @@ type VmCommitParams struct {
 	KeepPaused param.Field[bool] `query:"keep_paused"`
 	// If true, return an error immediately if the VM is still booting. Default: false
 	SkipWaitBoot param.Field[bool] `query:"skip_wait_boot"`
+	// If provided, chelsea will use the requested commit UUID. Otherwise, it will
+	// generate a UUID itself.
+	CommitID param.Field[string] `json:"commit_id" format:"uuid"`
+	// Optional description for the commit.
+	Description param.Field[string] `json:"description"`
+	// Optional human-readable name for the commit. Defaults to auto-generated name if
+	// not provided.
+	Name param.Field[string] `json:"name"`
+}
+
+func (r VmCommitParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 // URLQuery serializes [VmCommitParams]'s query parameters as `url.Values`.
@@ -622,6 +824,50 @@ func (r VmNewRootParams) MarshalJSON() (data []byte, err error) {
 
 // URLQuery serializes [VmNewRootParams]'s query parameters as `url.Values`.
 func (r VmNewRootParams) URLQuery() (v url.Values) {
+	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
+		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		NestedFormat: apiquery.NestedQueryFormatBrackets,
+	})
+}
+
+type VmExecParams struct {
+	// Request body for POST /api/vm/{vm_id}/exec
+	VmExecRequest VmExecRequestParam `json:"vm_exec_request" api:"required"`
+}
+
+func (r VmExecParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.VmExecRequest)
+}
+
+type VmExecStreamParams struct {
+	// Request body for POST /api/vm/{vm_id}/exec
+	VmExecRequest VmExecRequestParam `json:"vm_exec_request" api:"required"`
+}
+
+func (r VmExecStreamParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.VmExecRequest)
+}
+
+type VmExecStreamAttachParams struct {
+	// Request body for POST /api/vm/{vm_id}/exec/stream/attach
+	VmExecStreamAttachRequest VmExecStreamAttachRequestParam `json:"vm_exec_stream_attach_request" api:"required"`
+}
+
+func (r VmExecStreamAttachParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r.VmExecStreamAttachRequest)
+}
+
+type VmGetLogsParams struct {
+	// Maximum number of log entries to return
+	MaxEntries param.Field[int64] `query:"max_entries"`
+	// Byte offset into the log file (default: 0)
+	Offset param.Field[int64] `query:"offset"`
+	// Filter by 'stdout' or 'stderr'
+	Stream param.Field[string] `query:"stream"`
+}
+
+// URLQuery serializes [VmGetLogsParams]'s query parameters as `url.Values`.
+func (r VmGetLogsParams) URLQuery() (v url.Values) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
